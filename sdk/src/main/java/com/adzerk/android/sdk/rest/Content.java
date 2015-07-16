@@ -1,5 +1,7 @@
 package com.adzerk.android.sdk.rest;
 
+import java.util.Map;
+
 /**
  * Content - Each Decision contains one or more Contents. Combined, the Contents represent the creative that should
  * be displayed. For example, a creative may contain a CSS stylesheet and a block of HTML. This would be represented as
@@ -26,14 +28,18 @@ public class Content {
     // the type of the content
     private String mType;
 
-    // name of the template used to render the content
+    // name of the template used to render the content (unless TYPE_RAW)
     private String mTemplate;
+
+    // the body of the custom template for TYPE_RAW content
+    private String mCustomTemplate;
 
     // rendered body of the content
     private String mBody;
 
-    // TODO: add 'data' field
     // data An object that has fields used to build the content
+    private Map<String, String> mData;
+
 
     public String getType() {
         return mType;
@@ -51,11 +57,31 @@ public class Content {
         mTemplate = template;
     }
 
+    public String getCustomTemplate() {
+        return mCustomTemplate;
+    }
+
+    public void setCustomTemplate(String customTemplate) {
+        this.mCustomTemplate = customTemplate;
+    }
+
     public String getBody() {
         return mBody;
     }
 
     public void setBody(String body) {
         mBody = body;
+    }
+
+    public Map<String, String> getData() {
+        return mData;
+    }
+
+    public void setData(Map<String, String> data) {
+        this.mData = data;
+    }
+
+    public boolean isRawType() {
+        return mType == TYPE_RAW;
     }
 }
