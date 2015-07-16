@@ -11,21 +11,21 @@ import java.util.List;
 public class Response {
 
     // identifies the unique user that places the request
-    private User mUser;
+    private User user;
 
     // each Decision represents the ad that was selected to be served for a given Placement
-    private List<Decision> mDecisions;
+    private List<Decision> decisions;
 
     public User getUser() {
-        return mUser;
+        return user;
     }
 
     public void setUser(User user) {
-        mUser = user;
+        this.user = user;
     }
 
     public List<Decision> getDecisions() {
-        return mDecisions;
+        return decisions;
     }
 
     public Decision getDecision(String divName) {
@@ -34,10 +34,10 @@ public class Response {
     }
 
     public void setDecisions(List<Decision> decisions) {
-        mDecisions = decisions;
+        this.decisions = decisions;
     }
 
     public void addDecision(Decision decision) {
-        mDecisions.add(decision);
+        decisions.add(decision);
     }
 }
