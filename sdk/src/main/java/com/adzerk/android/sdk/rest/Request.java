@@ -14,34 +14,34 @@ import java.util.Set;
 public class Request {
 
     // list of placements where an ad can be served (required)
-    private List<Placement> mPlacements;
+    private List<Placement> placements;
 
     // target to the user key used to identify a unique user
-    private User mUser;
+    private User user;
 
     // zero or more keywords to use when selecting the ad
-    private Set<String> mKeywords;
+    private Set<String> keywords;
 
     // URL to use as the referrer when selecting an ad
-    private URL mReferrer;
+    private URL referrer;
 
     // URL to use as the current page URL when selecting an ad
-    private URL mUrl;
+    private URL url;
 
     // UNIX epoch timestamp to use when selecting an ad
-    private Long mTime;
+    private Long time;
 
     // IP address to use when selecting the ad; if specified, overrides the IP the request is made from
-    private InetAddress mIp;
+    private InetAddress ip;
 
     // zero or more numeric creative ids to disregard when selecting an ad
-    private Set<Integer> mBlockedCreatives;
+    private Set<Integer> blockedCreatives;
 
     // hash of flight ids to arrays of UNIX epoch timestamps representing times the user viewed an ad in the specified flight (used for frequency capping)
-    private Map<Integer, List<Integer>> mFlightViewTimes;
+    private Map<Integer, List<Integer>> flightViewTimes;
 
     // if true, only ads containing a single image will be returned (defaults to false)
-    private Boolean mIsMobile = Boolean.FALSE;
+    private boolean isMobile = false; // TODO: Confirm native boolean is ok. If autoboxing is a problem, then restore me.
 
     /**
      * Builder used to create Request for ads.
@@ -202,94 +202,94 @@ public class Request {
 
 
     public List<Placement> getPlacements() {
-        return mPlacements;
+        return placements;
     }
 
     private void setPlacements(List<Placement> placements) {
-        mPlacements = placements;
+        this.placements = placements;
     }
 
     public void addPlacement(Placement placement) {
-        mPlacements.add(placement);
+        placements.add(placement);
     }
 
     public User getUser() {
-        return mUser;
+        return user;
     }
 
     public void setUser(User user) {
-        mUser = user;
+        this.user = user;
     }
 
     public Set<String> getKeywords() {
-        return mKeywords;
+        return keywords;
     }
 
     public void setKeywords(Set<String> keywords) {
-        mKeywords = keywords;
+        this.keywords = keywords;
     }
 
     public void addKeyword(String keyword) {
-        mKeywords.add(keyword);
+        keywords.add(keyword);
     }
 
     public URL getReferrer() {
-        return mReferrer;
+        return referrer;
     }
 
     public void setReferrer(URL referrer) {
-        mReferrer = referrer;
+        this.referrer = referrer;
     }
 
     public URL getUrl() {
-        return mUrl;
+        return url;
     }
 
     public void setUrl(URL url) {
-        mUrl = url;
+        this.url = url;
     }
 
     public Long getTime() {
-        return mTime;
+        return time;
     }
 
     public void setTime(Long epochTime) {
-        mTime = epochTime;
+        time = epochTime;
     }
 
     public InetAddress getIp() {
-        return mIp;
+        return ip;
     }
 
     public void setIp(InetAddress ip) {
-        mIp = ip;
+        this.ip = ip;
     }
 
     public Set<Integer> getBlockedCreatives() {
-        return mBlockedCreatives;
+        return blockedCreatives;
     }
 
     public void setBlockedCreatives(Set<Integer> blockedCreatives) {
-        mBlockedCreatives = blockedCreatives;
+        this.blockedCreatives = blockedCreatives;
     }
 
     public void addBlockedCreative(Integer creativeId) {
-        mBlockedCreatives.add(creativeId);
+        blockedCreatives.add(creativeId);
     }
 
     public Map<Integer, List<Integer>> getFlightViewTimes() {
-        return mFlightViewTimes;
+        return flightViewTimes;
     }
 
     public void setFlightViewTimes(Map<Integer, List<Integer>> flightViewTimes) {
-        mFlightViewTimes = flightViewTimes;
+        this.flightViewTimes = flightViewTimes;
     }
 
     public Boolean isMobile() {
-        return mIsMobile;
+        return isMobile;
     }
 
     public void setMobile(Boolean isMobile) {
-        mIsMobile = isMobile;
+        this.isMobile = isMobile;
     }
 }

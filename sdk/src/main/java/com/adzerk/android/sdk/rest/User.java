@@ -5,13 +5,13 @@ package com.adzerk.android.sdk.rest;
  */
 public class User  {
 
-    private String mKey;
+    private String key;
 
     public String getKey() {
-        return mKey;
+        return key;
     }
 
     public void setKey(String key) {
-        mKey = key;
+        this.key = key;
     }
 }

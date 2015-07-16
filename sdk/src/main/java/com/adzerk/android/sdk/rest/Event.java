@@ -12,17 +12,17 @@ import java.net.URL;
 public class Event {
 
     // event identifier
-    private EventId mEventId;
+    private EventId eventId;
 
     // url to call to track an event
     private URL mEventUrl;
 
     public EventId getEventId() {
-        return mEventId;
+        return eventId;
     }
 
     public void setEventId(EventId eventId) {
-        mEventId = eventId;
+        this.eventId = eventId;
     }
 
     public URL getEventUrl() {

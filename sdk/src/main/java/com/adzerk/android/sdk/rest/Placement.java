@@ -24,139 +24,139 @@ import java.util.List;
  */
 public class Placement {
     // unique name for the placement (required)
-    private String mDivName;
+    private String divName;
 
     // network id to use when selecting an ad (required)
-    private Long mNetworkId;
+    private Long networkId;
 
     // site id to use when selecting an ad (required)
-    private Long mSiteId;
+    private Long siteId;
 
     // one or more integer ad types to use when selecting an ad (required)
-    private List<Integer> mAdTypes;
+    private List<Integer> adTypes;
 
     // zero or more zone ids to use when selecting an ad
-    private List<Integer> mZoneIds;
+    private List<Integer> zoneIds;
 
     // campaign id; if specified, only consider ads in that campaign
-    private Integer mCampaignId;
+    private Integer campaignId;
 
     // flight id; if specified, only consider ads in that flight
-    private Integer mFlightId;
+    private Integer flightId;
 
     // ad (flight-creative map) id; if specified, only serve that ad if possible
-    private Integer mAdId;
+    private Integer adId;
 
     // URL that should be used as the click-through target for the ad
-    private URL mClickUrl;
+    private URL clickUrl;
 
     // hash of key/value pairs used for custom targeting
-    private List<Property> mProperties;
+    private List<Property> customProperties;
 
     // array of numeric event types. Requests tracking URLs for custom events
-    private List<EventId> mEventIds;
+    private List<EventId> eventIds;
 
     public String getDivName() {
-        return mDivName;
+        return divName;
     }
 
     public void setDivName(String divName) {
-        mDivName = divName;
+        this.divName = divName;
     }
 
     public Long getNetworkId() {
-        return mNetworkId;
+        return networkId;
     }
 
     public void setNetworkId(Long networkId) {
-        mNetworkId = networkId;
+        this.networkId = networkId;
     }
 
     public Long getSiteId() {
-        return mSiteId;
+        return siteId;
     }
 
     public void setSiteId(Long siteId) {
-        mSiteId = siteId;
+        this.siteId = siteId;
     }
 
     public List<Integer> getAdTypes() {
-        return mAdTypes;
+        return adTypes;
     }
 
     public void setAdTypes(List<Integer> adTypes) {
-        mAdTypes = adTypes;
+        this.adTypes = adTypes;
     }
 
     public void addAdType(Integer adType) {
-        mAdTypes.add(adType);
+        adTypes.add(adType);
     }
 
     public List<Integer> getZoneIds() {
-        return mZoneIds;
+        return zoneIds;
     }
 
     public void setZoneIds(List<Integer> zoneIds) {
-        mZoneIds = zoneIds;
+        this.zoneIds = zoneIds;
     }
 
     public void addZoneId(Integer zoneId) {
-        mZoneIds.add(zoneId);
+        zoneIds.add(zoneId);
     }
 
     public Integer getCampaignId() {
-        return mCampaignId;
+        return campaignId;
     }
 
     public void setCampaignId(Integer campaignId) {
-        mCampaignId = campaignId;
+        this.campaignId = campaignId;
     }
 
     public Integer getFlightId() {
-        return mFlightId;
+        return flightId;
     }
 
     public void setFlightId(Integer flightId) {
-        mFlightId = flightId;
+        this.flightId = flightId;
     }
 
     public Integer getAdId() {
-        return mAdId;
+        return adId;
     }
 
     public void setAdId(Integer adId) {
-        mAdId = adId;
+        this.adId = adId;
     }
 
     public URL getClickUrl() {
-        return mClickUrl;
+        return clickUrl;
     }
 
     public void setClickUrl(URL clickUrl) {
-        mClickUrl = clickUrl;
+        this.clickUrl = clickUrl;
     }
 
     public List<Property> getProperties() {
-        return mProperties;
+        return customProperties;
     }
 
     public void setProperties(List<Property> properties) {
-        mProperties = properties;
+        customProperties = properties;
     }
 
     public void addProperty(Property property) {
-        mProperties.add(property);
+        customProperties.add(property);
     }
 
     public List<EventId> getEventIds() {
-        return mEventIds;
+        return eventIds;
     }
 
     public void setEventIds(List<EventId> eventIds) {
-        mEventIds = eventIds;
+        this.eventIds = eventIds;
     }
 
     public void addEventId(EventId eventId) {
-        mEventIds.add(eventId);
+        eventIds.add(eventId);
     }
 }
