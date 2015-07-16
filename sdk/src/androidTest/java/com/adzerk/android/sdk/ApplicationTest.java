@@ -1,4 +1,4 @@
-package com.adzerk.androidsdk;
+package com.adzerk.android.sdk;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
