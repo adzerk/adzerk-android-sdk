@@ -12,98 +12,118 @@ import java.util.List;
 public class Decision {
 
     // id for the ad that was selected
-    private Integer mAdId;
+    private Integer adId;
 
     // id for the creative in the selected ad
-    private Integer mCreativeId;
+    private Integer creativeId;
 
     // id for the flight in the selected ad
-    private Integer mFlightId;
+    private Integer flightId;
 
     // id for the campaign in the selected ad
-    private Integer mCampaignId;
+    private Integer campaignId;
 
     // url endpoint that, using a GET, triggers the recording of the click and redirects to the target
-    private URL mClickUrl;
+    private URL clickUrl;
 
     // list of ad contents
-    private List<Content> mContents;
+    private List<Content> contents;
 
     // list if Events - the IDs and tracking URLs of custom events
-    private List<Event> mEvents;
+    private List<Event> events;
+
+    private int height;
+
+    private int width;
 
     // url endpoint that, using a GET, triggers the recording of the impression
-    private URL mImpressionUrl;
+    private URL impressionUrl;
 
     public Integer getAdId() {
-        return mAdId;
+        return adId;
     }
 
     public void setAdId(Integer adId) {
-        mAdId = adId;
+        this.adId = adId;
     }
 
     public Integer getCreativeId() {
-        return mCreativeId;
+        return creativeId;
     }
 
     public void setCreativeId(Integer creativeId) {
-        mCreativeId = creativeId;
+        this.creativeId = creativeId;
     }
 
     public Integer getFlightId() {
-        return mFlightId;
+        return flightId;
     }
 
     public void setFlightId(Integer flightId) {
-        mFlightId = flightId;
+        this.flightId = flightId;
     }
 
     public Integer getCampaignId() {
-        return mCampaignId;
+        return campaignId;
     }
 
     public void setCampaignId(Integer campaignId) {
-        mCampaignId = campaignId;
+        this.campaignId = campaignId;
     }
 
     public URL getClickUrl() {
-        return mClickUrl;
+        return clickUrl;
     }
 
     public void setClickUrl(URL clickUrl) {
-        mClickUrl = clickUrl;
+        this.clickUrl = clickUrl;
     }
 
     public List<Content> getContents() {
-        return mContents;
+        return contents;
     }
 
     public void setContents(List<Content> contents) {
-        mContents = contents;
+        this.contents = contents;
     }
 
     public void addContent(Content content) {
-        mContents.add(content);
+        contents.add(content);
     }
 
     public URL getImpressionUrl() {
-        return mImpressionUrl;
+        return impressionUrl;
     }
 
     public void setImpressionUrl(URL impressionUrl) {
-        mImpressionUrl = impressionUrl;
+        this.impressionUrl = impressionUrl;
     }
 
     public List<Event> getEvents() {
-        return mEvents;
+        return events;
     }
 
     public void setEvents(List<Event> events) {
-        mEvents = events;
+        this.events = events;
     }
 
     public void addEvent(Event eventId) {
-        mEvents.add(eventId);
+        events.add(eventId);
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
 }

@@ -1,6 +1,6 @@
 package com.adzerk.android.sdk.rest;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Response to an ad Request.
@@ -11,33 +11,32 @@ import java.util.List;
 public class Response {
 
     // identifies the unique user that places the request
-    private User mUser;
+    private User user;
 
     // each Decision represents the ad that was selected to be served for a given Placement
-    private List<Decision> mDecisions;
+    private Map<String, Decision> decisions;
 
     public User getUser() {
-        return mUser;
+        return user;
     }
 
     public void setUser(User user) {
-        mUser = user;
+        this.user = user;
     }
 
-    public List<Decision> getDecisions() {
-        return mDecisions;
+    public Map<String, Decision> getDecisions() {
+        return decisions;
     }
 
-    public Decision getDecision(String divName) {
-        // TODO: assuming we want to query by the divName
-        return null;
+    public Decision getDecision(String name) {
+        return decisions.get(name);
     }
 
-    public void setDecisions(List<Decision> decisions) {
-        mDecisions = decisions;
+    public void setDecisions(Map<String, Decision> decisions) {
+        this.decisions = decisions;
     }
 
-    public void addDecision(Decision decision) {
-        mDecisions.add(decision);
+    public void addDecision(String name, Decision decision) {
+        decisions.put(name, decision);
     }
 }

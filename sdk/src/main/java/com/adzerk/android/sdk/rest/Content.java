@@ -26,62 +26,62 @@ public class Content {
     public static String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
 
     // the type of the content
-    private String mType;
+    private String type;
 
     // name of the template used to render the content (unless TYPE_RAW)
-    private String mTemplate;
+    private String template;
 
     // the body of the custom template for TYPE_RAW content
-    private String mCustomTemplate;
+    private String customTemplate;
 
     // rendered body of the content
-    private String mBody;
+    private String body;
 
     // data An object that has fields used to build the content
-    private Map<String, String> mData;
+    private Map<String, String> data;
 
 
     public String getType() {
-        return mType;
+        return type;
     }
 
     public void setType(String type) {
-        mType = type;
+        this.type = type;
     }
 
     public String getTemplate() {
-        return mTemplate;
+        return template;
     }
 
     public void setTemplate(String template) {
-        mTemplate = template;
+        this.template = template;
     }
 
     public String getCustomTemplate() {
-        return mCustomTemplate;
+        return customTemplate;
     }
 
     public void setCustomTemplate(String customTemplate) {
-        this.mCustomTemplate = customTemplate;
+        this.customTemplate = customTemplate;
     }
 
     public String getBody() {
-        return mBody;
+        return body;
     }
 
     public void setBody(String body) {
-        mBody = body;
+        this.body = body;
     }
 
     public Map<String, String> getData() {
-        return mData;
+        return data;
     }
 
     public void setData(Map<String, String> data) {
-        this.mData = data;
+        this.data = data;
     }
 
     public boolean isRawType() {
-        return mType == TYPE_RAW;
+        return type == TYPE_RAW;
     }
 }
