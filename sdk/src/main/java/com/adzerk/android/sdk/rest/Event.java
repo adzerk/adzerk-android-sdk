@@ -1,0 +1,35 @@
+package com.adzerk.android.sdk.rest;
+
+import java.net.URL;
+
+/**
+ * Event information included in Response to an ad request. Once you call an Event URL, Adzerk will track that
+ * event for the creative/campaign/advertiser etc. in Adzerk reporting.
+ *
+ * Events in Adzerk are data about a way a user interacts with an ad. Standard events included with all Adzerk
+ * accounts are clicks, impressions, and conversions. Custom events are defined by the user of the account.
+ */
+public class Event {
+
+    // event identifier
+    private EventId mEventId;
+
+    // url to call to track an event
+    private URL mEventUrl;
+
+    public EventId getEventId() {
+        return mEventId;
+    }
+
+    public void setEventId(EventId eventId) {
+        mEventId = eventId;
+    }
+
+    public URL getEventUrl() {
+        return mEventUrl;
+    }
+
+    public void setEventUrl(URL eventUrl) {
+        mEventUrl = eventUrl;
+    }
+}
