@@ -14,16 +14,16 @@ import java.util.Map;
  */
 public class Content {
 
-    public static String TYPE_HTML = "html";
-    public static String TYPE_CSS = "css";
-    public static String TYPE_JS = "js";
-    public static String TYPE_JS_EXTERNAL = "js-external";
-    public static String TYPE_RAW = "raw";
+    public static final String TYPE_HTML = "html";
+    public static final String TYPE_CSS = "css";
+    public static final String TYPE_JS = "js";
+    public static final String TYPE_JS_EXTERNAL = "js-external";
+    public static final String TYPE_RAW = "raw";
 
-    public static String TEMPLATE_IMAGE = "image";
-    public static String TEMPLATE_IMAGE_NO_WIDTH = "image-nowidth";
-    public static String TEMPLATE_FLASH = "flash";
-    public static String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
+    public static final String TEMPLATE_IMAGE = "image";
+    public static final String TEMPLATE_IMAGE_NO_WIDTH = "image-nowidth";
+    public static final String TEMPLATE_FLASH = "flash";
+    public static final String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
 
     // the type of the content
     private String mType;
