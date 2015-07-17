@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Android SDK</string>
+    <string name="native_ads_endpoint">http://engine.adzerk.net/api/v2</string>
 </resources>
