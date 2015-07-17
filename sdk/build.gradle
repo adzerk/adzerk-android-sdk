@@ -22,7 +22,7 @@ android {
     }
 
     sourceSets {
-        androidTest.setRoot('sdk/src/test')
+        androidTest.setRoot('src/test')
     }
 }
 

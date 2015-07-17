@@ -2,6 +2,7 @@ package com.adzerk.android.sdk;
 
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
+import com.adzerk.android.sdk.rest.Response;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
@@ -27,35 +29,28 @@ public class NativeAdsTest {
 
     @Test
     public void itShouldRequestNativeAds() {
-        fail("Implement me");
-    }
 
-    /*public void testAdRequest() {
-
-        AdzerkSdk sdk = AdzerkSdk.getInstance();
-        sdk.setNativeAdsEndpoint(getContext().getString(R.string.native_ads_endpoint));
-
-        Request request = createTestRequest();
+        final Request request = createTestRequest();
         sdk.request(request, new AdzerkSdk.ResponseListener() {
 
             @Override
             public void success(Response response) {
 
                 // response should contain a decision for 'div1'
-                Assert.assertNotNull(response);
-                Assert.assertNotNull(response.getDecision("div1"));
+                assertNotNull(response);
+                assertNotNull(response.getDecision(request.getPlacements().get(0).getDivName()));
 
-                // show response for now ...
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Log.d("NativeAdsTest", "Response JSON: " + gson.toJson(response));
+                // log response json ...
+                //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                //Log.d("NativeAdsTest", "Response JSON: " + gson.toJson(response));
             }
 
             @Override
             public void error(Error error) {
-                Assert.fail("Request failed: " + error.getMessage());
+                fail("Request failed. Error: " + error.getMessage());
             }
         });
-    }*/
+    }
 
     private Request createTestRequest() {
 
