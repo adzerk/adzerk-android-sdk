@@ -2,6 +2,7 @@ package com.adzerk.android.sdk.rest;
 
 import java.net.InetAddress;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,6 +103,21 @@ public class Request {
          */
         public Builder setKeywords(Set<String> keywords) {
             this.keywords = keywords;
+            return this;
+        }
+
+        /**
+         * Add a keyword
+         *
+         * @param keyword keyword to add
+         * @return
+         */
+        public Builder addKeyword(String keyword) {
+            if (keywords == null) {
+                this.keywords = new HashSet<String>();
+            }
+            keywords.add(keyword);
+
             return this;
         }
 
