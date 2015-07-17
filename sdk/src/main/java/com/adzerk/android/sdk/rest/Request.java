@@ -1,5 +1,7 @@
 package com.adzerk.android.sdk.rest;
 
+import android.support.annotation.NonNull;
+
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.HashSet;
@@ -77,9 +79,10 @@ public class Request {
          *
          * @param placements list of placements where an ad can be served (required)
          */
-        public Builder(List<Placement> placements) {
-            if (placements == null || placements.isEmpty())
+        public Builder(@NonNull List<Placement> placements) {
+            if (placements.isEmpty()) {
                 throw new IllegalArgumentException("At least one Placement must be specified");
+            }
             this.placements = placements;
         }
 

@@ -6,7 +6,7 @@ import retrofit.http.POST;
 /**
  * Service interface for Native Ads API
  */
-public interface NativeAdsService {
+public interface NativeAdService {
 
     // issues a request for ads
     @POST("/")
