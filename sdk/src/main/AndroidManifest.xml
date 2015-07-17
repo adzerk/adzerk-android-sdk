@@ -1,12 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.adzerk.androidsdk">
+          package="com.adzerk.android.sdk">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application android:allowBackup="true"
-                 android:label="@string/app_name"
-        >
-
+                 android:label="@string/app_name">
     </application>
 
 </manifest>

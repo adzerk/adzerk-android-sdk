@@ -1,30 +1,36 @@
 package com.adzerk.android.sdk;
 
-import android.test.AndroidTestCase;
-import android.util.Log;
-
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
-import com.adzerk.android.sdk.rest.Response;
-import com.adzerk.androidsdk.R;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
- */
-public class NativeAdsTest extends AndroidTestCase {
+import static org.junit.Assert.fail;
 
-    public NativeAdsTest() {
-        super();
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk=18, constants=BuildConfig.class, manifest = Config.NONE)
+public class NativeAdsTest {
+
+    AdzerkSdk sdk;
+
+    @Before
+    public void setup() {
+        sdk = AdzerkSdk.getInstance();
     }
 
-    public void testAdRequest() {
+    @Test
+    public void itShouldRequestNativeAds() {
+        fail("Implement me");
+    }
+
+    /*public void testAdRequest() {
 
         AdzerkSdk sdk = AdzerkSdk.getInstance();
         sdk.setNativeAdsEndpoint(getContext().getString(R.string.native_ads_endpoint));
@@ -49,9 +55,9 @@ public class NativeAdsTest extends AndroidTestCase {
                 Assert.fail("Request failed: " + error.getMessage());
             }
         });
-    }
+    }*/
 
-    private static Request createTestRequest() {
+    private Request createTestRequest() {
 
         // parameters
         String divName = "div1";
