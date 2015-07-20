@@ -2,8 +2,6 @@ package com.adzerk.android.sdk.rest;
 
 import android.support.annotation.NonNull;
 
-import java.net.InetAddress;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,16 +24,16 @@ public class Request {
     private Set<String> keywords;
 
     // URL to use as the referrer when selecting an ad
-    private URL referrer;
+    private String referrer;
 
     // URL to use as the current page URL when selecting an ad
-    private URL url;
+    private String url;
 
     // UNIX epoch timestamp to use when selecting an ad
-    private Long time;
+    private long time;
 
     // IP address to use when selecting the ad; if specified, overrides the IP the request is made from
-    private InetAddress ip;
+    private String ip;
 
     // zero or more numeric creative ids to disregard when selecting an ad
     private Set<Integer> blockedCreatives;
@@ -44,7 +42,7 @@ public class Request {
     private Map<Integer, List<Integer>> flightViewTimes;
 
     // if true, only ads containing a single image will be returned (defaults to false)
-    private Boolean isMobile = Boolean.FALSE;
+    private boolean isMobile = Boolean.FALSE;
 
     /**
      * Builder used to create Request for ads.
@@ -54,10 +52,10 @@ public class Request {
         private List<Placement> placements;
         private User user;
         private Set<String> keywords;
-        private URL referrer;
-        private URL url;
+        private String referrer;
+        private String url;
         private Long time;
-        private InetAddress ip;
+        private String ip;
         private Set<Integer> blockedCreatives;
         private Map<Integer, List<Integer>> flightViewTimes;
         private boolean isMobile = false;
@@ -130,7 +128,7 @@ public class Request {
          * @param referrer  referrer URL
          * @return request builder
          */
-        public Builder setReferrer(URL referrer) {
+        public Builder setReferrer(String referrer) {
             this.referrer = referrer;
             return this;
         }
@@ -140,7 +138,7 @@ public class Request {
          * @param url   URL of current page
          * @return request builder
          */
-        public Builder setUrl(URL url) {
+        public Builder setUrl(String url) {
             this.url = url;
             return this;
         }
@@ -160,7 +158,7 @@ public class Request {
          * @param ip    ip address
          * @return request builder
          */
-        public Builder setIP(InetAddress ip) {
+        public Builder setIP(String ip) {
             this.ip = ip;
             return this;
         }
@@ -252,19 +250,19 @@ public class Request {
         keywords.add(keyword);
     }
 
-    public URL getReferrer() {
+    public String getReferrer() {
         return referrer;
     }
 
-    public void setReferrer(URL referrer) {
+    public void setReferrer(String referrer) {
         this.referrer = referrer;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(URL url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
@@ -276,11 +274,11 @@ public class Request {
         time = epochTime;
     }
 
-    public InetAddress getIp() {
+    public String getIp() {
         return ip;
     }
 
-    public void setIp(InetAddress ip) {
+    public void setIp(String ip) {
         this.ip = ip;
     }
 
