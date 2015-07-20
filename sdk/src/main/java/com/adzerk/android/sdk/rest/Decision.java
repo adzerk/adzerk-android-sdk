@@ -1,6 +1,5 @@
 package com.adzerk.android.sdk.rest;
 
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -12,118 +11,59 @@ import java.util.List;
 public class Decision {
 
     // id for the ad that was selected
-    private Integer adId;
+    int adId;
 
     // id for the creative in the selected ad
-    private Integer creativeId;
+    int creativeId;
 
     // id for the flight in the selected ad
-    private Integer flightId;
+    int flightId;
 
     // id for the campaign in the selected ad
-    private Integer campaignId;
+    int campaignId;
 
     // url endpoint that, using a GET, triggers the recording of the click and redirects to the target
-    private URL clickUrl;
+    String clickUrl;
 
     // list of ad contents
-    private List<Content> contents;
+    List<Content> contents;
 
     // list if Events - the IDs and tracking URLs of custom events
-    private List<Event> events;
-
-    private int height;
-
-    private int width;
+    List<Event> events;
 
     // url endpoint that, using a GET, triggers the recording of the impression
-    private URL impressionUrl;
+    String impressionUrl;
 
-    public Integer getAdId() {
+    public int getAdId() {
         return adId;
     }
 
-    public void setAdId(Integer adId) {
-        this.adId = adId;
-    }
-
-    public Integer getCreativeId() {
+    public int getCreativeId() {
         return creativeId;
     }
 
-    public void setCreativeId(Integer creativeId) {
-        this.creativeId = creativeId;
-    }
-
-    public Integer getFlightId() {
+    public int getFlightId() {
         return flightId;
     }
 
-    public void setFlightId(Integer flightId) {
-        this.flightId = flightId;
-    }
-
-    public Integer getCampaignId() {
+    public int getCampaignId() {
         return campaignId;
     }
 
-    public void setCampaignId(Integer campaignId) {
-        this.campaignId = campaignId;
-    }
-
-    public URL getClickUrl() {
+    public String getClickUrl() {
         return clickUrl;
-    }
-
-    public void setClickUrl(URL clickUrl) {
-        this.clickUrl = clickUrl;
     }
 
     public List<Content> getContents() {
         return contents;
     }
 
-    public void setContents(List<Content> contents) {
-        this.contents = contents;
-    }
-
-    public void addContent(Content content) {
-        contents.add(content);
-    }
-
-    public URL getImpressionUrl() {
+    public String getImpressionUrl() {
         return impressionUrl;
-    }
-
-    public void setImpressionUrl(URL impressionUrl) {
-        this.impressionUrl = impressionUrl;
     }
 
     public List<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
-
-    public void addEvent(Event eventId) {
-        events.add(eventId);
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
 }

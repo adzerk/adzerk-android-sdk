@@ -1,5 +1,6 @@
 package com.adzerk.android.sdk.rest;
 
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;
 
@@ -10,5 +11,5 @@ public interface NativeAdService {
 
     // issues a request for ads
     @POST("/")
-    Response request(@Body Request request);
+    void request(@Body Request request, Callback<Response> callback);
 }

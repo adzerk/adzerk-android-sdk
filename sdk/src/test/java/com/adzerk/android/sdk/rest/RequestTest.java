@@ -15,7 +15,6 @@ import static org.junit.Assert.fail;
 public class RequestTest {
 
     AdzerkSdk sdk;
-
     @Mock NativeAdService api;
 
     @Before
