@@ -2,6 +2,7 @@ package com.adzerk.android.sdk.rest;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Set;
 public class Request {
 
     // list of placements where an ad can be served (required)
-    private List<Placement> placements;
+    private ArrayList<Placement> placements;
 
     // target to the user key used to identify a unique user
     private User user;
@@ -50,7 +51,7 @@ public class Request {
      */
     public static class Builder {
 
-        private List<Placement> placements;
+        private ArrayList<Placement> placements;
         private User user;
         private Set<String> keywords;
         private String referrer;
@@ -82,7 +83,7 @@ public class Request {
             if (placements.isEmpty()) {
                 throw new IllegalArgumentException("At least one Placement must be specified");
             }
-            this.placements = placements;
+            this.placements = new ArrayList<>(placements);
         }
 
         /**
@@ -246,7 +247,7 @@ public class Request {
         return placements;
     }
 
-    private void setPlacements(List<Placement> placements) {
+    private void setPlacements(ArrayList<Placement> placements) {
         this.placements = placements;
     }
 
