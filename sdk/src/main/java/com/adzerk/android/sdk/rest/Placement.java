@@ -164,7 +164,7 @@ public class Placement {
         this.eventIds = eventIds;
     }
 
-    public void addEventId(Integer eventId) {
+    public void addEventId(int eventId) {
         eventIds.add(eventId);
     }
 }
