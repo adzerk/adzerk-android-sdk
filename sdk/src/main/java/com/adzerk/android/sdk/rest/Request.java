@@ -2,6 +2,7 @@ package com.adzerk.android.sdk.rest;
 
 import android.support.annotation.NonNull;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class Request {
     private Set<Integer> blockedCreatives;
 
     // hash of flight ids to arrays of UNIX epoch timestamps representing times the user viewed an ad in the specified flight (used for frequency capping)
-    private Map<Integer, List<Integer>> flightViewTimes;
+    private Map<Integer, List<Long>> flightViewTimes;
 
     // if true, only ads containing a single image will be returned (defaults to false)
     private boolean isMobile = Boolean.FALSE;
@@ -54,10 +55,10 @@ public class Request {
         private Set<String> keywords;
         private String referrer;
         private String url;
-        private Long time;
+        private long time;
         private String ip;
         private Set<Integer> blockedCreatives;
-        private Map<Integer, List<Integer>> flightViewTimes;
+        private Map<Integer, List<Long>> flightViewTimes;
         private boolean isMobile = false;
 
         /**
@@ -158,7 +159,7 @@ public class Request {
          * @param ip    ip address
          * @return request builder
          */
-        public Builder setIP(String ip) {
+        public Builder setIp(String ip) {
             this.ip = ip;
             return this;
         }
@@ -174,14 +175,34 @@ public class Request {
         }
 
         /**
-         * Map of flight ids to list of timestamps representing times the user viewed an ad in the specified
-         * flight. Used for frequency capping.
+         * Add a creative id to blocked list
          *
-         * @param flightViewTimes   map of flight ids to list of UNIX epoch timestamps
+         * @param blockedCreative creative id to add to blocked list
+         * @return
+         */
+        public Builder addBlockedCreative(int blockedCreative) {
+            if (this.blockedCreatives == null) {
+                this.blockedCreatives = new HashSet<Integer>();
+            }
+            this.blockedCreatives.add(blockedCreative);
+
+            return this;
+        }
+
+        /**
+         * Sets a list of times the user viewed an ad in the specified flight. Used for frequency capping.
+         *
+         * Note: If flight view times were previously specified for a flight id they will be overwritten.
+         *
+         * @param flightId          id of flight to set view times
+         * @param flightViewTimes   list of UNIX epoch timestamps
          * @return request builder
          */
-        public Builder setFlightViewTimes(Map<Integer, List<Integer>> flightViewTimes) {
-            this.flightViewTimes = flightViewTimes;
+        public Builder setFlightViewTimes(int flightId, @NonNull List<Long> flightViewTimes) {
+            if (this.flightViewTimes == null) {
+                this.flightViewTimes = new HashMap<Integer, List<Long>>();
+            }
+            this.flightViewTimes.put(flightId, flightViewTimes);
             return this;
         }
 
@@ -215,6 +236,9 @@ public class Request {
         setUrl(builder.url);
         setTime(builder.time);
         setIp(builder.ip);
+        setBlockedCreatives(builder.blockedCreatives);
+        setAllFlightViewTimes(builder.flightViewTimes);
+        setMobile(builder.isMobile);
     }
 
 
@@ -294,12 +318,26 @@ public class Request {
         blockedCreatives.add(creativeId);
     }
 
-    public Map<Integer, List<Integer>> getFlightViewTimes() {
+    public Map<Integer, List<Long>> getAllFlightViewTimes() {
         return flightViewTimes;
     }
 
-    public void setFlightViewTimes(Map<Integer, List<Integer>> flightViewTimes) {
+    public List<Long> getFlightViewTimes(int flightId) {
+        if (flightViewTimes.containsKey(flightId))
+            return flightViewTimes.get(flightId);
+
+        return null;
+    }
+
+    public void setAllFlightViewTimes(Map<Integer, List<Long>> flightViewTimes) {
         this.flightViewTimes = flightViewTimes;
+    }
+
+    public void setFlightViewTimes(int flightId, List<Long> flightViewTimes) {
+        if (this.flightViewTimes == null) {
+            this.flightViewTimes = new HashMap<Integer, List<Long>>();
+        }
+        this.flightViewTimes.put(flightId, flightViewTimes);
     }
 
     public boolean isMobile() {
