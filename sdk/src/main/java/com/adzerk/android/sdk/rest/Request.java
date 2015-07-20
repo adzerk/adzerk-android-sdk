@@ -268,11 +268,11 @@ public class Request {
         this.url = url;
     }
 
-    public Long getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(Long epochTime) {
+    public void setTime(long epochTime) {
         time = epochTime;
     }
 
@@ -292,7 +292,7 @@ public class Request {
         this.blockedCreatives = blockedCreatives;
     }
 
-    public void addBlockedCreative(Integer creativeId) {
+    public void addBlockedCreative(int creativeId) {
         blockedCreatives.add(creativeId);
     }
 
@@ -304,11 +304,11 @@ public class Request {
         this.flightViewTimes = flightViewTimes;
     }
 
-    public Boolean isMobile() {
+    public boolean isMobile() {
         return isMobile;
     }
 
-    public void setMobile(Boolean isMobile) {
+    public void setMobile(boolean isMobile) {
         this.isMobile = isMobile;
     }
 }
