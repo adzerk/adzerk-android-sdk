@@ -44,6 +44,19 @@ public class RequestTest {
     }
 
     @Test
+    public void itShouldAddPlacement() {
+        try {
+            Request request = new Builder(placements).build();
+            Placement div2 = new Placement("div2", 9709, 70464, Arrays.asList(5));
+            request.addPlacement(div2);
+            assertThat(request.getPlacements().contains(placement));
+            assertThat(request.getPlacements().contains(div2));
+        } catch(IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
+    @Test
     public void itShouldBuildUser() {
 
         try {
@@ -93,6 +106,10 @@ public class RequestTest {
                   .build();
 
             assertThat(request.getKeywords().containsAll(Arrays.asList("key1", "key2", "key3", "key4", "key5")));
+
+            // Request
+            request.addKeyword("key6");
+            assertThat(request.getKeywords().containsAll(Arrays.asList("key1", "key2", "key3", "key4", "key5", "key6")));
 
         } catch (IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
@@ -201,6 +218,7 @@ public class RequestTest {
         try {
             int blocked1 = 1;
             int blocked2 = 2;
+            int blocked3 = 3;
 
             Request request = new Builder(placements)
                   .addBlockedCreative(blocked1)
@@ -209,6 +227,11 @@ public class RequestTest {
 
             assertThat(request.getBlockedCreatives()).contains(blocked1);
             assertThat(request.getBlockedCreatives()).contains(blocked2);
+
+            // Request
+            request.addBlockedCreative(blocked3);
+            assertThat(request.getBlockedCreatives()).contains(blocked3);
+
         } catch (IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
         }
@@ -224,12 +247,14 @@ public class RequestTest {
             Request request = new Builder(placements)
                   .setFlightViewTimes(1, flightViewTimes1)
                   .setFlightViewTimes(2, flightViewTimes2)
-                  .setFlightViewTimes(3, flightViewTimes3)
                   .build();
 
-            assertThat(request.getAllFlightViewTimes()).containsKeys(1, 2, 3);
+            assertThat(request.getAllFlightViewTimes()).containsKeys(1, 2);
             assertThat(request.getFlightViewTimes(1)).containsAll(flightViewTimes1);
             assertThat(request.getFlightViewTimes(2)).containsAll(flightViewTimes2);
+
+            // Request
+            request.setFlightViewTimes(3, flightViewTimes3);
             assertThat(request.getFlightViewTimes(3)).containsAll(flightViewTimes3);
 
         } catch (IllegalArgumentException e) {
@@ -250,5 +275,5 @@ public class RequestTest {
             fail("Should not throw exception: " + e.getMessage());
         }
     }
-    
+
 }
