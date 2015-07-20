@@ -4,11 +4,13 @@ import com.adzerk.android.sdk.AdzerkSdk.ResponseListener;
 import com.adzerk.android.sdk.rest.NativeAdService;
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
+import com.adzerk.android.sdk.rest.Response;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +20,10 @@ import org.robolectric.annotation.Config;
 import java.util.Arrays;
 import java.util.List;
 
+import retrofit.Callback;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
@@ -39,7 +45,7 @@ public class AdzerkSdkTest {
     public void itShouldRequestNativeAd() {
         Request request = createTestRequest();
         sdk.request(request, null);
-        verify(api).request(request);
+        verify(api).request(argThat(new RequestMatcher(request)), (Callback<Response>) any());
     }
 
     private Request createTestRequest() {
@@ -49,5 +55,19 @@ public class AdzerkSdkTest {
 
         List<Placement> placements = Arrays.asList(new Placement(divName, networkId, siteId, Arrays.asList(5)));
         return new Request.Builder(placements).build();
+    }
+
+    static class RequestMatcher extends ArgumentMatcher<Request> {
+
+        Request expected;
+
+        public RequestMatcher(Request expected) {
+            this.expected = expected;
+        }
+
+        @Override
+        public boolean matches(Object actual) {
+            return actual == expected;
+        }
     }
 }

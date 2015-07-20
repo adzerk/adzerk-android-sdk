@@ -8,7 +8,11 @@ import com.adzerk.android.sdk.rest.Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.RestAdapter.Builder;
+import retrofit.RetrofitError;
+import retrofit.client.Client;
 import retrofit.converter.GsonConverter;
 
 /**
@@ -21,12 +25,13 @@ public class AdzerkSdk {
     static AdzerkSdk instance;
 
     NativeAdService service;
+    Client client;
 
     public interface ResponseListener {
         //TODO: Fine for a starting place, but we should use generic args so that we aren't
         //TODO: leaking retrofit abstractions through the sdk.
         public void success(Response response);
-        public void error(Error error);
+        public void error(RetrofitError error);
     }
 
     /**
@@ -50,7 +55,21 @@ public class AdzerkSdk {
      */
     public static AdzerkSdk getInstance(NativeAdService api) {
         if (instance == null) {
-            instance = new AdzerkSdk(api);
+            instance = new AdzerkSdk(api, null);
+        }
+
+        return instance;
+    }
+
+    /**
+     * Injection point for tests only. Not intended for public consumption.
+     *
+     * @param client - Inject http client
+     * @return
+     */
+    public static AdzerkSdk getInstance(Client client) {
+        if (instance == null) {
+            instance = new AdzerkSdk(null, client);
         }
 
         return instance;
@@ -60,8 +79,9 @@ public class AdzerkSdk {
         service = getNativeAdsService();
     }
 
-    private AdzerkSdk(NativeAdService service) {
+    private AdzerkSdk(NativeAdService service, Client client) {
         this.service = service;
+        this.client = client;
     }
 
     /**
@@ -70,17 +90,22 @@ public class AdzerkSdk {
      * @param request
      * @param listener Can be null, but caller will never get notifications.
      */
-    public void request(Request request, @Nullable ResponseListener listener) {
-        try {
-            Response response = getNativeAdsService().request(request);
-            if (listener != null) {
-                listener.success(response);
+    public void request(Request request, @Nullable final ResponseListener listener) {
+        getNativeAdsService().request(request, new Callback<Response>() {
+            @Override
+            public void success(Response response, retrofit.client.Response response2) {
+                if (listener != null) {
+                    listener.success(response);
+                }
             }
-        } catch (Error error) {
-            if (listener != null) {
-                listener.error(error);
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
             }
-        }
+        });
     }
 
 
@@ -88,12 +113,17 @@ public class AdzerkSdk {
     private NativeAdService getNativeAdsService() {
         if (service == null ) {
             Gson gson = new GsonBuilder().create();
-            service = new RestAdapter.Builder()
+            Builder builder = new RestAdapter.Builder()
                     .setEndpoint(NATIVE_AD_ENDPOINT)
                     .setConverter(new GsonConverter(gson))
-                    .setLogLevel(RestAdapter.LogLevel.FULL)
-                    .build()
-                    .create(NativeAdService.class);
+                    .setLogLevel(RestAdapter.LogLevel.FULL);
+
+            if (client != null) {
+                builder.setClient(client);
+            }
+
+            service = builder.build().create(NativeAdService.class);
+
         }
 
         return service;
