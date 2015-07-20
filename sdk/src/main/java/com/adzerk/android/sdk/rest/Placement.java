@@ -54,7 +54,7 @@ public class Placement {
     private List<Property> properties;
 
     // array of numeric event types. Requests tracking URLs for custom events
-    private List<EventId> eventIds;
+    private List<Integer> eventIds;
 
 
     public Placement(String divName, long networkId, long siteId, List<Integer> adTypes) {
@@ -156,15 +156,15 @@ public class Placement {
         properties.add(property);
     }
 
-    public List<EventId> getEventIds() {
+    public List<Integer> getEventIds() {
         return eventIds;
     }
 
-    public void setEventIds(List<EventId> eventIds) {
+    public void setEventIds(List<Integer> eventIds) {
         this.eventIds = eventIds;
     }
 
-    public void addEventId(EventId eventId) {
+    public void addEventId(Integer eventId) {
         eventIds.add(eventId);
     }
 }
