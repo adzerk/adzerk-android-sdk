@@ -219,11 +219,16 @@ public class Request {
          * @param flightViewTimes   list of UNIX epoch timestamps
          * @return request builder
          */
-        public Builder setFlightViewTimes(int flightId, @NonNull List<Long> flightViewTimes) {
+        public Builder setFlightViewTimes(int flightId, long... flightViewTimes) {
+            List<Long> flightViewTimesList =  new ArrayList<Long>();
+            for (long flightViewTime : flightViewTimes ) {
+                flightViewTimesList.add(flightViewTime);
+            }
+
             if (this.flightViewTimes == null) {
                 this.flightViewTimes = new HashMap<Integer, List<Long>>();
             }
-            this.flightViewTimes.put(flightId, flightViewTimes);
+            this.flightViewTimes.put(flightId, flightViewTimesList);
             return this;
         }
 

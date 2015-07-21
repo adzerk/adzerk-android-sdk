@@ -240,20 +240,27 @@ public class RequestTest {
     @Test
     public void itShouldBuildFlightViewTimes() {
         try {
-            List<Long> flightViewTimes1 = Arrays.<Long>asList(1401580800L, 1404172800L, 1406851200L);
-            List<Long> flightViewTimes2 = Arrays.<Long>asList(1409529600L, 1412121600L);
-            List<Long> flightViewTimes3 = Arrays.<Long>asList(1420070400L);
+            long time1 = 1401580800L;
+            long time2 = 1404172800L;
+            long time3 = 1406851200L;
+            long time4 = 1409529600L;
+            long time5 = 1412121600L;
 
+            // times for flight id = 2
+            long flightViewTimes2[] = {time4, time5};
+
+            // Adding flight view times
             Request request = new Builder(placements)
-                  .setFlightViewTimes(1, flightViewTimes1)
+                  .setFlightViewTimes(1, time1, time2, time3)
                   .setFlightViewTimes(2, flightViewTimes2)
                   .build();
 
             assertThat(request.getAllFlightViewTimes()).containsKeys(1, 2);
-            assertThat(request.getFlightViewTimes(1)).containsAll(flightViewTimes1);
-            assertThat(request.getFlightViewTimes(2)).containsAll(flightViewTimes2);
+            assertThat(request.getFlightViewTimes(1)).containsAll(Arrays.<Long>asList(time1, time2, time3));
+            assertThat(request.getFlightViewTimes(2)).containsAll(Arrays.<Long>asList(time4, time5));
 
             // Request
+            List<Long> flightViewTimes3 = Arrays.<Long>asList(1420070400L);
             request.setFlightViewTimes(3, flightViewTimes3);
             assertThat(request.getFlightViewTimes(3)).containsAll(flightViewTimes3);
 
