@@ -62,6 +62,26 @@ public class Request {
         private Map<Integer, List<Long>> flightViewTimes;
         private boolean isMobile = false;
 
+
+        /**
+         * Builder to configure a Request for Ads.
+         *
+         * Multiple ads can be served by a single Request. Placements identify locations in the app where an ad can
+         * be served. And each placement defines separate properties for a requested ad.
+         *
+         * <pre>
+         * {@code
+         * Request request = new Builder()
+         *       .addPlacement(new Placement("div1", 1111, 22222, Arrays.asList(5)))
+         *       .addPlacement(new Placement("div2", 1111, 22222, Arrays.asList(5)))
+         *       .build();
+         * }
+         * </pre>
+         *
+         */
+        public Builder() {
+        }
+
         /**
          * Builder to configure a Request for Ads.
          *
@@ -224,6 +244,9 @@ public class Request {
          * @return ad request
          */
         public Request build() {
+            if (placements.isEmpty()) {
+                throw new IllegalStateException("At least one Placement must be specified");
+            }
             return new Request(this);
         }
 
