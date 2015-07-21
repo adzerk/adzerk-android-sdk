@@ -3,6 +3,7 @@ package com.adzerk.android.sdk.rest;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -333,7 +334,7 @@ public class Request {
         if (flightViewTimes.containsKey(flightId))
             return flightViewTimes.get(flightId);
 
-        return null;
+        return Collections.<Long>emptyList();
     }
 
     private void setAllFlightViewTimes(Map<Integer, List<Long>> flightViewTimes) {
