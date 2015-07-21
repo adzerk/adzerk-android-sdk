@@ -1,9 +1,12 @@
 package com.adzerk.android.sdk.rest;
 
-import android.util.Property;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import java.net.URL;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Every Request must contain one or more Placements. Each placement represents a "slot" in which an ad may be served.
@@ -27,144 +30,279 @@ public class Placement {
     private String divName;
 
     // network id to use when selecting an ad (required)
-    private Long networkId;
+    private long networkId;
 
     // site id to use when selecting an ad (required)
-    private Long siteId;
+    private long siteId;
 
     // one or more integer ad types to use when selecting an ad (required)
-    private List<Integer> adTypes;
+    private Set<Integer> adTypes;
 
     // zero or more zone ids to use when selecting an ad
-    private List<Integer> zoneIds;
+    private Set<Integer> zoneIds;
 
     // campaign id; if specified, only consider ads in that campaign
-    private Integer campaignId;
+    private int campaignId;
 
     // flight id; if specified, only consider ads in that flight
-    private Integer flightId;
+    private int flightId;
 
     // ad (flight-creative map) id; if specified, only serve that ad if possible
-    private Integer adId;
+    private int adId;
 
     // URL that should be used as the click-through target for the ad
-    private URL clickUrl;
+    private String clickUrl;
 
     // hash of key/value pairs used for custom targeting
-    private List<Property> properties;
+    private Map<String, Object> properties;
 
     // array of numeric event types. Requests tracking URLs for custom events
-    private List<Integer> eventIds;
+    private Set<Integer> eventIds;
 
 
-    public Placement(String divName, long networkId, long siteId, List<Integer> adTypes) {
+    /**
+     * Creates a Placement. You may request multiple ads using a single Request by specifying multiple placements.
+     * A Placement identifies a place where an ad can be served. It has a unique divName.
+     *
+     * The Response returns a corresponding Decision for each Placement. A Decision provides the ad that was
+     * selected to be served for a given Placement. The Response relates a Decision to Placement by divName.
+     *
+     * @param divName       unique name for the placement
+     * @param networkId     network id to use when selecting an ad
+     * @param siteId        site id to use when selecting an ad
+     * @param adTypes       one or more integer ad types to use when selecting an ad
+     */
+    public Placement(@NonNull String divName, long networkId, long siteId, int... adTypes) {
         setDivName(divName);
         setNetworkId(networkId);
         setSiteId(siteId);
-        setAdTypes(adTypes);
+
+        if (adTypes == null || adTypes.length < 1) {
+            throw new IllegalArgumentException("At least one ad type must be specified");
+        }
+
+        for (int adType : adTypes ) {
+            addAdType(adType);
+        }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDivName() {
         return divName;
     }
 
+    /**
+     *
+     * @param divName
+     */
     public void setDivName(String divName) {
         this.divName = divName;
     }
 
-    public Long getNetworkId() {
+    /**
+     *
+     * @return
+     */
+    public long getNetworkId() {
         return networkId;
     }
 
-    public void setNetworkId(Long networkId) {
+    /**
+     *
+     * @param networkId
+     */
+    public void setNetworkId(long networkId) {
         this.networkId = networkId;
     }
 
-    public Long getSiteId() {
+    /**
+     *
+     * @return
+     */
+    public long getSiteId() {
         return siteId;
     }
 
-    public void setSiteId(Long siteId) {
+    /**
+     *
+     * @param siteId
+     */
+    public void setSiteId(long siteId) {
         this.siteId = siteId;
     }
 
-    public List<Integer> getAdTypes() {
+    /**
+     *
+     * @return
+     */
+    public Set<Integer> getAdTypes() {
         return adTypes;
     }
 
-    public void setAdTypes(List<Integer> adTypes) {
-        this.adTypes = adTypes;
-    }
+//    public void setAdTypes(@NonNull List<Integer> adTypes) {
+//        if (adTypes.size() < 1 ) {
+//            throw new IllegalArgumentException("At least one ad type must be specified");
+//        }
+//        this.adTypes = adTypes;
+//    }
 
-    public void addAdType(Integer adType) {
+    /**
+     *
+     * @param adType
+     */
+    private void addAdType(int adType) {
+        if (adTypes == null) {
+            adTypes = new HashSet<>();
+        }
         adTypes.add(adType);
     }
 
-    public List<Integer> getZoneIds() {
+    /**
+     *
+     * @return
+     */
+    public Set<Integer> getZoneIds() {
         return zoneIds;
     }
 
-    public void setZoneIds(List<Integer> zoneIds) {
+    /**
+     *
+     * @param zoneIds
+     */
+    public void setZoneIds(@Nullable Set<Integer> zoneIds) {
         this.zoneIds = zoneIds;
     }
 
-    public void addZoneId(Integer zoneId) {
+    /**
+     *
+     * @param zoneId
+     */
+    public void addZoneId(int zoneId) {
+        if (zoneIds == null) {
+            zoneIds = new HashSet<>();
+        }
         zoneIds.add(zoneId);
     }
 
-    public Integer getCampaignId() {
+    /**
+     *
+     * @return
+     */
+    public int getCampaignId() {
         return campaignId;
     }
 
-    public void setCampaignId(Integer campaignId) {
+    /**
+     *
+     * @param campaignId
+     */
+    public void setCampaignId(int campaignId) {
         this.campaignId = campaignId;
     }
 
-    public Integer getFlightId() {
+    /**
+     *
+     * @return
+     */
+    public int getFlightId() {
         return flightId;
     }
 
-    public void setFlightId(Integer flightId) {
+    /**
+     *
+     * @param flightId
+     */
+    public void setFlightId(int flightId) {
         this.flightId = flightId;
     }
 
-    public Integer getAdId() {
+    /**
+     *
+     * @return
+     */
+    public int getAdId() {
         return adId;
     }
 
-    public void setAdId(Integer adId) {
+    /**
+     *
+     * @param adId
+     */
+    public void setAdId(int adId) {
         this.adId = adId;
     }
 
-    public URL getClickUrl() {
+    /**
+     *
+     * @return
+     */
+    public String getClickUrl() {
         return clickUrl;
     }
 
-    public void setClickUrl(URL clickUrl) {
+    /**
+     *
+     * @param clickUrl
+     */
+    public void setClickUrl(String clickUrl) {
         this.clickUrl = clickUrl;
     }
 
-    public List<Property> getProperties() {
+    /**
+     *
+     * @return
+     */
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(List<Property> properties) {
+    /**
+     *
+     * @param properties
+     */
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 
-    public void addProperty(Property property) {
-        properties.add(property);
+    /**
+     *
+     * @param key
+     * @param value
+     */
+    public void addProperty(String key, Object value) {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        properties.put(key, value);
     }
 
-    public List<Integer> getEventIds() {
+    /**
+     *
+     * @return
+     */
+    public Set<Integer> getEventIds() {
         return eventIds;
     }
 
-    public void setEventIds(List<Integer> eventIds) {
+    /**
+     *
+     * @param eventIds
+     */
+    public void setEventIds(Set<Integer> eventIds) {
         this.eventIds = eventIds;
     }
 
+    /**
+     *
+     * @param eventId
+     */
     public void addEventId(int eventId) {
+        if (eventIds == null) {
+            eventIds = new HashSet<>();
+        }
         eventIds.add(eventId);
     }
 }

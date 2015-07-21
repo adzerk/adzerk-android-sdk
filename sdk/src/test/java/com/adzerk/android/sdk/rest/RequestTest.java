@@ -22,7 +22,7 @@ public class RequestTest {
 
     AdzerkSdk sdk;
 
-    final static Placement placement = new Placement("div1", 9709, 70464, Arrays.asList(5));
+    final static Placement placement = new Placement("div1", 9709, 70464, 5);
     final static List<Placement> placements = Arrays.asList(placement);
 
     @Mock NativeAdService api;
@@ -47,7 +47,7 @@ public class RequestTest {
     public void itShouldAddPlacement() {
         try {
             Request request = new Builder(placements).build();
-            Placement div2 = new Placement("div2", 9709, 70464, Arrays.asList(5));
+            Placement div2 = new Placement("div2", 9709, 70464, 5);
             request.addPlacement(div2);
             assertThat(request.getPlacements().contains(placement));
             assertThat(request.getPlacements().contains(div2));

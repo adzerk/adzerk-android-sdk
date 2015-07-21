@@ -53,7 +53,7 @@ public class AdzerkSdkTest {
         long networkId = 9709;
         long siteId = 70464;
 
-        List<Placement> placements = Arrays.asList(new Placement(divName, networkId, siteId, Arrays.asList(5)));
+        List<Placement> placements = Arrays.asList(new Placement(divName, networkId, siteId, 5));
         return new Request.Builder(placements).build();
     }
 
