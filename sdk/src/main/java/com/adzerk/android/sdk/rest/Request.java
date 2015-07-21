@@ -199,7 +199,7 @@ public class Request {
          * Add a creative id to blocked list
          *
          * @param blockedCreative creative id to add to blocked list
-         * @return
+         * @return request builder
          */
         public Builder addBlockedCreative(int blockedCreative) {
             if (this.blockedCreatives == null) {
