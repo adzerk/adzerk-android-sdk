@@ -257,6 +257,8 @@ public class Request {
 
     }
 
+    // end: Request.Builder
+
     private Request(Builder builder) {
         setPlacements(builder.placements);
         setUser(builder.user);
@@ -287,7 +289,7 @@ public class Request {
         return user;
     }
 
-    public void setUser(User user) {
+    private void setUser(User user) {
         this.user = user;
     }
 
@@ -295,19 +297,15 @@ public class Request {
         return keywords;
     }
 
-    public void setKeywords(Set<String> keywords) {
+    private void setKeywords(Set<String> keywords) {
         this.keywords = keywords;
-    }
-
-    public void addKeyword(String keyword) {
-        keywords.add(keyword);
     }
 
     public String getReferrer() {
         return referrer;
     }
 
-    public void setReferrer(String referrer) {
+    private void setReferrer(String referrer) {
         this.referrer = referrer;
     }
 
@@ -315,7 +313,7 @@ public class Request {
         return url;
     }
 
-    public void setUrl(String url) {
+    private void setUrl(String url) {
         this.url = url;
     }
 
@@ -323,7 +321,7 @@ public class Request {
         return time;
     }
 
-    public void setTime(long epochTime) {
+    private void setTime(long epochTime) {
         time = epochTime;
     }
 
@@ -331,7 +329,7 @@ public class Request {
         return ip;
     }
 
-    public void setIp(String ip) {
+    private void setIp(String ip) {
         this.ip = ip;
     }
 
@@ -339,12 +337,8 @@ public class Request {
         return blockedCreatives;
     }
 
-    public void setBlockedCreatives(Set<Integer> blockedCreatives) {
+    private void setBlockedCreatives(Set<Integer> blockedCreatives) {
         this.blockedCreatives = blockedCreatives;
-    }
-
-    public void addBlockedCreative(int creativeId) {
-        blockedCreatives.add(creativeId);
     }
 
     public Map<Integer, List<Long>> getAllFlightViewTimes() {
@@ -358,22 +352,15 @@ public class Request {
         return null;
     }
 
-    public void setAllFlightViewTimes(Map<Integer, List<Long>> flightViewTimes) {
+    private void setAllFlightViewTimes(Map<Integer, List<Long>> flightViewTimes) {
         this.flightViewTimes = flightViewTimes;
-    }
-
-    public void setFlightViewTimes(int flightId, List<Long> flightViewTimes) {
-        if (this.flightViewTimes == null) {
-            this.flightViewTimes = new HashMap<Integer, List<Long>>();
-        }
-        this.flightViewTimes.put(flightId, flightViewTimes);
     }
 
     public boolean isMobile() {
         return isMobile;
     }
 
-    public void setMobile(boolean isMobile) {
+    private void setMobile(boolean isMobile) {
         this.isMobile = isMobile;
     }
 }

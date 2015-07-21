@@ -107,10 +107,6 @@ public class RequestTest {
 
             assertThat(request.getKeywords().containsAll(Arrays.asList("key1", "key2", "key3", "key4", "key5")));
 
-            // Request
-            request.addKeyword("key6");
-            assertThat(request.getKeywords().containsAll(Arrays.asList("key1", "key2", "key3", "key4", "key5", "key6")));
-
         } catch (IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
         }
@@ -227,11 +223,6 @@ public class RequestTest {
 
             assertThat(request.getBlockedCreatives()).contains(blocked1);
             assertThat(request.getBlockedCreatives()).contains(blocked2);
-
-            // Request
-            request.addBlockedCreative(blocked3);
-            assertThat(request.getBlockedCreatives()).contains(blocked3);
-
         } catch (IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
         }
@@ -258,11 +249,6 @@ public class RequestTest {
             assertThat(request.getAllFlightViewTimes()).containsKeys(1, 2);
             assertThat(request.getFlightViewTimes(1)).containsAll(Arrays.<Long>asList(time1, time2, time3));
             assertThat(request.getFlightViewTimes(2)).containsAll(Arrays.<Long>asList(time4, time5));
-
-            // Request
-            List<Long> flightViewTimes3 = Arrays.<Long>asList(1420070400L);
-            request.setFlightViewTimes(3, flightViewTimes3);
-            assertThat(request.getFlightViewTimes(3)).containsAll(flightViewTimes3);
 
         } catch (IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
