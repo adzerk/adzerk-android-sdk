@@ -14,8 +14,4 @@ public class User  {
     public String getKey() {
         return key;
     }
-
-    public void setKey(String key) {
-        key = key;
-    }
 }
