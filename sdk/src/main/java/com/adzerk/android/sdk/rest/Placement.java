@@ -42,13 +42,13 @@ public class Placement {
     private Set<Integer> zoneIds;
 
     // campaign id; if specified, only consider ads in that campaign
-    private int campaignId;
+    private Integer campaignId;
 
     // flight id; if specified, only consider ads in that flight
-    private int flightId;
+    private Integer flightId;
 
     // ad (flight-creative map) id; if specified, only serve that ad if possible
-    private int adId;
+    private Integer adId;
 
     // URL that should be used as the click-through target for the ad
     private String clickUrl;
@@ -142,13 +142,6 @@ public class Placement {
         return adTypes;
     }
 
-//    public void setAdTypes(@NonNull List<Integer> adTypes) {
-//        if (adTypes.size() < 1 ) {
-//            throw new IllegalArgumentException("At least one ad type must be specified");
-//        }
-//        this.adTypes = adTypes;
-//    }
-
     /**
      *
      * @param adType
@@ -178,13 +171,15 @@ public class Placement {
 
     /**
      *
-     * @param zoneId
+     * @param zoneIds
      */
-    public void addZoneId(int zoneId) {
-        if (zoneIds == null) {
-            zoneIds = new HashSet<>();
+    public void addZoneIds(int... zoneIds) {
+        if (this.zoneIds == null) {
+            this.zoneIds = new HashSet<>();
         }
-        zoneIds.add(zoneId);
+        for (int zoneId : zoneIds) {
+            this.zoneIds.add(zoneId);
+        }
     }
 
     /**
@@ -260,6 +255,13 @@ public class Placement {
     }
 
     /**
+     * A map of key/value pairs used for custom targeting. Values
+     *
+     * “properties”: {
+     *    “numeral-key-name”: 42,
+     *    "string-key-name": "the answer to the ultimate question",
+     *    "array-key-name": ["life", "the universe", "everything"]
+     * }
      *
      * @param properties
      */
@@ -268,6 +270,7 @@ public class Placement {
     }
 
     /**
+     * Add key/value pair used for custom targeting.
      *
      * @param key
      * @param value
@@ -297,12 +300,14 @@ public class Placement {
 
     /**
      *
-     * @param eventId
+     * @param eventIds
      */
-    public void addEventId(int eventId) {
-        if (eventIds == null) {
-            eventIds = new HashSet<>();
+    public void addEventIds(int... eventIds) {
+        if (this.eventIds == null) {
+            this.eventIds = new HashSet<>();
         }
-        eventIds.add(eventId);
+        for (int eventId : eventIds) {
+            this.eventIds.add(eventId);
+        }
     }
 }
