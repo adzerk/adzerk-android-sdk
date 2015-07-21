@@ -43,8 +43,6 @@ public class Request {
     // hash of flight ids to arrays of UNIX epoch timestamps representing times the user viewed an ad in the specified flight (used for frequency capping)
     private Map<Integer, List<Long>> flightViewTimes;
 
-    // if true, only ads containing a single image will be returned (defaults to false)
-    private boolean isMobile = Boolean.FALSE;
 
     /**
      * Builder used to create Request for ads.
@@ -60,7 +58,6 @@ public class Request {
         private String ip;
         private Set<Integer> blockedCreatives;
         private Map<Integer, List<Long>> flightViewTimes;
-        private boolean isMobile = false;
 
 
         /**
@@ -92,7 +89,6 @@ public class Request {
          * {@code
          * Request request = Request.Builder(placements)
          *     .setUser(user)
-         *     .setMobile(true)
          *     .build()
          * }
          * </pre>
@@ -233,17 +229,6 @@ public class Request {
         }
 
         /**
-         * If true, only ads containing a single image will be returned (defaults to false)
-         *
-         * @param isMobile  set to true to request single image ads
-         * @return request builder
-         */
-        public Builder setMobile(boolean isMobile) {
-            this.isMobile = isMobile;
-            return this;
-        }
-
-        /**
          * Create the Request
          *
          * @return ad request
@@ -269,7 +254,6 @@ public class Request {
         setIp(builder.ip);
         setBlockedCreatives(builder.blockedCreatives);
         setAllFlightViewTimes(builder.flightViewTimes);
-        setMobile(builder.isMobile);
     }
 
 
@@ -354,13 +338,5 @@ public class Request {
 
     private void setAllFlightViewTimes(Map<Integer, List<Long>> flightViewTimes) {
         this.flightViewTimes = flightViewTimes;
-    }
-
-    public boolean isMobile() {
-        return isMobile;
-    }
-
-    private void setMobile(boolean isMobile) {
-        this.isMobile = isMobile;
     }
 }

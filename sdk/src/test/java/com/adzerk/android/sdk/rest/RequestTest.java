@@ -255,18 +255,4 @@ public class RequestTest {
         }
     }
 
-    @Test
-    public void itShouldBuildIsMobile() {
-        try {
-            Request request = new Builder(placements)
-                  .setMobile(true)
-                  .build();
-
-            assertThat(request.isMobile()).isTrue();
-
-        } catch (IllegalArgumentException e) {
-            fail("Should not throw exception: " + e.getMessage());
-        }
-    }
-
 }
