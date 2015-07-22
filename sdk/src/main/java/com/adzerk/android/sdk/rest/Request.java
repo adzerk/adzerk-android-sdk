@@ -33,7 +33,7 @@ public class Request {
     private String url;
 
     // UNIX epoch timestamp to use when selecting an ad
-    private long time;
+    private Long time;
 
     // IP address to use when selecting the ad; if specified, overrides the IP the request is made from
     private String ip;
@@ -55,7 +55,7 @@ public class Request {
         private Set<String> keywords;
         private String referrer;
         private String url;
-        private long time;
+        private Long time;
         private String ip;
         private Set<Integer> blockedCreatives;
         private Map<Integer, List<Long>> flightViewTimes;
@@ -78,6 +78,7 @@ public class Request {
          *
          */
         public Builder() {
+            this.placements = new ArrayList<>();
         }
 
         /**
@@ -104,6 +105,18 @@ public class Request {
         }
 
         /**
+         * Add Placement to Request
+         *
+         * @param placement identifies where and ad can be served
+         * @return
+         */
+        public Builder addPlacement(Placement placement) {
+            this.placements.add(placement);
+
+            return this;
+        }
+
+        /**
          * User to target. If the request doesn't contain a user key, one will be automatically generated
          * in the response.
          *
@@ -127,7 +140,7 @@ public class Request {
         }
 
         /**
-         * Add a keyword
+         * Add a keyword to the list of keywords used when selecting adds
          *
          * @param keyword keyword to add
          * @return
@@ -251,7 +264,8 @@ public class Request {
         setKeywords(builder.keywords);
         setReferrer(builder.referrer);
         setUrl(builder.url);
-        setTime(builder.time);
+        if (builder.time != null)
+            setTime(builder.time);
         setIp(builder.ip);
         setBlockedCreatives(builder.blockedCreatives);
         setAllFlightViewTimes(builder.flightViewTimes);
@@ -264,10 +278,6 @@ public class Request {
 
     private void setPlacements(ArrayList<Placement> placements) {
         this.placements = placements;
-    }
-
-    public void addPlacement(Placement placement) {
-        placements.add(placement);
     }
 
     public User getUser() {
@@ -331,8 +341,9 @@ public class Request {
     }
 
     public List<Long> getFlightViewTimes(int flightId) {
-        if (flightViewTimes.containsKey(flightId))
+        if (flightViewTimes != null && flightViewTimes.containsKey(flightId)) {
             return flightViewTimes.get(flightId);
+        }
 
         return Collections.<Long>emptyList();
     }

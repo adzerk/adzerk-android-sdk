@@ -22,7 +22,7 @@ public class RequestTest {
 
     AdzerkSdk sdk;
 
-    final static Placement placement = new Placement("div1", 9709, 70464, Arrays.asList(5));
+    final static Placement placement = new Placement("div1", 9709, 70464, 5);
     final static List<Placement> placements = Arrays.asList(placement);
 
     @Mock NativeAdService api;
@@ -41,15 +41,24 @@ public class RequestTest {
         } catch(IllegalArgumentException e) {
             // success
         }
+        
+        try {
+            new Builder().build();
+            fail("Failed to throw on empty placements");
+        } catch(IllegalStateException e) {
+            // success
+        }
     }
 
     @Test
     public void itShouldAddPlacement() {
         try {
-            Request request = new Builder(placements).build();
-            Placement div2 = new Placement("div2", 9709, 70464, Arrays.asList(5));
-            request.addPlacement(div2);
-            assertThat(request.getPlacements().contains(placement));
+            Placement div2 = new Placement("div2", 9709, 70464, 5);
+
+            Request request = new Builder()
+                  .addPlacement(div2)
+                  .build();
+
             assertThat(request.getPlacements().contains(div2));
         } catch(IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
@@ -251,6 +260,23 @@ public class RequestTest {
             assertThat(request.getFlightViewTimes(2)).containsAll(Arrays.<Long>asList(time4, time5));
 
         } catch (IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void itShouldReturnEmptyFlightViewList() {
+        try {
+            Request request = new Builder(placements).build();
+
+            // query flight times for invalid flight id
+            List<Long> times = request.getFlightViewTimes(2);
+
+            // verify empty list is returned
+            assertThat(times).isNotNull();
+            assertThat(times).isEmpty();
+
+        }  catch (IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
         }
     }
