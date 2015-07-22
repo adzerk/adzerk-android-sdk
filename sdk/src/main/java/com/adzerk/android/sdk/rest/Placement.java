@@ -164,22 +164,26 @@ public class Placement {
     /**
      *
      * @param zoneIds
+     * @return
      */
-    public void setZoneIds(@Nullable Set<Integer> zoneIds) {
+    public Placement setZoneIds(@Nullable Set<Integer> zoneIds) {
         this.zoneIds = zoneIds;
+        return this;
     }
 
     /**
      *
      * @param zoneIds
+     * @return
      */
-    public void addZoneIds(int... zoneIds) {
+    public Placement addZoneIds(int... zoneIds) {
         if (this.zoneIds == null) {
             this.zoneIds = new HashSet<>();
         }
         for (int zoneId : zoneIds) {
             this.zoneIds.add(zoneId);
         }
+        return this;
     }
 
     /**
@@ -193,9 +197,11 @@ public class Placement {
     /**
      *
      * @param campaignId
+     * @return
      */
-    public void setCampaignId(int campaignId) {
+    public Placement setCampaignId(int campaignId) {
         this.campaignId = campaignId;
+        return this;
     }
 
     /**
@@ -209,9 +215,11 @@ public class Placement {
     /**
      *
      * @param flightId
+     * @return
      */
-    public void setFlightId(int flightId) {
+    public Placement setFlightId(int flightId) {
         this.flightId = flightId;
+        return this;
     }
 
     /**
@@ -225,9 +233,11 @@ public class Placement {
     /**
      *
      * @param adId
+     * @return
      */
-    public void setAdId(int adId) {
+    public Placement setAdId(int adId) {
         this.adId = adId;
+        return this;
     }
 
     /**
@@ -241,9 +251,11 @@ public class Placement {
     /**
      *
      * @param clickUrl
+     * @return the placement
      */
-    public void setClickUrl(String clickUrl) {
+    public Placement setClickUrl(String clickUrl) {
         this.clickUrl = clickUrl;
+        return this;
     }
 
     /**
@@ -264,9 +276,11 @@ public class Placement {
      * }
      *
      * @param properties
+     * @return the placement
      */
-    public void setProperties(Map<String, Object> properties) {
+    public Placement setProperties(Map<String, Object> properties) {
         this.properties = properties;
+        return this;
     }
 
     /**
@@ -274,12 +288,14 @@ public class Placement {
      *
      * @param key
      * @param value
+     * @return the placement
      */
-    public void addProperty(String key, Object value) {
+    public Placement addProperty(String key, Object value) {
         if (properties == null) {
             properties = new HashMap<>();
         }
         properties.put(key, value);
+        return this;
     }
 
     /**
@@ -293,21 +309,25 @@ public class Placement {
     /**
      *
      * @param eventIds
+     * @return the placement
      */
-    public void setEventIds(Set<Integer> eventIds) {
+    public Placement setEventIds(Set<Integer> eventIds) {
         this.eventIds = eventIds;
+        return this;
     }
 
     /**
      *
      * @param eventIds
+     * @return the placement
      */
-    public void addEventIds(int... eventIds) {
+    public Placement addEventIds(int... eventIds) {
         if (this.eventIds == null) {
             this.eventIds = new HashSet<>();
         }
         for (int eventId : eventIds) {
             this.eventIds.add(eventId);
         }
+        return this;
     }
 }

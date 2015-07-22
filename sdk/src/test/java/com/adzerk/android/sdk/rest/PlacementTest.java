@@ -48,6 +48,7 @@ public class PlacementTest {
             final int adType5 = 5;
             final int adType6 = 6;
 
+            // create placement with required arguments
             Placement div1 = new Placement(divName, networkId, siteId, adType5, adType6);
 
             assertThat(div1.getDivName()).isEqualTo(divName);
@@ -71,16 +72,14 @@ public class PlacementTest {
             final String clickUrl = "clickUrl";
             final Set<Integer> eventIds = new HashSet(Arrays.asList(1, 2, 3));
 
-            // create placement
-            Placement div1 = new Placement("div1", 9999, 77777, 5, 6);
-
-            // set options attributes
-            div1.setZoneIds(zoneIds);
-            div1.setCampaignId(campaignId);
-            div1.setFlightId(flightId);
-            div1.setAdId(adId);
-            div1.setClickUrl(clickUrl);
-            div1.setEventIds(eventIds);
+            // create placement & set optional attributes
+            Placement div1 = new Placement("div1", 9999, 77777, 5, 6)
+                .setZoneIds(zoneIds)
+                .setCampaignId(campaignId)
+                .setFlightId(flightId)
+                .setAdId(adId)
+                .setClickUrl(clickUrl)
+                .setEventIds(eventIds);
 
             // verify
             assertThat(div1.getZoneIds()).containsAll(zoneIds);
@@ -98,11 +97,10 @@ public class PlacementTest {
     @Test
     public void itShouldAddOptionalAttributes() {
         try {
-            Placement div1 = new Placement("div1", 9999, 77777, 5, 6);
-
-            // add zone and event ids
-            div1.addZoneIds(10, 11, 11, 12);
-            div1.addEventIds(1, 1, 2);
+            // create placement and add optional zone and event ids
+            Placement div1 = new Placement("div1", 9999, 77777, 5, 6)
+                  .addZoneIds(10, 11, 11, 12)
+                  .addEventIds(1, 1, 2);
 
             // verify (no duplicate ids)
             assertThat(div1.getZoneIds()).containsAll(new HashSet(Arrays.asList(10, 11, 12)));
@@ -117,12 +115,11 @@ public class PlacementTest {
 
     @Test
     public void itShouldSetProperties() {
-        Placement div1 = new Placement("div1", 123, 456, 4, 5);
-
-        // add some properties
-        div1.addProperty("foo", 42);
-        div1.addProperty("bar", "example");
-        div1.addProperty("baz", Arrays.asList("one", "two"));
+        // create placement and add properties
+        Placement div1 = new Placement("div1", 123, 456, 4, 5)
+            .addProperty("foo", 42)
+            .addProperty("bar", "example")
+            .addProperty("baz", Arrays.asList("one", "two"));
 
         assertThat(div1.getProperties()).containsKeys("foo", "bar", "baz");
         assertThat(div1.getProperties().get("foo")).isEqualTo(42);
@@ -133,20 +130,20 @@ public class PlacementTest {
     @Test
     public void itShouldSerializePlacements() {
 
-        Gson gson = new GsonBuilder().create();
-
-        Placement div1 = new Placement("div1", 123, 456, 4, 5);
-        div1.addZoneIds(789);
-        div1.setCampaignId(123);
-        div1.setFlightId(456);
-        div1.setAdId(789);
-        div1.addEventIds(12, 13, 14);
-        div1.setClickUrl("http://adzerk.com/");
-        div1.addProperty("foo", 42);
-        div1.addProperty("bar", "example");
-        div1.addProperty("baz", Arrays.asList("one", "two"));
+        // create placements will all attributes
+        Placement div1 = new Placement("div1", 123, 456, 4, 5)
+            .addZoneIds(789)
+            .setCampaignId(123)
+            .setFlightId(456)
+            .setAdId(789)
+            .addEventIds(12, 13, 14)
+            .setClickUrl("http://adzerk.com/")
+            .addProperty("foo", 42)
+            .addProperty("bar", "example")
+            .addProperty("baz", Arrays.asList("one", "two"));
 
         // serialize Placement to json
+        Gson gson = new GsonBuilder().create();
         String json = gson.toJson(div1);
         JsonElement jsonElement = gson.toJsonTree(div1);
 
