@@ -30,19 +30,19 @@ public class Content {
     public static String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
 
     // the type of the content
-    private String type;
+    String type;
 
     // name of the template used to render the content (unless TYPE_RAW)
-    private String template;
+    String template;
 
     // the body of the custom template for TYPE_RAW content
-    private String customTemplate;
+    String customTemplate;
 
     // rendered body of the content
-    private String body;
+    String body;
 
     // data An object that has fields used to build the content
-    private Map<String, String> data;
+    Map<String, String> data;
 
     /**
      * Returns type of the content: {@link Content#TYPE_HTML}, {@link Content#TYPE_CSS}, {@link Content#TYPE_JS},
