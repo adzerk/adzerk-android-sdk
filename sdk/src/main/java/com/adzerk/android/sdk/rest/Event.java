@@ -62,24 +62,25 @@ public class Event {
 
 
     // event identifier
-    private int eventId;
+    int eventId;
 
     // url to call to track an event
-    private URL eventUrl;
+    URL eventUrl;
 
+    /**
+     * Returns an event identifier
+     * @return numeric event id
+     */
     public int getEventId() {
         return eventId;
     }
 
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
-    }
-
+    /**
+     * Returns tracking URL of custom event
+     * @return tracking url
+     */
     public URL getEventUrl() {
         return eventUrl;
     }
 
-    public void setEventUrl(URL eventUrl) {
-        this.eventUrl = eventUrl;
-    }
 }
