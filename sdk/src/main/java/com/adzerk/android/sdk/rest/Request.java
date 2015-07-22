@@ -164,16 +164,18 @@ public class Request {
         }
 
         /**
-         * Add a keyword to the list of keywords used when selecting adds
+         * Add keywords to the list of keywords used when selecting adds
          *
-         * @param keyword keyword to add
+         * @param keywords keywords to add
          * @return
          */
-        public Builder addKeyword(String keyword) {
+        public Builder addKeyword(String... keywords) {
             if (keywords == null) {
                 this.keywords = new HashSet<String>();
             }
-            keywords.add(keyword);
+            for (String keyword : keywords) {
+                this.keywords.add(keyword);
+            }
 
             return this;
         }
@@ -234,16 +236,18 @@ public class Request {
         }
 
         /**
-         * Add a creative id to blocked list
+         * Add creative ids to blocked list
          *
-         * @param blockedCreative creative id to add to blocked list
+         * @param blockedCreatives creative ids to add to blocked list
          * @return request builder
          */
-        public Builder addBlockedCreative(int blockedCreative) {
+        public Builder addBlockedCreatives(int... blockedCreatives) {
             if (this.blockedCreatives == null) {
                 this.blockedCreatives = new HashSet<Integer>();
             }
-            this.blockedCreatives.add(blockedCreative);
+            for (int blockedCreative : blockedCreatives) {
+                this.blockedCreatives.add(blockedCreative);
+            }
 
             return this;
         }
@@ -366,7 +370,7 @@ public class Request {
 
     /**
      * Returns the UNIX epoch timestamp to use when selecting an ad
-     * 
+     *
      * @return  epoch timestamp
      */
     public long getTime() {

@@ -226,8 +226,7 @@ public class RequestTest {
             int blocked3 = 3;
 
             Request request = new Builder(placements)
-                  .addBlockedCreative(blocked1)
-                  .addBlockedCreative(blocked2)
+                  .addBlockedCreatives(blocked1, blocked2)
                   .build();
 
             assertThat(request.getBlockedCreatives()).contains(blocked1);
