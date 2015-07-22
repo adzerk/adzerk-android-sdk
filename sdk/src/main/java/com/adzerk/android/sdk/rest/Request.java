@@ -11,9 +11,28 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A Request for Ads.
- *
+ * To create a Request for ads, use {@link Request.Builder} to build the ad request.
+ * <p>
  * Every Request must contain one or more Placements. Each placement represents a "slot" in which an ad may be served.
+ * By specifying multiple placements, you can request multiple ads in a single call.
+ * <p>
+ * <pre>
+ * {@code
+ * // Get the SDK
+ * AdzerkSdk sdk = AdzerkSdk.getInstance();
+ *
+ * // Build the Request
+ * Request request = new Request.Builder()
+ *     .addPlacement(new Placement(name1, networkId, siteId, adTypes))
+ *     .addPlacement(new Placement(name2, networkId, siteId, adTypes))
+ *     .build();
+ *
+ * // Issue the Request
+ * sdk.request(request, listener);
+ * }
+ * </pre>
+ * @see com.adzerk.android.sdk.rest.Request.Builder
+ * @see com.adzerk.android.sdk.AdzerkSdk
  */
 public class Request {
 
@@ -44,9 +63,26 @@ public class Request {
     // hash of flight ids to arrays of UNIX epoch timestamps representing times the user viewed an ad in the specified flight (used for frequency capping)
     private Map<Integer, List<Long>> flightViewTimes;
 
-
     /**
-     * Builder used to create Request for ads.
+     * Builder to configure a Request for ads.
+     * <p>
+     * Multiple ads can be served by a single Request. Placements identify locations in the app where an ad can
+     * be served and multiple placements can be sent with a Request. And each placement specifies its own parameters
+     * for selecting an ad.
+     * <p>
+     * <pre>
+     * {@code
+     * // Using Builder to create a Request:
+     * Request request = new Builder()
+     *       .addPlacement(new Placement("div1", 1L, 2L, 5))
+     *       .addPlacement(new Placement("div2", 1L, 2L, 5))
+     *       .setUser(new User(key))
+     *       .addKeyword("sports")
+     *       .setUrl("http://adzerk.com")
+     *       .setFlightViewTimes(1, time1, time2, time3)
+     *       .build();
+     * }
+     * </pre>
      */
     public static class Builder {
 
@@ -62,36 +98,24 @@ public class Request {
 
 
         /**
-         * Builder to configure a Request for Ads.
-         *
-         * Multiple ads can be served by a single Request. Placements identify locations in the app where an ad can
-         * be served. And each placement defines separate properties for a requested ad.
-         *
-         * <pre>
-         * {@code
-         * Request request = new Builder()
-         *       .addPlacement(new Placement("div1", 1111, 22222, Arrays.asList(5)))
-         *       .addPlacement(new Placement("div2", 1111, 22222, Arrays.asList(5)))
-         *       .build();
-         * }
-         * </pre>
-         *
+         * Builder to configure a Request for ads.
          */
         public Builder() {
             this.placements = new ArrayList<>();
         }
 
         /**
-         * Builder to configure a Request for Ads.
-         *
-         * Multiple ads can be served by a single Request. Placements identify locations in the app where an ad can
-         * be served. And each placement defines separate properties for a requested ad.
-         *
+         * Builder to configure a Request containing the specified list of Placements.
+         * <p>
          * <pre>
          * {@code
-         * Request request = Request.Builder(placements)
-         *     .setUser(user)
-         *     .build()
+         * // Create list of Placements
+         * List<Placement> placements = new ArrayList<>();
+         * placements.add(new Placement("div1", 1L, 2L, 5));
+         * placements.add(new Placement("div1", 1L, 2L, 5));
+         *
+         * // Building a Request:
+         * Request request = Request.Builder(placements).build();
          * }
          * </pre>
          *
@@ -108,7 +132,7 @@ public class Request {
          * Add Placement to Request
          *
          * @param placement identifies where and ad can be served
-         * @return
+         * @return request builder
          */
         public Builder addPlacement(Placement placement) {
             this.placements.add(placement);
@@ -167,6 +191,7 @@ public class Request {
 
         /**
          * URL to use as the current page URL when selecting an ad
+         *
          * @param url   URL of current page
          * @return request builder
          */
@@ -177,6 +202,7 @@ public class Request {
 
         /**
          * Timestamp to use when selecting an ad
+         *
          * @param time  UNIX epoch timestamp
          * @return request builder
          */
@@ -187,6 +213,7 @@ public class Request {
 
         /**
          * IP address to use when selecting the ad. If specified, overrides the IP the request is made from
+         *
          * @param ip    ip address
          * @return request builder
          */
@@ -197,6 +224,7 @@ public class Request {
 
         /**
          * Creative ids to disregard when selecting an ad
+         *
          * @param blockedCreatives  zero or more numeric creative ids to disregard
          * @return request builder
          */
@@ -271,7 +299,11 @@ public class Request {
         setAllFlightViewTimes(builder.flightViewTimes);
     }
 
-
+    /**
+     * Returns list of placements where an ad can be served
+     *
+     * @return  placements
+     */
     public List<Placement> getPlacements() {
         return placements;
     }
@@ -280,6 +312,11 @@ public class Request {
         this.placements = placements;
     }
 
+    /**
+     *  Returns the User key used to identify a unique user
+     *
+     * @return user
+     */
     public User getUser() {
         return user;
     }
@@ -288,6 +325,11 @@ public class Request {
         this.user = user;
     }
 
+    /**
+     * Returns the keywords to use when selecting the ad
+     *
+     * @return
+     */
     public Set<String> getKeywords() {
         return keywords;
     }
@@ -296,6 +338,11 @@ public class Request {
         this.keywords = keywords;
     }
 
+    /**
+     * Returns the URL to use as the referrer when selecting an ad
+     *
+     * @return
+     */
     public String getReferrer() {
         return referrer;
     }
@@ -304,6 +351,11 @@ public class Request {
         this.referrer = referrer;
     }
 
+    /**
+     *  Return the URL to used for the current page when selecting an ad
+     *
+     * @return url
+     */
     public String getUrl() {
         return url;
     }
@@ -312,6 +364,11 @@ public class Request {
         this.url = url;
     }
 
+    /**
+     * Returns the UNIX epoch timestamp to use when selecting an ad
+     * 
+     * @return  epoch timestamp
+     */
     public long getTime() {
         return time;
     }
@@ -320,6 +377,11 @@ public class Request {
         time = epochTime;
     }
 
+    /**
+     * The IP address to use when selecting the ad; if specified, overrides the IP the request is made from
+     *
+     * @return ip address
+     */
     public String getIp() {
         return ip;
     }
@@ -328,6 +390,11 @@ public class Request {
         this.ip = ip;
     }
 
+    /**
+     * Returns set of numeric creative ids to disregard when selecting an ad
+     *
+     * @return  ids of creatives to disregard
+     */
     public Set<Integer> getBlockedCreatives() {
         return blockedCreatives;
     }
@@ -336,10 +403,22 @@ public class Request {
         this.blockedCreatives = blockedCreatives;
     }
 
+    /**
+     * Returns map of flight ids to arrays of UNIX epoch timestamps representing times the user viewed an ad in
+     * the specified flight (used for frequency capping)
+     *
+     * @return  flight view times to cap ad frequency
+     */
     public Map<Integer, List<Long>> getAllFlightViewTimes() {
         return flightViewTimes;
     }
 
+    /**
+     * Returns the UNIX epoch timestamps representing times the user viewed an ad in the specified flight
+     * (used for frequency capping)
+     *
+     * @return  flight view times to cap ad frequency
+     */
     public List<Long> getFlightViewTimes(int flightId) {
         if (flightViewTimes != null && flightViewTimes.containsKey(flightId)) {
             return flightViewTimes.get(flightId);
