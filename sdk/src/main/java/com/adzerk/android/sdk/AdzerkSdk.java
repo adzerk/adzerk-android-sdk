@@ -16,7 +16,26 @@ import retrofit.client.Client;
 import retrofit.converter.GsonConverter;
 
 /**
- * Adzerk SDK
+ * The Adzerk SDK provides the API for requesting native ads for you app.
+ * <p>
+ * To request Native Ads, you create and submit an ad Request using the SDK. Adzerk's ad engine will return decision
+ * data and creative contents that can be used to serve ads in your application.
+ * <p>
+ * <pre>
+ * {@code
+ * // Get instance of the SDK
+ * AdzerkSdk sdk = AdzerkSdk.getInstance();
+ *
+ * // Build the Request
+ * Request request = new Request.Builder()
+ *     .addPlacement(new Placement(name, networkId, siteId, adTypes))
+ *     .build();
+ *
+ * // Issue the Request
+ * sdk.request(request, listener);
+ * }
+ * </pre>
+ * @see com.adzerk.android.sdk.rest.Request.Builder
  */
 public class AdzerkSdk {
 
@@ -27,6 +46,9 @@ public class AdzerkSdk {
     NativeAdService service;
     Client client;
 
+    /**
+     * Listener for the Response to an ad Request
+     */
     public interface ResponseListener {
         //TODO: Fine for a starting place, but we should use generic args so that we aren't
         //TODO: leaking retrofit abstractions through the sdk.
@@ -37,7 +59,7 @@ public class AdzerkSdk {
     /**
      * Returns the SDK instance for making Adzerk API calls.
      *
-     * @return
+     * @return sdk instance
      */
     public static AdzerkSdk getInstance() {
         if (instance == null) {
@@ -50,8 +72,8 @@ public class AdzerkSdk {
     /**
      * Injection point for tests only. Not intended for public consumption.
      *
-     * @param api
-     * @return
+     * @param api service api
+     * @return sdk instance
      */
     public static AdzerkSdk getInstance(NativeAdService api) {
         if (instance == null) {
@@ -65,7 +87,7 @@ public class AdzerkSdk {
      * Injection point for tests only. Not intended for public consumption.
      *
      * @param client - Inject http client
-     * @return
+     * @return sdk instance
      */
     public static AdzerkSdk getInstance(Client client) {
         if (instance == null) {
@@ -87,7 +109,7 @@ public class AdzerkSdk {
     /**
      * Send an ad request to the Native Ads API.
      *
-     * @param request
+     * @param request ad Request specifying one or more Placements
      * @param listener Can be null, but caller will never get notifications.
      */
     public void request(Request request, @Nullable final ResponseListener listener) {
