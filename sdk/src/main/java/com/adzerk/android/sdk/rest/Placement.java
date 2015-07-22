@@ -9,23 +9,24 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Every Request must contain one or more Placements. Each placement represents a "slot" in which an ad may be served.
+ * To make an ad {@link Request}, you will specify one of more Placements. Each Placement has a unique name to
+ * identify a place where an can be served in your app. To request multiple ads in a single {@link Request} you
+ * specify multiple Placements.
+ * <p>
+ * <pre>
+ * {@code
+ * // Build a Request with multiple Placements:
+ * Request request = new Request.Builder()
+ *     .addPlacement(new Placement(name1, networkId, siteId, adTypes))
+ *     .addPlacement(new Placement(name2, networkId, siteId, adTypes))
+ *     .build();
+ * }
+ * </pre>
  *
- *  {
- *      "placements": [
- *      {
- *          "divName": "div1",
- *          "networkId": 123,
- *          "siteId": 456,
- *          "adTypes": [5],
- *          "eventIds": [12,13,14],
- *          "properties": {
- *          "foo": 42,
- *           "bar": "example",
- *          "baz": ["one", "two"]
- *      }, ...
+ *
  */
 public class Placement {
+
     // unique name for the placement (required)
     private String divName;
 
@@ -61,11 +62,18 @@ public class Placement {
 
 
     /**
-     * Creates a Placement. You may request multiple ads using a single Request by specifying multiple placements.
-     * A Placement identifies a place where an ad can be served. It has a unique divName.
+     * Creates a Placement with all required fields. A Placement identifies a place where an ad can be served
+     * and has a unique divName. To request multiple ads using a single Request you specify multiple Placements.
      *
-     * The Response returns a corresponding Decision for each Placement. A Decision provides the ad that was
-     * selected to be served for a given Placement. The Response relates a Decision to Placement by divName.
+     * <pre>
+     * {@code
+     * // create placement with required arguments
+     * Placement div1 = new Placement("div1", 1L, 2L, 5);
+     * }
+     * </pre>
+     *
+     * The Response to an ad Request returns a corresponding Decision for each Placement. The Decision contains the
+     * ad that was selected for a given Placement. The Response relates a Decision to Placement by divName.
      *
      * @param divName       unique name for the placement
      * @param networkId     network id to use when selecting an ad
@@ -81,89 +89,98 @@ public class Placement {
             throw new IllegalArgumentException("At least one ad type must be specified");
         }
 
-        for (int adType : adTypes ) {
-            addAdType(adType);
-        }
+        addAdTypes(adTypes);
     }
 
     /**
+     * Returns the unique name for the placement
      *
-     * @return
+     * @return  name to identify this placement in a Request
      */
     public String getDivName() {
         return divName;
     }
 
     /**
+     * Set the name for the placement. A Request can have multiple Placements and each one should have a unique name.
      *
-     * @param divName
+     * @param divName   name to identify this placement in a Request
      */
     public void setDivName(String divName) {
         this.divName = divName;
     }
 
     /**
+     * Returns the numeric network id to use when selecting ads
      *
-     * @return
+     * @return  numeric id of network
      */
     public long getNetworkId() {
         return networkId;
     }
 
     /**
+     * Sets the numeric network id to use when selecting ads
      *
-     * @param networkId
+     * @param networkId numeric id of network
      */
     public void setNetworkId(long networkId) {
         this.networkId = networkId;
     }
 
     /**
+     * Returns the numeric site id to use when selecting an ad
      *
-     * @return
+     * @return  numeric id of site
      */
     public long getSiteId() {
         return siteId;
     }
 
     /**
+     * Sets the numeric site id to use when selecting an ad
      *
-     * @param siteId
+     * @param siteId    numeric id of site
      */
     public void setSiteId(long siteId) {
         this.siteId = siteId;
     }
 
     /**
+     * Returns set of integer ad types use use when selecting an ad
      *
-     * @return
+     * @return  integers representing ad types
      */
     public Set<Integer> getAdTypes() {
         return adTypes;
     }
 
     /**
+     * Adds an ad type to the set used use when selecting an ad
      *
-     * @param adType
+     * @param adTypes    one or more ad types
      */
-    private void addAdType(int adType) {
-        if (adTypes == null) {
-            adTypes = new HashSet<>();
+    private void addAdTypes(int... adTypes) {
+        if (this.adTypes == null) {
+            this.adTypes = new HashSet<>();
         }
-        adTypes.add(adType);
+        for (int adType : adTypes ) {
+            this.adTypes.add(adType);
+        }
     }
 
     /**
+     * Returns set of integers representing the zone ids to use when selecting an ad
      *
-     * @return
+     * @return  zone ids
      */
     public Set<Integer> getZoneIds() {
         return zoneIds;
     }
 
     /**
-     *
-     * @param zoneIds
+     * Set zone ids to use when selecting an ad
+     * @param zoneIds   set of zone ids
      * @return
      */
     public Placement setZoneIds(@Nullable Set<Integer> zoneIds) {
@@ -172,8 +189,8 @@ public class Placement {
     }
 
     /**
-     *
-     * @param zoneIds
+     * Add zone ids to use when selecting an ad
+     * @param zoneIds   one or more zone ids
      * @return
      */
     public Placement addZoneIds(int... zoneIds) {
@@ -187,17 +204,19 @@ public class Placement {
     }
 
     /**
+     * Returns the campaign id used for selections ads
      *
-     * @return
+     * @return numeric campaign id
      */
     public int getCampaignId() {
         return campaignId;
     }
 
     /**
+     * Sets the numeric campaign id; if specified, only consider ads in that campaign
      *
-     * @param campaignId
-     * @return
+     * @param campaignId numeric campaign id
+     * @return the placement
      */
     public Placement setCampaignId(int campaignId) {
         this.campaignId = campaignId;
@@ -205,17 +224,19 @@ public class Placement {
     }
 
     /**
+     * Returns the numeric flight id; if specified, only consider ads in that flight
      *
-     * @return
+     * @return  numeric flight id
      */
     public int getFlightId() {
         return flightId;
     }
 
     /**
+     * Set the numeric flight id; if specified, only consider ads in that flight
      *
-     * @param flightId
-     * @return
+     * @param flightId numeric flight id
+     * @return the placement
      */
     public Placement setFlightId(int flightId) {
         this.flightId = flightId;
@@ -223,17 +244,19 @@ public class Placement {
     }
 
     /**
+     * Returns the numeric ad id; if specified, only serve that ad if possible
      *
-     * @return
+     * @return numeric ad id
      */
     public int getAdId() {
         return adId;
     }
 
     /**
+     * Sets the numeric ad id; if specified, only serve that ad if possible
      *
-     * @param adId
-     * @return
+     * @param adId numeric ad id
+     * @return the placement
      */
     public Placement setAdId(int adId) {
         this.adId = adId;
@@ -241,16 +264,18 @@ public class Placement {
     }
 
     /**
+     * Returns the URL that should be used as the click-through target for the ad
      *
-     * @return
+     * @return  url used as click-through
      */
     public String getClickUrl() {
         return clickUrl;
     }
 
     /**
+     * Set the URL that should be used as the click-through target for the ad
      *
-     * @param clickUrl
+     * @param clickUrl  url to use for ad click-through
      * @return the placement
      */
     public Placement setClickUrl(String clickUrl) {
@@ -259,23 +284,18 @@ public class Placement {
     }
 
     /**
+     * Returns the map of key/value pairs used for custom targeting
      *
-     * @return
+     * @return  properties specified for custom targeting
      */
     public Map<String, Object> getProperties() {
         return properties;
     }
 
     /**
-     * A map of key/value pairs used for custom targeting. Values
+     * Sets the map of key/value pairs used for custom targeting
      *
-     * “properties”: {
-     *    “numeral-key-name”: 42,
-     *    "string-key-name": "the answer to the ultimate question",
-     *    "array-key-name": ["life", "the universe", "everything"]
-     * }
-     *
-     * @param properties
+     * @param properties key-value pairs
      * @return the placement
      */
     public Placement setProperties(Map<String, Object> properties) {
@@ -286,8 +306,8 @@ public class Placement {
     /**
      * Add key/value pair used for custom targeting.
      *
-     * @param key
-     * @param value
+     * @param key   property key
+     * @param value property value
      * @return the placement
      */
     public Placement addProperty(String key, Object value) {
@@ -299,16 +319,20 @@ public class Placement {
     }
 
     /**
+     * Returns set of numeric event types used to request tracking URLs for custom events
      *
-     * @return
+     * @see Event
+     * @return  event types for requesting tracking URLs
      */
     public Set<Integer> getEventIds() {
         return eventIds;
     }
 
     /**
+     * Set the numeric event type used to request tracking URLs for custom events.
+     * See the {@link Event} class for the list of defined Event ids.
      *
-     * @param eventIds
+     * @param eventIds  numeric event types
      * @return the placement
      */
     public Placement setEventIds(Set<Integer> eventIds) {
@@ -317,8 +341,10 @@ public class Placement {
     }
 
     /**
+     * Add one or more event types to the set used to request tracking URLs for custom events.
+     * See the {@link Event} class for the list of defined Event ids.
      *
-     * @param eventIds
+     * @param eventIds  one or more event type ids
      * @return the placement
      */
     public Placement addEventIds(int... eventIds) {
