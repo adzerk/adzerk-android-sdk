@@ -3,14 +3,18 @@ package com.adzerk.android.sdk.rest;
 import java.util.Map;
 
 /**
- * Content - Each Decision contains one or more Contents. Combined, the Contents represent the creative that should
- * be displayed. For example, a creative may contain a CSS stylesheet and a block of HTML. This would be represented as
+ * Each {@link Decision} contains one or more Contents. Combined, the Contents represent the creative that should
+ * be displayed.
+ * <p>
+ * For example, a creative may contain a CSS stylesheet and a block of HTML. This would be represented as
  * two Contents, one with the type css and one with the type html.
- *
+ * <p>
  * Custom metadata set at the creative level will be passed in the Contents as the key customData.
- *
+ * <p>
  * If a content uses a predefined template, the template property will be set to the name of the template to use.
- * For example, an image content will have the type html and the template image.
+ * For example, an image content will have the {@link Content#TYPE_HTML} and the {@link Content#TEMPLATE_IMAGE}.
+ * <p>
+ * @see Decision
  */
 public class Content {
 
@@ -26,61 +30,65 @@ public class Content {
     public static String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
 
     // the type of the content
-    private String type;
+    String type;
 
     // name of the template used to render the content (unless TYPE_RAW)
-    private String template;
+    String template;
 
     // the body of the custom template for TYPE_RAW content
-    private String customTemplate;
+    String customTemplate;
 
     // rendered body of the content
-    private String body;
+    String body;
 
     // data An object that has fields used to build the content
-    private Map<String, String> data;
+    Map<String, String> data;
 
-
+    /**
+     * Returns type of the content: {@link Content#TYPE_HTML}, {@link Content#TYPE_CSS}, {@link Content#TYPE_JS},
+     * {@link Content#TYPE_JS_EXTERNAL}, {@link Content#TYPE_RAW}
+     * @return content type
+     */
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
+    /**
+     * Returns name of the template used to render the content (unless {@link Content#TEMPLATE_IMAGE})
+     * @return name of template
+     */
     public String getTemplate() {
         return template;
     }
 
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
+    /**
+     * Returns body of the custom template for {@link Content#TYPE_RAW} content
+     * @return body of custom template
+     */
     public String getCustomTemplate() {
         return customTemplate;
     }
 
-    public void setCustomTemplate(String customTemplate) {
-        this.customTemplate = customTemplate;
-    }
-
+    /**
+     * Returns rendered body of the content
+     * @return  content body
+     */
     public String getBody() {
         return body;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
-
+    /**
+     * Returns data object that has fields used to build the content
+     * @return map of key-value pairs
+     */
     public Map<String, String> getData() {
         return data;
     }
 
-    public void setData(Map<String, String> data) {
-        this.data = data;
-    }
-
+    /**
+     * Returns TRUE if content id {@link Content#TYPE_RAW}
+     * @return true if raw content type
+     */
     public boolean isRawType() {
         return type == TYPE_RAW;
     }

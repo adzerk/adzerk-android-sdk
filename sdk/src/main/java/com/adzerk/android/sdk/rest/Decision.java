@@ -3,9 +3,9 @@ package com.adzerk.android.sdk.rest;
 import java.util.List;
 
 /**
- * A Decision represents the ad that was selected to be served for a given Placement.
- *
- * A Response will contain zero or more Decisions, one per Placement that was sent in on the request.
+ * A Decision represents the ad that was selected to be served for a given {@link Placement}.
+ * <p>
+ * A {@link Response} will contain zero or more Decisions, one per Placement that was sent in on the request.
  * If no ad was selected for a given Placement, the corresponding Decision entry will be undefined (null).
  */
 public class Decision {
@@ -34,34 +34,66 @@ public class Decision {
     // url endpoint that, using a GET, triggers the recording of the impression
     String impressionUrl;
 
+    /**
+     * Returns id for the ad that was selected
+     * @return ad id
+     */
     public int getAdId() {
         return adId;
     }
 
+    /**
+     * Returns id for the creative in the selected ad
+     * @return creative id
+     */
     public int getCreativeId() {
         return creativeId;
     }
 
+    /**
+     * Returns id for the flight in the selected ad
+     * @return flight id
+     */
     public int getFlightId() {
         return flightId;
     }
 
+    /**
+     * Returns id for the campaign in the selected ad
+     * @return campaign id
+     */
     public int getCampaignId() {
         return campaignId;
     }
 
+    /**
+     * Returns url endpoint that, using a GET, triggers the recording of the click and redirects to the target
+     * @return url to record clicks
+     */
     public String getClickUrl() {
         return clickUrl;
     }
 
+    /**
+     * Returns the list of {@link Content}s; the creatives needed to render the ad.
+     * @return contents
+     */
     public List<Content> getContents() {
         return contents;
     }
 
+    /**
+     * Returns url endpoint that, using a GET, triggers the recording of the impression
+     * @return url to record ad impression
+     */
     public String getImpressionUrl() {
         return impressionUrl;
     }
 
+    /**
+     * Returns list of {@link Event}s; the IDs and tracking URLs of custom events
+     * @return event list
+     */
     public List<Event> getEvents() {
         return events;
     }

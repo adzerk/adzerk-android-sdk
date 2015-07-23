@@ -110,8 +110,8 @@ public class RequestTest {
 
             Request request = new Builder(placements)
                   .setKeywords(keywords)
-                  .addKeyword("key4")
-                  .addKeyword("key5")
+                  .addKeywords("key4")
+                  .addKeywords("key5")
                   .build();
 
             assertThat(request.getKeywords().containsAll(Arrays.asList("key1", "key2", "key3", "key4", "key5")));
@@ -125,8 +125,8 @@ public class RequestTest {
     public void itShouldEnforceUniqueKeywords() {
         try {
             Request request = new Builder(placements)
-                  .addKeyword("duplicateKey")
-                  .addKeyword("duplicateKey")
+                  .addKeywords("duplicateKey")
+                  .addKeywords("duplicateKey")
                   .build();
 
             assertThat(request.getKeywords().size()).isEqualTo(1);
@@ -226,8 +226,7 @@ public class RequestTest {
             int blocked3 = 3;
 
             Request request = new Builder(placements)
-                  .addBlockedCreative(blocked1)
-                  .addBlockedCreative(blocked2)
+                  .addBlockedCreatives(blocked1, blocked2)
                   .build();
 
             assertThat(request.getBlockedCreatives()).contains(blocked1);
