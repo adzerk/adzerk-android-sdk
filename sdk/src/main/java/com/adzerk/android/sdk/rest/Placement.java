@@ -28,37 +28,37 @@ import java.util.Set;
 public class Placement {
 
     // unique name for the placement (required)
-    private String divName;
+    String divName;
 
     // network id to use when selecting an ad (required)
-    private long networkId;
+    long networkId;
 
     // site id to use when selecting an ad (required)
-    private long siteId;
+    long siteId;
 
     // one or more integer ad types to use when selecting an ad (required)
-    private Set<Integer> adTypes;
+    Set<Integer> adTypes;
 
     // zero or more zone ids to use when selecting an ad
-    private Set<Integer> zoneIds;
+    Set<Integer> zoneIds;
 
     // campaign id; if specified, only consider ads in that campaign
-    private Integer campaignId;
+    Integer campaignId;
 
     // flight id; if specified, only consider ads in that flight
-    private Integer flightId;
+    Integer flightId;
 
     // ad (flight-creative map) id; if specified, only serve that ad if possible
-    private Integer adId;
+    Integer adId;
 
     // URL that should be used as the click-through target for the ad
-    private String clickUrl;
+    String clickUrl;
 
     // hash of key/value pairs used for custom targeting
-    private Map<String, Object> properties;
+    Map<String, Object> properties;
 
     // array of numeric event types. Requests tracking URLs for custom events
-    private Set<Integer> eventIds;
+    Set<Integer> eventIds;
 
 
     /**

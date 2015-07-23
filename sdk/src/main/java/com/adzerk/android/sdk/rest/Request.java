@@ -37,31 +37,31 @@ import java.util.Set;
 public class Request {
 
     // list of placements where an ad can be served (required)
-    private ArrayList<Placement> placements;
+    ArrayList<Placement> placements;
 
     // target to the user key used to identify a unique user
-    private User user;
+    User user;
 
     // zero or more keywords to use when selecting the ad
-    private Set<String> keywords;
+    Set<String> keywords;
 
     // URL to use as the referrer when selecting an ad
-    private String referrer;
+    String referrer;
 
     // URL to use as the current page URL when selecting an ad
-    private String url;
+    String url;
 
     // UNIX epoch timestamp to use when selecting an ad
-    private Long time;
+    Long time;
 
     // IP address to use when selecting the ad; if specified, overrides the IP the request is made from
-    private String ip;
+    String ip;
 
     // zero or more numeric creative ids to disregard when selecting an ad
-    private Set<Integer> blockedCreatives;
+    Set<Integer> blockedCreatives;
 
     // hash of flight ids to arrays of UNIX epoch timestamps representing times the user viewed an ad in the specified flight (used for frequency capping)
-    private Map<Integer, List<Long>> flightViewTimes;
+    Map<Integer, List<Long>> flightViewTimes;
 
     /**
      * Builder to configure a Request for ads.
