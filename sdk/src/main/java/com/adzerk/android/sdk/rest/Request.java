@@ -77,7 +77,7 @@ public class Request {
      *       .addPlacement(new Placement("div1", 1L, 2L, 5))
      *       .addPlacement(new Placement("div2", 1L, 2L, 5))
      *       .setUser(new User(key))
-     *       .addKeyword("sports")
+     *       .addKeywords("sports")
      *       .setUrl("http://adzerk.com")
      *       .setFlightViewTimes(1, time1, time2, time3)
      *       .build();
@@ -169,8 +169,8 @@ public class Request {
          * @param keywords keywords to add
          * @return
          */
-        public Builder addKeyword(String... keywords) {
-            if (keywords == null) {
+        public Builder addKeywords(String... keywords) {
+            if (this.keywords == null) {
                 this.keywords = new HashSet<String>();
             }
             for (String keyword : keywords) {
