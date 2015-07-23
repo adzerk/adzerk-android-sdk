@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         if (presenter == null) {
             presenter = new MainPresenter(
                     new MainModel(),
-                    new MainView(this, new VikingGenerator(10)));
+                    new MainView(this));
         }
     }
 
