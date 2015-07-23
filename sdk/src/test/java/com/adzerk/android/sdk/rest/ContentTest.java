@@ -33,39 +33,26 @@ public class ContentTest {
     }
 
     @Test
-    public void itShouldDeserializeResponse() {
+    public void itShouldDeserializeResponseContent() {
         sdk.request(createTestRequest(), new ResponseListener() {
             @Override
             public void success(Response response) {
-                assertThat(response.getUser().getKey()).isEqualTo("ad39231daeb043f2a9610414f08394b5");
-                assertThat(response.getDecisions()).containsKey("div1");
 
+                // Content
                 Decision div1 = response.getDecision("div1");
-                assertThat(div1.getAdId()).isEqualTo(111);
-                assertThat(div1.getCreativeId()).isEqualTo(222);
-                assertThat(div1.getFlightId()).isEqualTo(333);
-                assertThat(div1.getCampaignId()).isEqualTo(444);
-                assertThat(div1.getClickUrl()).contains("adzerk");
-                assertThat(div1.getImpressionUrl()).contains("adzerk");
-
                 List<Content> contents = div1.getContents();
                 assertThat(contents.size()).isEqualTo(1);
-
                 Content div1Content = contents.get(0);
                 assertThat(div1Content.getType()).isEqualTo(Content.TYPE_HTML);
                 assertThat(div1Content.getTemplate()).isEqualTo(Content.TEMPLATE_IMAGE);
                 assertThat(div1Content.getData()).containsKeys("imageUrl", "title");
                 assertThat(div1Content.getBody()).isNotEmpty();
 
+                // customData:
                 assertThat(div1Content.getCustomData()).isNotEmpty();
                 assertThat(div1Content.getCustomData()).containsOnlyKeys("foo", "bar");
                 assertThat(div1Content.getCustomData().get("foo")).isEqualTo(new Integer(42));
                 assertThat(div1Content.getCustomData().get("foo")).isEqualTo("some string");
-
-                assertThat(div1.getEvents()).isNotEmpty();
-                assertThat(div1.getEvents()).hasSize(3);
-                assertThat(div1.getEvents().get(0).getEventId()).isEqualTo(12);
-                assertThat(div1.getEvents().get(0).getEventUrl()).contains("adzerk");
             }
 
             @Override
@@ -114,17 +101,6 @@ public class ContentTest {
               "      }" +
               "    ]," +
               "    \"impressionUrl\": \"http://engine.adzerk.net/i.gif?...\"" +
-              "    \"events\": [" +
-              "        { eventId: 12," +
-              "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
-              "        }," +
-              "        { eventId: 13," +
-              "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
-              "        }," +
-              "        { eventId: 14," +
-              "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
-              "        }" +
-              "      ]" +
               "    }" +
               "  }" +
               "}";
