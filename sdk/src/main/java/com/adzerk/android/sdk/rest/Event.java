@@ -1,7 +1,5 @@
 package com.adzerk.android.sdk.rest;
 
-import java.net.URL;
-
 /**
  * Event information included in Response to an ad request. Once you call an Event URL, Adzerk will track that
  * event for the creative/campaign/advertiser etc. in Adzerk reporting.
@@ -65,7 +63,7 @@ public class Event {
     int eventId;
 
     // url to call to track an event
-    URL eventUrl;
+    String eventUrl;
 
     /**
      * Returns an event identifier
@@ -79,7 +77,7 @@ public class Event {
      * Returns tracking URL of custom event
      * @return tracking url
      */
-    public URL getEventUrl() {
+    public String getEventUrl() {
         return eventUrl;
     }
 
