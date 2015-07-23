@@ -7,10 +7,33 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    MainPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createPresenter(savedInstanceState);
+    }
+
+    private void createPresenter(Bundle savedInstanceState) {
+        if (presenter == null) {
+            presenter = new MainPresenter(
+                    new MainModel(),
+                    new MainView(this, new VikingGenerator(10)));
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BusProvider.unregister(presenter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BusProvider.register(presenter);
     }
 
     @Override
