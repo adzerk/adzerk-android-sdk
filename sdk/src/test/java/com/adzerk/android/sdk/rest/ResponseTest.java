@@ -63,9 +63,9 @@ public class ResponseTest {
             public void success(Response response) {
                 Content content = response.getDecision("div1").getContents().get(0);
                 assertThat(content).isNotNull();
-                assertThat(content.getData())
-                        .isNotNull()
-                        .isNotEmpty();
+                assertThat(content.hasData()).isTrue();
+                assertThat(content.isImage()).isTrue();
+                assertThat(content.getImageUrl()).isEqualTo("http://static.adzerk.net/cat-eating-spaghetti.jpg");
             }
 
             @Override

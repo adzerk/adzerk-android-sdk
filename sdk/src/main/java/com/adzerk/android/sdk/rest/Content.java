@@ -29,6 +29,8 @@ public class Content {
     public static String TEMPLATE_FLASH = "flash";
     public static String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
 
+    static String KEY_IMAGE_URL = "imageUrl";
+
     // the type of the content
     String type;
 
@@ -43,6 +45,18 @@ public class Content {
 
     // data An object that has fields used to build the content
     Map<String, String> data;
+
+    public boolean hasData() {
+        return data != null && !data.isEmpty();
+    }
+
+    public boolean isImage() {
+        return TEMPLATE_IMAGE.equals(getTemplate());
+    }
+
+    public String getImageUrl() {
+        return (hasData() && data.containsKey(KEY_IMAGE_URL)) ? data.get(KEY_IMAGE_URL) : null;
+    }
 
     /**
      * Returns type of the content: {@link Content#TYPE_HTML}, {@link Content#TYPE_CSS}, {@link Content#TYPE_JS},
