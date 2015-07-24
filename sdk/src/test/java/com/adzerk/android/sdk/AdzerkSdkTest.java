@@ -22,6 +22,7 @@ import java.util.List;
 
 import retrofit.Callback;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
@@ -46,6 +47,11 @@ public class AdzerkSdkTest {
         Request request = createTestRequest();
         sdk.request(request, null);
         verify(api).request(argThat(new RequestMatcher(request)), (Callback<Response>) any());
+    }
+
+    @Test
+    public void itShouldRefuseMalformedUrls() {
+        assertThat(sdk.impression("this is wrong")).isFalse();
     }
 
     private Request createTestRequest() {
