@@ -57,6 +57,25 @@ public class ResponseTest {
     }
 
     @Test
+    public void itShouldDeserializeContents() {
+        sdk.request(createTestRequest(), new ResponseListener() {
+            @Override
+            public void success(Response response) {
+                Content content = response.getDecision("div1").getContents().get(0);
+                assertThat(content).isNotNull();
+                assertThat(content.getData())
+                        .isNotNull()
+                        .isNotEmpty();
+            }
+
+            @Override
+            public void error(RetrofitError error) {
+                fail(error.getMessage());
+            }
+        });
+    }
+
+    @Test
     public void itShouldHandleNetworkErrors() {
         mockClient.setResponseCode(500, "Internal server error");
         sdk.request(createTestRequest(), new ResponseListener() {
