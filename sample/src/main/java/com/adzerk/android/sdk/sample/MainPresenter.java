@@ -16,8 +16,6 @@ import com.adzerk.android.sdk.rest.Response;
 import com.adzerk.android.sdk.sample.VikingGenerator.Quote;
 import com.squareup.picasso.Picasso;
 
-import java.util.Arrays;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.RetrofitError;
@@ -85,8 +83,9 @@ public class MainPresenter {
 
                 case AD_CARD_VIEW_TYPE:
                     sdk.request(
-                            new Request.Builder(Arrays.asList(new Placement("div1", 9709L, 70464L, Arrays.asList(5))))
-                                    .addKeyword("karnowski")
+                            new Request.Builder()
+                                    .addPlacement(new Placement("div1", 9709L, 70464L, 5))
+                                    .addKeywords("karnowski")
                                     .build(),
                             new ResponseListener() {
                                 @Override
@@ -100,7 +99,7 @@ public class MainPresenter {
                                 }
                             }
                     );
-                    
+
                 default:
                     break;
             }
