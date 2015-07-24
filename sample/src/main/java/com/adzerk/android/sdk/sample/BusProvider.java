@@ -27,4 +27,7 @@ public class BusProvider {
         }
     }
 
+    public static void post(Object event) {
+        getInstance().post(event);
+    }
 }

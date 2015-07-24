@@ -31,8 +31,8 @@ public class VikingGenerator {
     }
 
     public Quote getQuote(int position) {
-        if (position >= positions) {
-            throw new IllegalArgumentException("Requested position exceeds maximum");
+        if (position > positions) {
+            throw new IllegalArgumentException("Position " + position + " exceeds maximum");
         }
 
         if (quotes[position] == null) {

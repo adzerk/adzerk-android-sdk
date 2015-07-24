@@ -158,7 +158,6 @@ public class AdzerkSdk {
             public void run() {
                 try {
                     url.openConnection().getContent();
-                    Log.d(TAG, "impression on " + url);
                 } catch(IOException e) {
                     Log.e(TAG, "Failed to impress ", e);
                 }
