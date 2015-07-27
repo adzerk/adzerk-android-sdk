@@ -1,12 +1,17 @@
 package com.adzerk.android.sdk;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.adzerk.android.sdk.rest.NativeAdService;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -38,6 +43,7 @@ import retrofit.converter.GsonConverter;
  * @see com.adzerk.android.sdk.rest.Request.Builder
  */
 public class AdzerkSdk {
+    static final String TAG = AdzerkSdk.class.getSimpleName();
 
     static final String NATIVE_AD_ENDPOINT = "http://engine.adzerk.net/api/v2";
 
@@ -130,6 +136,34 @@ public class AdzerkSdk {
         });
     }
 
+    /**
+     * Converts the given String to an impression URL.
+     *
+     * @param urlString
+     * @return - false if it is malformed
+     */
+    public boolean impression(final String urlString) {
+        try {
+            impression(new URL(urlString));
+            return true;
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "Failed to impress on url: " + urlString, e);
+            return false;
+        }
+    }
+
+    protected void impression(final URL url) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    url.openConnection().getContent();
+                } catch(IOException e) {
+                    Log.e(TAG, "Failed to impress ", e);
+                }
+            }
+        }).start();
+    }
 
     // Create service for the Native Ads API
     private NativeAdService getNativeAdsService() {
@@ -145,7 +179,6 @@ public class AdzerkSdk {
             }
 
             service = builder.build().create(NativeAdService.class);
-
         }
 
         return service;

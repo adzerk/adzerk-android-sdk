@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +88,6 @@ public class Request {
      * </pre>
      */
     public static class Builder {
-
         private ArrayList<Placement> placements;
         private User user;
         private Set<String> keywords;
@@ -98,15 +100,30 @@ public class Request {
 
 
         /**
-         * Builder to configure a Request for ads.
+         * Builder to configure a Request containing the specified list of Placements.
+         * <p>
+         * Builder to configure a Request for Ads.
+         *
+         * <pre>
+         * {@code
+         * Request request = Request.Builder()
+         *     .addPlacement()
+         *     .setUser(user)
+         *     .setMobile(true)
+         *     .build()
+         * }
+         * </pre>
+         *
          */
         public Builder() {
-            this.placements = new ArrayList<>();
         }
 
         /**
-         * Builder to configure a Request containing the specified list of Placements.
-         * <p>
+         * Builder to configure a Request for Ads.
+         *
+         * Multiple ads can be served by a single Request. Placements identify locations in the app where an ad can
+         * be served. And each placement defines separate properties for a requested ad.
+         *
          * <pre>
          * {@code
          * // Create list of Placements
@@ -135,8 +152,10 @@ public class Request {
          * @return request builder
          */
         public Builder addPlacement(Placement placement) {
-            this.placements.add(placement);
-
+            if (placements == null) {
+                placements = new ArrayList<>();
+            }
+            placements.add(placement);
             return this;
         }
 
@@ -278,10 +297,11 @@ public class Request {
          * Create the Request
          *
          * @return ad request
+         * @throws IllegalStateException if the request has no placements.
          */
         public Request build() {
-            if (placements.isEmpty()) {
-                throw new IllegalStateException("At least one Placement must be specified");
+            if (placements == null || placements.isEmpty()) {
+                throw new IllegalStateException("Requests must have at least one placement");
             }
             return new Request(this);
         }
@@ -296,8 +316,9 @@ public class Request {
         setKeywords(builder.keywords);
         setReferrer(builder.referrer);
         setUrl(builder.url);
-        if (builder.time != null)
+        if (builder.time != null) {
             setTime(builder.time);
+        }
         setIp(builder.ip);
         setBlockedCreatives(builder.blockedCreatives);
         setAllFlightViewTimes(builder.flightViewTimes);
@@ -325,7 +346,7 @@ public class Request {
         return user;
     }
 
-    private void setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -338,7 +359,7 @@ public class Request {
         return keywords;
     }
 
-    private void setKeywords(Set<String> keywords) {
+    public void setKeywords(Set<String> keywords) {
         this.keywords = keywords;
     }
 
@@ -351,7 +372,7 @@ public class Request {
         return referrer;
     }
 
-    private void setReferrer(String referrer) {
+    public void setReferrer(String referrer) {
         this.referrer = referrer;
     }
 
@@ -364,7 +385,7 @@ public class Request {
         return url;
     }
 
-    private void setUrl(String url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
@@ -377,8 +398,8 @@ public class Request {
         return time;
     }
 
-    private void setTime(long epochTime) {
-        time = epochTime;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     /**
