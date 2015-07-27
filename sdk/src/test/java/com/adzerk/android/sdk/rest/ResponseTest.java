@@ -37,9 +37,14 @@ public class ResponseTest {
         sdk.request(createTestRequest(), new ResponseListener() {
             @Override
             public void success(Response response) {
+
+                // User
+                assertThat(response.getUser().getKey()).isEqualTo("ad39231daeb043f2a9610414f08394b5");
+                assertThat(response.getDecisions()).containsKey("div1");
+
+                // Decisions
                 assertThat(response.getDecisions()).containsOnlyKeys("div1", "div2");
                 assertThat(response.getDecision("div2")).isNull();
-
                 Decision div1 = response.getDecision("div1");
                 assertThat(div1.getAdId()).isEqualTo(111);
                 assertThat(div1.getCreativeId()).isEqualTo(222);
@@ -47,6 +52,12 @@ public class ResponseTest {
                 assertThat(div1.getCampaignId()).isEqualTo(444);
                 assertThat(div1.getClickUrl()).contains("click");
                 assertThat(div1.getImpressionUrl()).contains("impression");
+
+                // Events
+                assertThat(div1.getEvents()).isNotEmpty();
+                assertThat(div1.getEvents()).hasSize(3);
+                assertThat(div1.getEvents().get(0).getEventId()).isEqualTo(12);
+                assertThat(div1.getEvents().get(0).getEventUrl()).contains("adzerk");
             }
 
             @Override
@@ -127,6 +138,17 @@ public class ResponseTest {
                 "        }" +
                 "      ]," +
                 "      \"impressionUrl\": \"http://engine.adzerk.net/impression\"" +
+                "      \"events\": [" +
+                "        { eventId: 12," +
+                "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
+                "        }," +
+                "        { eventId: 13," +
+                "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
+                "        }," +
+                "        { eventId: 14," +
+                "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
+                "        }" +
+                "      ]" +
                 "    }," +
                 "    \"div2\": null" +
                 "  }" +
