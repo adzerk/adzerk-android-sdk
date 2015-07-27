@@ -58,6 +58,9 @@ public class Content {
         return (hasData() && data.containsKey(KEY_IMAGE_URL)) ? data.get(KEY_IMAGE_URL) : null;
     }
 
+    // contains JSON metadata set at the creative level
+    Map<String, Object> customData;
+
     /**
      * Returns type of the content: {@link Content#TYPE_HTML}, {@link Content#TYPE_CSS}, {@link Content#TYPE_JS},
      * {@link Content#TYPE_JS_EXTERNAL}, {@link Content#TYPE_RAW}
@@ -97,6 +100,15 @@ public class Content {
      */
     public Map<String, String> getData() {
         return data;
+    }
+
+    /**
+     * Returns JSON metadata content set by the creative. If the content contains customData, the contents
+     * of body should be ignored.
+     * @return JSON metadata content
+     */
+    public Map<String, Object> getCustomData() {
+        return customData;
     }
 
     /**
