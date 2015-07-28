@@ -84,7 +84,7 @@ public class MainPresenter {
                     return new ContentViewHolder(inflater.inflate(R.layout.item_quote_card, parent, false));
 
                 case AD_CARD_VIEW_TYPE:
-                    return new AdViewHolder(inflater.inflate(R.layout.item_ad_card, parent, false));
+                    return new AdViewHolder(inflater.inflate(R.layout.item_quote_card, parent, false));
 
                 default:
                     throw new IllegalArgumentException("Unsupported view type");
@@ -93,10 +93,10 @@ public class MainPresenter {
 
         @Override
         public void onBindViewHolder(ViewHolder vh, int position) {
+
             switch (vh.getItemViewType()) {
                 case CONTENT_CARD_VIEW_TYPE:
                     ContentViewHolder holder = (ContentViewHolder) vh;
-
                     int quotePosition = position - position / adModulus;
                     Quote q = generator.getQuote(quotePosition);
                     holder.txtName.setText(q.name);
@@ -114,10 +114,26 @@ public class MainPresenter {
                                 @Override
                                 public void success(Response response) {
                                     Decision decision = response.getDecision("div1");
+                                    Content content = decision.getContents().get(0);
+
+                                    // set the click through url:
                                     adViewHolder.setClickUrl(decision.getClickUrl());
                                     loadAdContent(adViewHolder,
-                                            decision.getContents().get(0),
-                                            decision.getImpressionUrl());
+                                          content,
+                                          decision.getImpressionUrl());
+
+                                    // display 'title' in name field
+                                    Log.d(TAG, "Title: " + content.getTitle());
+                                    adViewHolder.txtName.setText(content.getTitle());
+
+                                    // display 'quote' from a customData returned with the ad content:
+                                    Object q = content.getCustomData("quote");
+                                    if (q != null) {
+                                        Log.d(TAG, "Quote: " + q.toString());
+                                        adViewHolder.txtQuote.setText(q.toString());
+                                    } else {
+                                        adViewHolder.txtQuote.setText("Quote unavailable");
+                                    }
 
                                 }
 
@@ -153,9 +169,11 @@ public class MainPresenter {
         }
 
         private void setHeadShot(ImageView imgView, String url) {
+            Log.d(TAG, "Loading headshot from url: " + url);
             Picasso.with(imgView.getContext())
                     .load(url)
-                    .into(imgView);
+                    // TODO: add placeholder image - .placeholder(R.drawable ...
+                  .into(imgView);
         }
 
         @Override
@@ -206,20 +224,32 @@ public class MainPresenter {
         }
 
         public static class AdViewHolder extends ViewHolder {
-            @Bind(R.id.ad_image) ImageView imgAd;
+            @Bind(R.id.head_shot) ImageView imgAd;
+            @Bind(R.id.name) TextView txtName;
+            @Bind(R.id.quote) TextView txtQuote;
+            @Bind(R.id.sponsored) TextView txtSponsored;
             String clickUrl;
 
             public AdViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+
+                // show indicator that item is a sponsored ad
+                txtSponsored.setVisibility(View.VISIBLE);
+
+                if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+                    imgAd.setClipToOutline(true);
+                    imgAd.setOutlineProvider(new RoundedAvatarProvider());
+                }
+
                 this.clickUrl = null;
             }
 
             public void setClickUrl(String clickUrl) {
                 this.clickUrl = clickUrl;
             }
-
-            @OnClick(R.id.ad_image)
+            
+            @OnClick(R.id.card_view)
             public void onClick() {
                 if (clickUrl != null) {
                     BusProvider.post(new AdClickEvent(clickUrl));

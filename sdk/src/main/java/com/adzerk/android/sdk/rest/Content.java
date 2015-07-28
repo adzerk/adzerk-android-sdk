@@ -1,5 +1,6 @@
 package com.adzerk.android.sdk.rest;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -30,6 +31,9 @@ public class Content {
     public static String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
 
     static String KEY_IMAGE_URL = "imageUrl";
+    static String KEY_TITLE = "title";
+    static String KEY_CUSTOM_DATA = "customData";
+
 
     // the type of the content
     String type;
@@ -44,22 +48,10 @@ public class Content {
     String body;
 
     // data An object that has fields used to build the content
-    Map<String, String> data;
-
-    public boolean hasData() {
-        return data != null && !data.isEmpty();
-    }
-
-    public boolean isImage() {
-        return TEMPLATE_IMAGE.equals(getTemplate());
-    }
-
-    public String getImageUrl() {
-        return (hasData() && data.containsKey(KEY_IMAGE_URL)) ? data.get(KEY_IMAGE_URL) : null;
-    }
+    Map<String, Object> data;
 
     // contains JSON metadata set at the creative level
-    Map<String, Object> customData;
+    //Map<String, Object> customData;
 
     /**
      * Returns type of the content: {@link Content#TYPE_HTML}, {@link Content#TYPE_CSS}, {@link Content#TYPE_JS},
@@ -95,11 +87,30 @@ public class Content {
     }
 
     /**
+     * Returns TRUE if content contains data
+     * @return true if data is not empty
+     */
+    public boolean hasData() {
+        return data != null && !data.isEmpty();
+    }
+
+    /**
      * Returns data object that has fields used to build the content
      * @return map of key-value pairs
      */
-    public Map<String, String> getData() {
+    public Map<String, Object> getData() {
         return data;
+    }
+
+    /**
+     * Returns data object that has fields used to build the content
+     * @return map of key-value pairs
+     */
+    public Object getData(String key) {
+        if (hasData() && data.containsKey(key)) {
+            return data.get(key);
+        }
+        return null;
     }
 
     /**
@@ -108,14 +119,58 @@ public class Content {
      * @return JSON metadata content
      */
     public Map<String, Object> getCustomData() {
-        return customData;
+
+        if (hasData() && data.containsKey(KEY_CUSTOM_DATA)) {
+            Object customData = data.get(KEY_CUSTOM_DATA);
+            if (customData instanceof Map) {
+                return (Map) customData;
+            }
+        }
+        return Collections.EMPTY_MAP;
     }
 
     /**
-     * Returns TRUE if content id {@link Content#TYPE_RAW}
+     * Returns a value from the JSON metadata content set by the creative.
+     * @param key   JSON attribute name
+     * @return  object value or null
+     */
+    public Object getCustomData(String key) {
+        Map<String, Object> customData = getCustomData();
+        if (!customData.isEmpty() && customData.containsKey(key)) {
+            return customData.get(key);
+        }
+        return null;
+    }
+
+    /**
+     * Returns TRUE if content is {@link Content#TYPE_RAW}
      * @return true if raw content type
      */
     public boolean isRawType() {
-        return type == TYPE_RAW;
+        return TYPE_RAW.equals(getType());
+    }
+
+    /**
+     * Returns TRUE if template is {@link Content#TEMPLATE_IMAGE}
+     * @return true if template is image
+     */
+    public boolean isImage() {
+        return TEMPLATE_IMAGE.equals(getTemplate());
+    }
+
+    /**
+     * Returns the value of the 'imageUrl' from data
+     * @return url of image or null
+     */
+    public String getImageUrl() {
+        return getData(KEY_IMAGE_URL).toString();
+    }
+
+    /**
+     * Returns the value of the 'title' from data
+     * @return ad title or null
+     */
+    public String getTitle() {
+        return getData(KEY_TITLE).toString();
     }
 }
