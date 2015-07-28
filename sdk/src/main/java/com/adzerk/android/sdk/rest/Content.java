@@ -163,7 +163,7 @@ public class Content {
      * @return url of image or null
      */
     public String getImageUrl() {
-        return getData(KEY_IMAGE_URL).toString();
+        return (getData(KEY_IMAGE_URL) != null) ? data.get(KEY_IMAGE_URL).toString() : null;
     }
 
     /**
@@ -171,6 +171,6 @@ public class Content {
      * @return ad title or null
      */
     public String getTitle() {
-        return getData(KEY_TITLE).toString();
+        return (getData(KEY_TITLE) != null) ? data.get(KEY_TITLE).toString() : null;
     }
 }
