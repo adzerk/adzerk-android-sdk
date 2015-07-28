@@ -33,6 +33,7 @@ import retrofit.RetrofitError;
 public class MainPresenter {
     static final long NETWORK_ID = 9792L;
     static final long SITE_ID = 306998L;
+    static final int FLIGHT_ID = 699801; // images only
 
     static final int VIKING_COUNT = 20;
     static final int AD_MODULUS = 5;
@@ -108,8 +109,8 @@ public class MainPresenter {
                     final AdViewHolder adViewHolder = (AdViewHolder) vh;
                     sdk.request(
                             new Request.Builder()
-                                    .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5))
-                                    .build(),
+                                  .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(FLIGHT_ID))
+                                  .build(),
                             new ResponseListener() {
                                 @Override
                                 public void success(Response response) {
@@ -248,7 +249,7 @@ public class MainPresenter {
             public void setClickUrl(String clickUrl) {
                 this.clickUrl = clickUrl;
             }
-            
+
             @OnClick(R.id.card_view)
             public void onClick() {
                 if (clickUrl != null) {
