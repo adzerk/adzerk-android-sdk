@@ -13,6 +13,8 @@ import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.RetrofitError;
 
@@ -34,7 +36,12 @@ public class ContentTest {
 
     @Test
     public void itShouldDeserializeResponseContent() {
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final String errors[] = new String[] {null};
+
         sdk.request(createTestRequest(), new ResponseListener() {
+
             @Override
             public void success(Response response) {
 
@@ -52,14 +59,30 @@ public class ContentTest {
                 assertThat(div1Content.getCustomData()).isNotEmpty();
                 assertThat(div1Content.getCustomData()).containsOnlyKeys("foo", "bar");
                 assertThat(div1Content.getCustomData().get("foo")).isEqualTo(new Integer(42));
-                assertThat(div1Content.getCustomData().get("foo")).isEqualTo("some string");
+                assertThat(div1Content.getCustomData().get("bar")).isEqualTo("some string");
+
+                latch.countDown();
             }
 
             @Override
             public void error(RetrofitError error) {
+                errors[0] = error.getMessage();
                 fail(error.getMessage());
             }
         });
+
+
+        try {
+            latch.await(2000, TimeUnit.MILLISECONDS);
+            if (errors[0] != null) {
+                fail(errors[0]);
+            }
+            if (latch.getCount() > 0) {
+                fail("Test timed out waiting for Response");
+            }
+        } catch (InterruptedException e) {
+            fail(e.getMessage());
+        }
     }
 
 
