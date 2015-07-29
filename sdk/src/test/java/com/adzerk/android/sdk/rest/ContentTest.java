@@ -4,6 +4,9 @@ import com.adzerk.android.sdk.AdzerkSdk;
 import com.adzerk.android.sdk.AdzerkSdk.ResponseListener;
 import com.adzerk.android.sdk.BuildConfig;
 import com.adzerk.android.sdk.MockClient;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +17,6 @@ import org.robolectric.annotation.Config;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import retrofit.RetrofitError;
 
@@ -61,6 +63,14 @@ public class ContentTest {
                 assertThat(div1Content.getCreativeMetadata("foo")).isEqualTo(new Double(42));
                 assertThat(div1Content.getCreativeMetadata("bar")).isEqualTo("some string");
 
+                // verify customData JsonObject & raw JSON String:
+                Gson gson = new GsonBuilder().create();
+                JsonObject expectedJsonObject = gson.fromJson(customData, JsonObject.class);
+                assertThat(div1Content.getCreativeMetadataAsJson()).isNotNull();
+                assertThat(div1Content.getCreativeMetadataAsJson()).isEqualToComparingFieldByField(expectedJsonObject);
+                assertThat(div1Content.getCreativeMetadataAsString().replaceAll("\\s+", ""))
+                      .isEqualToIgnoringCase(customData.replaceAll("\\s+", ""));
+
                 latch.countDown();
             }
 
@@ -73,7 +83,8 @@ public class ContentTest {
 
 
         try {
-            latch.await(3000, TimeUnit.MILLISECONDS);
+            latch.await();
+            //latch.await(3000, TimeUnit.MILLISECONDS);
             if (errors[0] != null) {
                 fail(errors[0]);
             }
@@ -95,6 +106,7 @@ public class ContentTest {
         return new Request.Builder(placements).build();
     }
 
+    private static String customData = "{ \"foo\": 42, \"bar\": \"some string\" }";
     
     private String getMockJsonResponse() {
         
