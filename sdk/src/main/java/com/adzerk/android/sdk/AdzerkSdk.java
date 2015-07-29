@@ -53,7 +53,6 @@ import retrofit.converter.GsonConverter;
  */
 public class AdzerkSdk {
     static final String TAG = AdzerkSdk.class.getSimpleName();
-
     static final String NATIVE_AD_ENDPOINT = "http://engine.adzerk.net/api/v2";
 
     static AdzerkSdk instance;

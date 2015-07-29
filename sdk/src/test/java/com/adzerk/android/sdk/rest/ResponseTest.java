@@ -29,7 +29,7 @@ public class ResponseTest {
     @Before
     public void setUp() throws Exception {
         mockClient = new MockClient(getMockJsonResponse());
-        sdk = AdzerkSdk.getInstance(new MockClient(getMockJsonResponse()));
+        sdk = AdzerkSdk.getInstance(mockClient);
     }
 
     @Test
