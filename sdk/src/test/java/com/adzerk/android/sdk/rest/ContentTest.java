@@ -52,14 +52,14 @@ public class ContentTest {
                 Content div1Content = contents.get(0);
                 assertThat(div1Content.getType()).isEqualTo(Content.TYPE_HTML);
                 assertThat(div1Content.getTemplate()).isEqualTo(Content.TEMPLATE_IMAGE);
-                assertThat(div1Content.getData()).containsKeys("imageUrl", "title");
+                assertThat(div1Content.getCreativeData()).containsKeys("imageUrl", "title");
                 assertThat(div1Content.getBody()).isNotEmpty();
 
                 // customData:
-                assertThat(div1Content.getCustomData()).isNotEmpty();
-                assertThat(div1Content.getCustomData()).containsOnlyKeys("foo", "bar");
-                assertThat(div1Content.getCustomData().get("foo")).isEqualTo(new Integer(42));
-                assertThat(div1Content.getCustomData().get("bar")).isEqualTo("some string");
+                assertThat(div1Content.getCreativeMetadata()).isNotEmpty();
+                assertThat(div1Content.getCreativeMetadata()).containsOnlyKeys("foo", "bar");
+                assertThat(div1Content.getCreativeMetadata("foo")).isEqualTo(new Double(42));
+                assertThat(div1Content.getCreativeMetadata("bar")).isEqualTo("some string");
 
                 latch.countDown();
             }
@@ -73,7 +73,7 @@ public class ContentTest {
 
 
         try {
-            latch.await(2000, TimeUnit.MILLISECONDS);
+            latch.await(3000, TimeUnit.MILLISECONDS);
             if (errors[0] != null) {
                 fail(errors[0]);
             }
@@ -117,10 +117,10 @@ public class ContentTest {
               "          \"imageUrl\": \"http://static.adzerk.net/cat-eating-spaghetti.jpg\"," +
               "          \"title\": \"ZOMG LOOK AT THIS FRICKING CAT\"," +
               "          \"width\": 300," +
-              "          \"height\": 250" +
+              "          \"height\": 250," +
               "          \"customData\": { \"foo\": 42, \"bar\": \"some string\" }" +
               "        }," +
-              "      \"body\": \"<a href='...'><img src='http://static.adzerk.net/cat-eating-spaghetti.jpg' title='ZOMG LOOK AT THIS FRICKING CAT' width=\"350\" height=\"350\"></a>\"" +
+              "      \"body\": \"<a href='...'><img src='http://static.adzerk.net/cat-eating-spaghetti.jpg' title='ZOMG LOOK AT THIS FRICKING CAT' width=350 height=350></a>\"" +
               "      }" +
               "    ]," +
               "    \"impressionUrl\": \"http://engine.adzerk.net/i.gif?...\"" +

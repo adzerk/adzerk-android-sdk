@@ -128,7 +128,7 @@ public class MainPresenter {
                                     adViewHolder.txtName.setText(content.getTitle());
 
                                     // display 'quote' from a customData returned with the ad content:
-                                    Object q = content.getCustomData("quote");
+                                    Object q = content.getCreativeMetadata("quote");
                                     if (q != null) {
                                         Log.d(TAG, "Quote: " + q.toString());
                                         adViewHolder.txtQuote.setText(q.toString());
