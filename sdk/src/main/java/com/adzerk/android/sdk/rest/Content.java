@@ -1,5 +1,8 @@
 package com.adzerk.android.sdk.rest;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -30,6 +33,9 @@ public class Content {
     public static String TEMPLATE_FLASH_NO_WIDTH = "flash-nowidth";
 
     static String KEY_IMAGE_URL = "imageUrl";
+    static String KEY_TITLE = "title";
+    static String KEY_CUSTOM_DATA = "customData";
+
 
     // the type of the content
     String type;
@@ -43,23 +49,13 @@ public class Content {
     // rendered body of the content
     String body;
 
-    // data An object that has fields used to build the content
-    Map<String, String> data;
-
-    public boolean hasData() {
-        return data != null && !data.isEmpty();
-    }
-
-    public boolean isImage() {
-        return TEMPLATE_IMAGE.equals(getTemplate());
-    }
-
-    public String getImageUrl() {
-        return (hasData() && data.containsKey(KEY_IMAGE_URL)) ? data.get(KEY_IMAGE_URL) : null;
-    }
+    // object that has fields used to build the content from. Includes the creative title, height, width, etc.
+    @SerializedName("data")
+    Map<String, Object> creativeData;
 
     // contains JSON metadata set at the creative level
-    Map<String, Object> customData;
+    // TODO: add support for retrieving the raw JSON either as a String or possibly a JsonObject/JsonElement (gson)
+    String creativeMetadata;
 
     /**
      * Returns type of the content: {@link Content#TYPE_HTML}, {@link Content#TYPE_CSS}, {@link Content#TYPE_JS},
@@ -95,27 +91,101 @@ public class Content {
     }
 
     /**
-     * Returns data object that has fields used to build the content
+     * Returns TRUE if content contains creativeData
+     * @return true if creativeData is not empty
+     */
+    public boolean hasCreativeData() {
+        return creativeData != null && !creativeData.isEmpty();
+    }
+
+    /**
+     * Returns creativeData object that has fields used to build the content
      * @return map of key-value pairs
      */
-    public Map<String, String> getData() {
-        return data;
+    public Map<String, Object> getCreativeData() {
+        return creativeData;
     }
 
     /**
-     * Returns JSON metadata content set by the creative. If the content contains customData, the contents
-     * of body should be ignored.
+     * Returns creativeData object that has fields used to build the content
+     * @return map of key-value pairs
+     */
+    public Object getCreativeData(String key) {
+        if (hasCreativeData() && creativeData.containsKey(key)) {
+            return creativeData.get(key);
+        }
+        return null;
+    }
+
+    /**
+     * Creatives may specify optional metadata in JSON format. This method returns that JSON metadata deserialized
+     * as Java Obects.
+     * <p>
+     * If the creative data contains JSON metadata, it may be used by itself or together the content 'body'
+     * to render the ad.
      * @return JSON metadata content
      */
-    public Map<String, Object> getCustomData() {
-        return customData;
+    public Map<String, Object> getCreativeMetadata() {
+
+        if (hasCreativeData() && creativeData.containsKey(KEY_CUSTOM_DATA)) {
+            Object creativeMetadata = creativeData.get(KEY_CUSTOM_DATA);
+            if (creativeMetadata instanceof Map) {
+                return (Map) creativeMetadata;
+            }
+        }
+        return Collections.EMPTY_MAP;
     }
 
     /**
-     * Returns TRUE if content id {@link Content#TYPE_RAW}
+     * Returns the JSON string holding metadata specified by the creative.
+     * @return string of JSON
+     */
+    public String getCreativeMetadataAsJson() {
+        return creativeMetadata;
+    }
+
+    /**
+     * Returns a value from the JSON metadata content set by the creative.
+     * @param key   JSON attribute name
+     * @return  object value or null
+     */
+    public Object getCreativeMetadata(String key) {
+        Map<String, Object> creativeMetadata = getCreativeMetadata();
+        if (!creativeMetadata.isEmpty() && creativeMetadata.containsKey(key)) {
+            return creativeMetadata.get(key);
+        }
+        return null;
+    }
+
+    /**
+     * Returns TRUE if content is {@link Content#TYPE_RAW}
      * @return true if raw content type
      */
     public boolean isRawType() {
-        return type == TYPE_RAW;
+        return TYPE_RAW.equals(getType());
+    }
+
+    /**
+     * Returns TRUE if template is {@link Content#TEMPLATE_IMAGE}
+     * @return true if template is image
+     */
+    public boolean isImage() {
+        return TEMPLATE_IMAGE.equals(getTemplate());
+    }
+
+    /**
+     * Returns the value of the 'imageUrl' from creativeData
+     * @return url of image or null
+     */
+    public String getImageUrl() {
+        return (getCreativeData(KEY_IMAGE_URL) != null) ? creativeData.get(KEY_IMAGE_URL).toString() : null;
+    }
+
+    /**
+     * Returns the value of the 'title' from creativeData
+     * @return ad title or null
+     */
+    public String getTitle() {
+        return (getCreativeData(KEY_TITLE) != null) ? creativeData.get(KEY_TITLE).toString() : null;
     }
 }

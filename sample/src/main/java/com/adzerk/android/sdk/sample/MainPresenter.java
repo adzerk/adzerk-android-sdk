@@ -33,6 +33,7 @@ import retrofit.RetrofitError;
 public class MainPresenter {
     static final long NETWORK_ID = 9792L;
     static final long SITE_ID = 306998L;
+    static final int FLIGHT_ID = 699801; // images only
 
     static final int VIKING_COUNT = 20;
     static final int AD_MODULUS = 5;
@@ -84,7 +85,7 @@ public class MainPresenter {
                     return new ContentViewHolder(inflater.inflate(R.layout.item_quote_card, parent, false));
 
                 case AD_CARD_VIEW_TYPE:
-                    return new AdViewHolder(inflater.inflate(R.layout.item_ad_card, parent, false));
+                    return new AdViewHolder(inflater.inflate(R.layout.item_quote_card, parent, false));
 
                 default:
                     throw new IllegalArgumentException("Unsupported view type");
@@ -93,31 +94,29 @@ public class MainPresenter {
 
         @Override
         public void onBindViewHolder(ViewHolder vh, int position) {
+
             switch (vh.getItemViewType()) {
                 case CONTENT_CARD_VIEW_TYPE:
                     ContentViewHolder holder = (ContentViewHolder) vh;
-
                     int quotePosition = position - position / adModulus;
                     Quote q = generator.getQuote(quotePosition);
                     holder.txtName.setText(q.name);
                     holder.txtQuote.setText(q.quote);
-                    setHeadShot(holder.imgHeadShot, q.url);
+                    setHeadShot(holder.imgView, q.url);
                     break;
 
                 case AD_CARD_VIEW_TYPE:
                     final AdViewHolder adViewHolder = (AdViewHolder) vh;
                     sdk.request(
                             new Request.Builder()
-                                    .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5))
-                                    .build(),
+                                  .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(FLIGHT_ID))
+                                  .build(),
                             new ResponseListener() {
                                 @Override
                                 public void success(Response response) {
                                     Decision decision = response.getDecision("div1");
-                                    adViewHolder.setClickUrl(decision.getClickUrl());
-                                    loadAdContent(adViewHolder,
-                                            decision.getContents().get(0),
-                                            decision.getImpressionUrl());
+
+                                    loadAdContent(adViewHolder, decision);
 
                                 }
 
@@ -133,15 +132,36 @@ public class MainPresenter {
             }
         }
 
-        private void loadAdContent(AdViewHolder vh, Content content, final String impressionUrl) {
+        /*
+         * Populates the views with content from the ad.
+         */
+        private void loadAdContent(AdViewHolder vh, final Decision decision) {
+            Content content = decision.getContents().get(0);
+
+            // set the click through url:
+            vh.setClickUrl(decision.getClickUrl());
+
+            // display 'title' in name field
+            vh.txtName.setText(content.getTitle());
+
+            // display 'quote' from a JSON metadata returned with the ad content
+            String quote = "Quote unavailable";
+            Object quoteMetadata = content.getCreativeMetadata("quote");
+            if (quoteMetadata != null) {
+                quote = quoteMetadata.toString();
+            }
+            vh.txtQuote.setText(quote);
+
+            // load the image from the URL in the ad into the ImageView
             if (content.isImage()) {
-                ImageView imgView = vh.imgAd;
+                ImageView imgView = vh.imgView;
                 Picasso.with(imgView.getContext())
                         .load(content.getImageUrl())
                         .into(imgView, new Callback() {
                             @Override
                             public void onSuccess() {
-                                sdk.impression(impressionUrl);
+                                // when the image loads successfully, the ad impression is triggered
+                                sdk.impression(decision.getImpressionUrl());
                             }
 
                             @Override
@@ -153,9 +173,11 @@ public class MainPresenter {
         }
 
         private void setHeadShot(ImageView imgView, String url) {
+            Log.d(TAG, "Loading headshot from url: " + url);
             Picasso.with(imgView.getContext())
                     .load(url)
-                    .into(imgView);
+                    // TODO: add placeholder image - .placeholder(R.drawable ...
+                  .into(imgView);
         }
 
         @Override
@@ -189,8 +211,13 @@ public class MainPresenter {
             }
         }
 
+        /**
+         * View holder for app content. Each card displays a head shot of a person with a
+         * name and a quote (using a Viking theme!).
+         */
         public static class ContentViewHolder extends ViewHolder {
-            @Bind(R.id.head_shot) ImageView imgHeadShot;
+
+            @Bind(R.id.head_shot) ImageView imgView;
             @Bind(R.id.name) TextView txtName;
             @Bind(R.id.quote) TextView txtQuote;
 
@@ -199,19 +226,31 @@ public class MainPresenter {
                 ButterKnife.bind(this, itemView);
 
                 if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-                    imgHeadShot.setClipToOutline(true);
-                    imgHeadShot.setOutlineProvider(new RoundedAvatarProvider());
+                    imgView.setClipToOutline(true);
+                    imgView.setOutlineProvider(new RoundedAvatarProvider());
                 }
             }
         }
 
-        public static class AdViewHolder extends ViewHolder {
-            @Bind(R.id.ad_image) ImageView imgAd;
+        /**
+         * View holder for sponsored ads. This extends the ContentViewHolder to provide the ad
+         * click-through functionality and display an indicator that the content is 'sponsored'.
+         *
+         * When a User clicks anywhere on the card, an AdClickEvent is fired. The result will start
+         * an Intent to open the click-through URL provided by the ad.
+         */
+        public static class AdViewHolder extends ContentViewHolder {
+
+            @Bind(R.id.sponsored) TextView txtSponsored;
+
             String clickUrl;
 
             public AdViewHolder(View itemView) {
                 super(itemView);
-                ButterKnife.bind(this, itemView);
+
+                // show indicator that item is a sponsored ad
+                txtSponsored.setVisibility(View.VISIBLE);
+
                 this.clickUrl = null;
             }
 
@@ -219,9 +258,10 @@ public class MainPresenter {
                 this.clickUrl = clickUrl;
             }
 
-            @OnClick(R.id.ad_image)
+            @OnClick(R.id.card_view)
             public void onClick() {
                 if (clickUrl != null) {
+                    // fire an event to open the ad click-through URL
                     BusProvider.post(new AdClickEvent(clickUrl));
                 }
             }

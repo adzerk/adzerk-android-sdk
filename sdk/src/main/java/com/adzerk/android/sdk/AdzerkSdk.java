@@ -1,5 +1,6 @@
 package com.adzerk.android.sdk;
 
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -169,13 +170,16 @@ public class AdzerkSdk {
     private NativeAdService getNativeAdsService() {
         if (service == null ) {
             Gson gson = new GsonBuilder().create();
+
             Builder builder = new RestAdapter.Builder()
                     .setEndpoint(NATIVE_AD_ENDPOINT)
                     .setConverter(new GsonConverter(gson))
                     .setLogLevel(RestAdapter.LogLevel.FULL);
 
+            // test client
             if (client != null) {
                 builder.setClient(client);
+                builder.setExecutors(AsyncTask.THREAD_POOL_EXECUTOR, AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
             service = builder.build().create(NativeAdService.class);
