@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,7 +43,7 @@ public class MainPresenter {
     // flight containing only html ads
     static final int HTML_FLIGHT_ID = 702688;
 
-    // to number of views to display
+    // the number of views to display
     static final int VIKING_COUNT = 20;
 
     // display an add every nth item
@@ -305,7 +304,6 @@ public class MainPresenter {
             public AdViewHolder(View itemView) {
                 super(itemView);
 
-                // show indicator that item is a sponsored ad
                 txtSponsored.setVisibility(View.VISIBLE);
 
                 this.clickUrl = null;
@@ -318,7 +316,6 @@ public class MainPresenter {
             @OnClick(R.id.card_view)
             public void onClick() {
                 if (clickUrl != null) {
-                    // fire an event to open the ad click-through URL
                     BusProvider.post(new AdClickEvent(clickUrl));
                 }
             }
@@ -336,11 +333,7 @@ public class MainPresenter {
 
                 ButterKnife.bind(this, itemView);
 
-                // enable javascript support
-                WebSettings webSettings = webView.getSettings();
-                webSettings.setJavaScriptEnabled(true);
-
-                // show indicator that item is a sponsored ad
+                webView.getSettings().setJavaScriptEnabled(true);
                 txtSponsored.setVisibility(View.VISIBLE);
 
                 this.clickUrl = null;
@@ -353,16 +346,13 @@ public class MainPresenter {
             @OnClick(R.id.card_view)
             public void onClick() {
                 if (clickUrl != null) {
-                    // fire an event to open the ad click-through URL
                     BusProvider.post(new AdClickEvent(clickUrl));
                 }
             }
 
             @OnTouch(R.id.webView)
             public boolean onTouch(View v, MotionEvent event) {
-                // use touch listener to intercept WebView clicks
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    // fire an event to open the ad click-through URL
                     BusProvider.post(new AdClickEvent(clickUrl));
                 }
                 return true;
