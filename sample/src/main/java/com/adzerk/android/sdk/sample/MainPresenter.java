@@ -8,8 +8,11 @@ import android.os.Build.VERSION_CODES;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,14 +31,23 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import retrofit.RetrofitError;
 
 public class MainPresenter {
     static final long NETWORK_ID = 9792L;
     static final long SITE_ID = 306998L;
-    static final int FLIGHT_ID = 699801; // images only
 
+    // flight containing only image ads
+    static final int IMG_FLIGHT_ID = 699801;
+
+    // flight containing only html ads
+    static final int HTML_FLIGHT_ID = 702688;
+
+    // to number of views to display
     static final int VIKING_COUNT = 20;
+
+    // display an add every nth item
     static final int AD_MODULUS = 5;
 
     MainModel model;
@@ -65,7 +77,8 @@ public class MainPresenter {
         static final String TAG = QuotesAdapter.class.getSimpleName();
 
         static final int CONTENT_CARD_VIEW_TYPE = 1;
-        static final int AD_CARD_VIEW_TYPE = 2;
+        static final int AD_CARD_IMG_VIEW_TYPE = 2;
+        static final int AD_CARD_HTML_VIEW_TYPE = 3;
 
         VikingGenerator generator;
         int adModulus;
@@ -84,8 +97,11 @@ public class MainPresenter {
                 case CONTENT_CARD_VIEW_TYPE:
                     return new ContentViewHolder(inflater.inflate(R.layout.item_quote_card, parent, false));
 
-                case AD_CARD_VIEW_TYPE:
+                case AD_CARD_IMG_VIEW_TYPE:
                     return new AdViewHolder(inflater.inflate(R.layout.item_quote_card, parent, false));
+
+                case AD_CARD_HTML_VIEW_TYPE:
+                    return new AdWebViewHolder(inflater.inflate(R.layout.item_html_ad_card, parent, false));
 
                 default:
                     throw new IllegalArgumentException("Unsupported view type");
@@ -105,19 +121,21 @@ public class MainPresenter {
                     setHeadShot(holder.imgView, q.url);
                     break;
 
-                case AD_CARD_VIEW_TYPE:
+                case AD_CARD_IMG_VIEW_TYPE:
                     final AdViewHolder adViewHolder = (AdViewHolder) vh;
+
                     sdk.request(
+
                             new Request.Builder()
-                                  .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(FLIGHT_ID))
+                                  .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(IMG_FLIGHT_ID))
                                   .build(),
+
                             new ResponseListener() {
+
                                 @Override
                                 public void success(Response response) {
                                     Decision decision = response.getDecision("div1");
-
                                     loadAdContent(adViewHolder, decision);
-
                                 }
 
                                 @Override
@@ -126,6 +144,38 @@ public class MainPresenter {
                                 }
                             }
                     );
+                    break;
+
+                case AD_CARD_HTML_VIEW_TYPE:
+                    final AdWebViewHolder adWebViewHolder = (AdWebViewHolder) vh;
+
+                    sdk.request(
+
+                          new Request.Builder()
+                                .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(HTML_FLIGHT_ID))
+                                .build(),
+
+                          new ResponseListener() {
+
+                              @Override
+                              public void success(Response response) {
+                                  Decision decision = response.getDecision("div1");
+                                  Content content = decision.getContents().get(0);
+                                  String body = content.getBody();
+                                  String html = "<html>" + body + "</html>";
+                                  adWebViewHolder.webView.loadData(html, "text/html", "UTF-8");
+                                  adWebViewHolder.setClickUrl(decision.getClickUrl());
+                                  sdk.impression(decision.getImpressionUrl());
+                              }
+
+                              @Override
+                              public void error(RetrofitError error) {
+                                  Log.d(TAG, "Error: " + error.getMessage());
+                              }
+                          }
+                    );
+
+                    break;
 
                 default:
                     break;
@@ -198,11 +248,18 @@ public class MainPresenter {
             }
 
             if (adModulus == 1) {
-                return AD_CARD_VIEW_TYPE;
+                return AD_CARD_IMG_VIEW_TYPE;
             }
 
-            // Every nth card is an Ad
-            return (position + 1) % adModulus == 0 ? AD_CARD_VIEW_TYPE : CONTENT_CARD_VIEW_TYPE;
+            // Every nth card is an Ad (first one is an Image)
+            int viewType = (position + 1) % adModulus == 0 ? AD_CARD_IMG_VIEW_TYPE : CONTENT_CARD_VIEW_TYPE;
+
+            // And every other Ad is HTML
+            if (viewType == AD_CARD_IMG_VIEW_TYPE) {
+                viewType = (position + 1) % (2*adModulus) == 0 ? AD_CARD_HTML_VIEW_TYPE : AD_CARD_IMG_VIEW_TYPE;
+            }
+
+            return viewType;
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -264,6 +321,51 @@ public class MainPresenter {
                     // fire an event to open the ad click-through URL
                     BusProvider.post(new AdClickEvent(clickUrl));
                 }
+            }
+        }
+
+        public static class AdWebViewHolder extends ViewHolder {
+
+            @Bind(R.id.webView) WebView webView;
+            @Bind(R.id.sponsored) TextView txtSponsored;
+
+            String clickUrl;
+
+            public AdWebViewHolder(View itemView) {
+                super(itemView);
+
+                ButterKnife.bind(this, itemView);
+
+                // enable javascript support
+                WebSettings webSettings = webView.getSettings();
+                webSettings.setJavaScriptEnabled(true);
+
+                // show indicator that item is a sponsored ad
+                txtSponsored.setVisibility(View.VISIBLE);
+
+                this.clickUrl = null;
+            }
+
+            public void setClickUrl(String clickUrl) {
+                this.clickUrl = clickUrl;
+            }
+
+            @OnClick(R.id.card_view)
+            public void onClick() {
+                if (clickUrl != null) {
+                    // fire an event to open the ad click-through URL
+                    BusProvider.post(new AdClickEvent(clickUrl));
+                }
+            }
+
+            @OnTouch(R.id.webView)
+            public boolean onTouch(View v, MotionEvent event) {
+                // use touch listener to intercept WebView clicks
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    // fire an event to open the ad click-through URL
+                    BusProvider.post(new AdClickEvent(clickUrl));
+                }
+                return true;
             }
         }
     }
