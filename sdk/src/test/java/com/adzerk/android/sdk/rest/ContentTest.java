@@ -42,7 +42,7 @@ public class ContentTest {
         final CountDownLatch latch = new CountDownLatch(1);
         final String errors[] = new String[] {null};
 
-        sdk.request(createTestRequest(), new ResponseListener() {
+        sdk.request(createTestRequest(), new ResponseListener<Response>() {
 
             @Override
             public void success(Response response) {

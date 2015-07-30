@@ -34,7 +34,7 @@ public class ResponseTest {
 
     @Test
     public void itShouldDeserializeDecisions() {
-        sdk.request(createTestRequest(), new ResponseListener() {
+        sdk.request(createTestRequest(), new ResponseListener<Response>() {
             @Override
             public void success(Response response) {
 
@@ -69,7 +69,7 @@ public class ResponseTest {
 
     @Test
     public void itShouldDeserializeContents() {
-        sdk.request(createTestRequest(), new ResponseListener() {
+        sdk.request(createTestRequest(), new ResponseListener<Response>() {
             @Override
             public void success(Response response) {
                 Content content = response.getDecision("div1").getContents().get(0);
@@ -89,7 +89,7 @@ public class ResponseTest {
     @Test
     public void itShouldHandleNetworkErrors() {
         mockClient.setResponseCode(500, "Internal server error");
-        sdk.request(createTestRequest(), new ResponseListener() {
+        sdk.request(createTestRequest(), new ResponseListener<Response>() {
             @Override
             public void success(Response response) {
                 fail("Should not report success");
