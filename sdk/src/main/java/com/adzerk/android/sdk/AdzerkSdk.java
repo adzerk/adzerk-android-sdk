@@ -1,5 +1,6 @@
 package com.adzerk.android.sdk;
 
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -7,6 +8,8 @@ import com.adzerk.android.sdk.rest.ContentData;
 import com.adzerk.android.sdk.rest.NativeAdService;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.Response;
+import com.adzerk.android.sdk.rest.User;
+import com.adzerk.android.sdk.rest.UserDbService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -22,11 +25,13 @@ import java.net.URL;
 import java.util.Map;
 
 import retrofit.Callback;
+import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.Builder;
 import retrofit.RetrofitError;
 import retrofit.client.Client;
 import retrofit.converter.GsonConverter;
+import retrofit.mime.TypedString;
 
 /**
  * The Adzerk SDK provides the API for requesting native ads for you app.
@@ -54,18 +59,22 @@ public class AdzerkSdk {
     static final String TAG = AdzerkSdk.class.getSimpleName();
     static final String NATIVE_AD_ENDPOINT = "http://engine.adzerk.net/api/v2";
 
+    static final String USERDB_ENDPOINT = "http://engine.adzerk.net/udb/";
+
     static AdzerkSdk instance;
 
-    NativeAdService service;
+    NativeAdService nativeAdsService;
+    UserDbService userDbService;
+
     Client client;
 
     /**
      * Listener for the Response to an ad Request
      */
-    public interface ResponseListener {
+    public interface ResponseListener<T> {
         //TODO: Fine for a starting place, but we should use generic args so that we aren't
         //TODO: leaking retrofit abstractions through the sdk.
-        public void success(Response response);
+        public void success(@Nullable T response);
         public void error(RetrofitError error);
     }
 
@@ -85,11 +94,25 @@ public class AdzerkSdk {
     /**
      * Injection point for tests only. Not intended for public consumption.
      *
+     * @param nativeAds service api
+     * @return sdk instance
+     */
+    public static AdzerkSdk createInstance(NativeAdService nativeAds) {
+        return new AdzerkSdk(nativeAds, null, null);
+    }
+
+    /**
+     * Injection point for tests only. Not intended for public consumption.
+     *
      * @param api service api
      * @return sdk instance
      */
-    public static AdzerkSdk createInstance(NativeAdService api) {
-        return new AdzerkSdk(api, null);
+    public static AdzerkSdk getInstance(UserDbService api) {
+        if (instance == null) {
+            instance = new AdzerkSdk(api, null);
+        }
+
+        return instance;
     }
 
     /**
@@ -99,15 +122,21 @@ public class AdzerkSdk {
      * @return sdk instance
      */
     public static AdzerkSdk createInstance(Client client) {
-        return new AdzerkSdk(null, client);
+        return new AdzerkSdk(null, null,  client);
     }
 
     private AdzerkSdk() {
-        service = getNativeAdsService();
+        nativeAdsService = getNativeAdsService();
+        userDbService = getUserDBService();
     }
 
-    private AdzerkSdk(NativeAdService service, Client client) {
-        this.service = service;
+    private AdzerkSdk(NativeAdService nativeAdsService, UserDbService userDbService, Client client) {
+        this.nativeAdsService = nativeAdsService;
+        this.client = client;
+    }
+
+    private AdzerkSdk(UserDbService service, Client client) {
+        this.userDbService = service;
         this.client = client;
     }
 
@@ -118,11 +147,97 @@ public class AdzerkSdk {
      * @param listener Can be null, but caller will never get notifications.
      */
     public void request(Request request, @Nullable final ResponseListener listener) {
-        getNativeAdsService().request(request, new Callback<Response>() {
+        getNativeAdsService().request(request, new Callback() {
             @Override
-            public void success(Response response, retrofit.client.Response response2) {
+            public void success(Object o, retrofit.client.Response response2) {
                 if (listener != null) {
-                    listener.success(response);
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Set custom properties for User, specifying properties via JSON string.
+     * <p/>
+     * @param networkId unique network id
+     * @param userKey   unique User key
+     * @param json      a JSON String representing the custom properties, ie. { "age": 27, "gender": "male }
+     * @param listener  callback listener
+     */
+    public void setUserProperties(long networkId, String userKey, String json, @Nullable final ResponseListener listener) {
+
+        TypedJsonString body = new TypedJsonString(json);
+
+        getUserDBService().postUserProperties(networkId, userKey, body, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Set custom properties for User, specifying properties via a Map object
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param properties    map of key-value pairs
+     * @param listener      callback listener
+     */
+    public void setUserProperties(long networkId, String userKey, Map<String, Object> properties, @Nullable final ResponseListener listener) {
+
+
+        getUserDBService().postUserProperties(networkId, userKey, properties, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Returns information about the User specified by userKey.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param listener      callback listener
+     */
+    public void readUser(long networkId, String userKey, @Nullable final ResponseListener<User> listener) {
+
+        getUserDBService().readUser(networkId, userKey, new Callback<User>() {
+
+            @Override
+            public void success(User user, retrofit.client.Response response2) {
+                if (listener != null) {
+                    listener.success(user);
                 }
             }
 
@@ -175,7 +290,7 @@ public class AdzerkSdk {
 
     // Create service for the Native Ads API
     private NativeAdService getNativeAdsService() {
-        if (service == null ) {
+        if (nativeAdsService == null ) {
             Gson gson = new GsonBuilder()
                   .registerTypeAdapter(ContentData.class, new ContentDataDeserializer())
                   .create();
@@ -190,31 +305,53 @@ public class AdzerkSdk {
                 builder.setClient(client);
             }
 
-            service = builder.build().create(NativeAdService.class);
+            nativeAdsService = builder.build().create(NativeAdService.class);
         }
 
-        return service;
+        return nativeAdsService;
     }
 
+    // Capture the default deserialization and JsonObject for the 'data.customData' element
     private static class ContentDataDeserializer implements JsonDeserializer<ContentData> {
 
-        /**
-         * Gson invokes this call-back method during deserialization when it encounters a field of the
-         * specified type.
-         */
         @Override
         public ContentData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-
-            // 'data' element
             JsonObject dataObject = json.getAsJsonObject();
-
-            // execute default deserialization of 'data' object to a Map
             Map<String, Object> map = context.deserialize(dataObject, Map.class);
-
-            // get the 'customData' json metadata element
             JsonObject customDataObject = dataObject.getAsJsonObject("customData");
 
             return new ContentData(map, customDataObject);
+        }
+    }
+
+    private UserDbService getUserDBService() {
+        if (userDbService == null ) {
+            Gson gson = new GsonBuilder().create();
+
+            Builder builder = new RestAdapter.Builder()
+                  .setEndpoint(USERDB_ENDPOINT)
+                  .setConverter(new GsonConverter(gson))
+                  .setLogLevel(RestAdapter.LogLevel.FULL);
+
+            // test client
+            if (client != null) {
+                builder.setClient(client);
+                builder.setExecutors(AsyncTask.THREAD_POOL_EXECUTOR, AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+
+            userDbService = builder.build().create(UserDbService.class);
+        }
+
+        return userDbService;
+    }
+
+    private class TypedJsonString extends TypedString {
+        public TypedJsonString(String body) {
+            super(body);
+        }
+
+        @Override public String mimeType() {
+            return "application/json";
         }
     }
 }
