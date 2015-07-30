@@ -4,15 +4,23 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.adzerk.android.sdk.rest.ContentData;
 import com.adzerk.android.sdk.rest.NativeAdService;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.Response;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -169,7 +177,9 @@ public class AdzerkSdk {
     // Create service for the Native Ads API
     private NativeAdService getNativeAdsService() {
         if (service == null ) {
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder()
+                  .registerTypeAdapter(ContentData.class, new ContentDataDeserializer())
+                  .create();
 
             Builder builder = new RestAdapter.Builder()
                     .setEndpoint(NATIVE_AD_ENDPOINT)
@@ -186,5 +196,27 @@ public class AdzerkSdk {
         }
 
         return service;
+    }
+
+    private static class ContentDataDeserializer implements JsonDeserializer<ContentData> {
+
+        /**
+         * Gson invokes this call-back method during deserialization when it encounters a field of the
+         * specified type.
+         */
+        @Override
+        public ContentData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+
+            // 'data' element
+            JsonObject dataObject = json.getAsJsonObject();
+
+            // execute default deserialization of 'data' object to a Map
+            Map<String, Object> map = context.deserialize(dataObject, Map.class);
+
+            // get the 'customData' json metadata element
+            JsonObject customDataObject = dataObject.getAsJsonObject("customData");
+
+            return new ContentData(map, customDataObject);
+        }
     }
 }
