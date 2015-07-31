@@ -227,6 +227,66 @@ public class AdzerkSdk {
         });
     }
 
+
+    /**
+     * Sets an interest for a User. The User object contains a list of user interest keywords.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param interest      name of interest
+     * @param listener      callback listener
+     */
+    public void setUserInterest(long networkId, String userKey, String interest, @Nullable final ResponseListener listener) {
+
+
+        getNativeAdsService().setUserInterest(networkId, userKey, interest, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets ad retargeting for brand and segment.
+     * <p/>
+     * @param networkId     unique network id
+     * @param brandId       unique brand id
+     * @param segment       segment identifier
+     * @param userKey       unique User key
+     * @param listener      callback listener
+     */
+    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey, @Nullable final ResponseListener listener) {
+
+
+        getNativeAdsService().setUserRetargeting(networkId, brandId, segment, userKey, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
     /**
      * Send a synchronous request to the Native Ads API.
      *

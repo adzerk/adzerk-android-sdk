@@ -62,26 +62,20 @@ public interface NativeAdService {
     void setUserInterest(@Path("networkId") long networkId, @Query("userKey") String userKey, @Query("interest") String interest, ResponseCallback callback);
 
     /**
-     * Opt-out
-     *
-     * We need to allow users to opt-out of userDB tracking.
-     *
-     * http://engine.adzerk.net/udb/{networkid}/optout/i.gif
-     *
-     * When this is called we should clear out their entire user record and then set a value of "optedOut" to true.
-     * We then need to check this value before setting any data and if it's set we should abort the write. We should
-     * also exclude this user from frequency capping.
+     * Sets a flag to allow User to opt-out of UserDB tracking. This call clears the entire user record and then
+     * sets a value of "optedOut" to true.
+     * <p/>
+     * Example: GET http://engine.adzerk.net/udb/{networkid}/optout/i.gif?userKey=<user-key>
      */
+    @GET("/udb/{networkId}/optout/i.gif")
+    void setUserOptout(@Path("networkId") long networkId, @Query("userKey") String userKey, ResponseCallback callback);
 
     /**
-     * Retargeting
-     *
-     * It's a powerful feature for publishers to be able to sell retargeting for advertisers. This simple pixel will
-     * create a new number set called Segments-{brandId} that contains each of the segments.
-     *
-     * add:
-     *
-     * http://engine.adzerk.net/udb/{networkId}/rt/{brandId}/{segment}/i.gif
+     * Retargeting creates a new number set called Segments-{brandId} that contains each of the segments.
+     * <p/>
+     * Example: GET http://engine.adzerk.net/udb/{networkId}/rt/{brandId}/{segment}/i.gif?userKey=<user-key>
      */
-
+    @GET("/udb/{networkId}/rt/{brandId}/{segment}/i.gif")
+    void setUserRetargeting(@Path("networkId") long networkId, @Path("brandId") long brandId, @Path("segment") String segement,
+                            @Query("userKey") String userKey, ResponseCallback callback);
 }
