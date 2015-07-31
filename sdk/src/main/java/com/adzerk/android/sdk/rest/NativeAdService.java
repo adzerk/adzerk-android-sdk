@@ -9,7 +9,10 @@ import retrofit.http.POST;
  */
 public interface NativeAdService {
 
-    // issues a request for ads
     @POST("/")
     void request(@Body Request request, Callback<Response> callback);
+
+    @POST("/")
+    Response request(@Body Request request);
+
 }

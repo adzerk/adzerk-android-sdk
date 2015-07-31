@@ -1,6 +1,5 @@
 package com.adzerk.android.sdk;
 
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -89,12 +88,8 @@ public class AdzerkSdk {
      * @param api service api
      * @return sdk instance
      */
-    public static AdzerkSdk getInstance(NativeAdService api) {
-        if (instance == null) {
-            instance = new AdzerkSdk(api, null);
-        }
-
-        return instance;
+    public static AdzerkSdk createInstance(NativeAdService api) {
+        return new AdzerkSdk(api, null);
     }
 
     /**
@@ -103,12 +98,8 @@ public class AdzerkSdk {
      * @param client - Inject http client
      * @return sdk instance
      */
-    public static AdzerkSdk getInstance(Client client) {
-        if (instance == null) {
-            instance = new AdzerkSdk(null, client);
-        }
-
-        return instance;
+    public static AdzerkSdk createInstance(Client client) {
+        return new AdzerkSdk(null, client);
     }
 
     private AdzerkSdk() {
@@ -142,6 +133,15 @@ public class AdzerkSdk {
                 }
             }
         });
+    }
+
+    /**
+     * Send a synchronous request to the Native Ads API.
+     *
+     * @param request Request specifying one or more Placements
+     */
+    public Response requestSynchronous(Request request) {
+        return getNativeAdsService().request(request);
     }
 
     /**
@@ -188,7 +188,6 @@ public class AdzerkSdk {
             // test client
             if (client != null) {
                 builder.setClient(client);
-                builder.setExecutors(AsyncTask.THREAD_POOL_EXECUTOR, AsyncTask.THREAD_POOL_EXECUTOR);
             }
 
             service = builder.build().create(NativeAdService.class);
