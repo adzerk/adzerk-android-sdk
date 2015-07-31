@@ -104,15 +104,11 @@ public class AdzerkSdk {
     /**
      * Injection point for tests only. Not intended for public consumption.
      *
-     * @param api service api
+     * @param userDbService service api
      * @return sdk instance
      */
-    public static AdzerkSdk getInstance(UserDbService api) {
-        if (instance == null) {
-            instance = new AdzerkSdk(api, null);
-        }
-
-        return instance;
+    public static AdzerkSdk createInstance(UserDbService userDbService) {
+        return new AdzerkSdk(null, userDbService, null);
     }
 
     /**
@@ -132,11 +128,6 @@ public class AdzerkSdk {
 
     private AdzerkSdk(NativeAdService nativeAdsService, UserDbService userDbService, Client client) {
         this.nativeAdsService = nativeAdsService;
-        this.client = client;
-    }
-
-    private AdzerkSdk(UserDbService service, Client client) {
-        this.userDbService = service;
         this.client = client;
     }
 

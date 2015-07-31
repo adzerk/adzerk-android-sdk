@@ -11,6 +11,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import retrofit.RetrofitError;
+import retrofit.http.HEAD;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
