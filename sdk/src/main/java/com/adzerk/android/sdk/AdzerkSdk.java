@@ -8,6 +8,7 @@ import com.adzerk.android.sdk.rest.NativeAdService;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.Response;
 import com.adzerk.android.sdk.rest.User;
+import com.adzerk.android.sdk.rest.UserProperties;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -420,6 +421,7 @@ public class AdzerkSdk {
         if (service == null ) {
             Gson gson = new GsonBuilder()
                   .registerTypeAdapter(ContentData.class, new ContentDataDeserializer())
+                  .registerTypeAdapter(UserProperties.class, new UserPropertiesDeserializer())
                   .create();
 
             Builder builder = new RestAdapter.Builder()
@@ -448,6 +450,18 @@ public class AdzerkSdk {
             JsonObject customDataObject = dataObject.getAsJsonObject("customData");
 
             return new ContentData(map, customDataObject);
+        }
+    }
+
+    // Capture the default deserialization and JsonObject for the 'custom' element
+    private static class UserPropertiesDeserializer implements JsonDeserializer<UserProperties> {
+
+        @Override
+        public UserProperties deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject dataObject = json.getAsJsonObject();
+            Map<String, Object> map = context.deserialize(dataObject, Map.class);
+
+            return new UserProperties(map, dataObject);
         }
     }
 
