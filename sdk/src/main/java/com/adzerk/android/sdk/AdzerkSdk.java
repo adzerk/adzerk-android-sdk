@@ -305,7 +305,7 @@ public class AdzerkSdk {
      * @param userKey       unique User key
      * @param interest      name of interest
      */
-    public void setUserInterest(long networkId, String userKey, String interest) {
+    public void setUserInterestSynchronous(long networkId, String userKey, String interest) {
         getNativeAdsService().setUserInterest(networkId, userKey, interest);
     }
 
@@ -342,7 +342,7 @@ public class AdzerkSdk {
      * @param networkId     unique network id
      * @param userKey       unique User key
      */
-    public void setUserOptout(long networkId, String userKey) {
+    public void setUserOptoutSynchronous(long networkId, String userKey) {
         getNativeAdsService().setUserOptout(networkId, userKey);
     }
 
@@ -383,7 +383,7 @@ public class AdzerkSdk {
      * @param segment       segment identifier
      * @param userKey       unique User key
      */
-    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey) {
+    public void setUserRetargetingSynchronous(long networkId, long brandId, String segment, String userKey) {
         getNativeAdsService().setUserRetargeting(networkId, brandId, segment, userKey);
     }
 
