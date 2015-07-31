@@ -34,40 +34,25 @@ android {
     }
 }
 
-// Bintray user info from local properties
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-def githubId = properties.getProperty("github.id")
-def githubName = properties.getProperty("github.name")
-def githubEmail = properties.getProperty("github.email")
-
-// GitHub
-def github = [
-        user: properties.getProperty("github.id"),
-        name: properties.getProperty("github.name"),
-        email: properties.getProperty("github.email"),
-        url: 'https://github.com/fmedlin/adzerk-android-sdk',
-        git: 'https://github.com/fmedlin/adzerk-android-sdk.git'
-]
-
 // Bintray package version
 version =  "${versionMajor}.${versionMinor}.${versionPatch}"
 
 bintray {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
 
     configurations = ['archives']
     pkg {
-        userOrg = 'adzerk'
-        repo = 'Maven'
+        userOrg = BINTRAY_USERORG
+        repo = BINTRAY_REPO
         name = 'com.adzerk.android.sdk'
         desc = 'Adzerk Android SDK'
-        websiteUrl = github.url
-        issueTrackerUrl = github.url + '/issues'
-        vcsUrl = github.git
-        licenses = ['"Apache-2.0"']
+        websiteUrl = GITHUB_URL
+        issueTrackerUrl = GITHUB_URL + '/issues'
+        vcsUrl = GITHUB_GIT
+        licenses = [LICENSE_NAME]
         labels = ['aar', 'android', 'library', 'adzerk', 'sdk', 'advertising']
         publicDownloadNumbers = false
     }
@@ -82,24 +67,24 @@ install {
             project {
                 packaging 'aar'
                 name 'com.adzerk.android.sdk'
-                url 'https://github.com/fmedlin/adzerk-android-sdk'
+                url GITHUB_URL
                 licenses {
                     license {
-                        name 'Apache-2.0'
-                        url 'http://opensource.org/licenses/Apache-2.0'
+                        name LICENSE_NAME
+                        url LICENSE_URL
                     }
                 }
                 developers {
                     developer {
-                        id  github.user
-                        name github.name
-                        email github.email
+                        id  GITHUB_ID
+                        name GITHUB_NAME
+                        email GITHUB_EMAIL
                     }
                 }
                 scm {
-                    connection github.git
-                    developerConnection github.git
-                    url github.url
+                    connection GITHUB_GIT
+                    developerConnection GITHUB_GIT
+                    url GITHUB_URL
                 }
             }
         }
