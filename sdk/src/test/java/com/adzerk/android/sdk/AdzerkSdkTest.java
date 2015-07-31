@@ -1,7 +1,7 @@
 package com.adzerk.android.sdk;
 
 import com.adzerk.android.sdk.AdzerkSdk.ResponseListener;
-import com.adzerk.android.sdk.rest.NativeAdService;
+import com.adzerk.android.sdk.rest.AdzerkService;
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.Response;
@@ -40,7 +40,7 @@ public class AdzerkSdkTest {
 
     AdzerkSdk sdk;
 
-    @Mock NativeAdService api;
+    @Mock AdzerkService api;
     @Captor ArgumentCaptor<ResponseListener> responseListener;
 
     static String userKey = "ue1-d720342a233c4631a58dfb6b54f43480";

@@ -15,7 +15,7 @@ import retrofit.mime.TypedInput;
 /**
  * Service interface for Native Ads API
  */
-public interface NativeAdService {
+public interface AdzerkService {
 
     @POST("/api/v2")
     void request(@Body Request request, Callback<Response> callback);
