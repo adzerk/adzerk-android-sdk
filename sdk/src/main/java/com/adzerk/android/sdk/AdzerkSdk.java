@@ -403,6 +403,15 @@ public class AdzerkSdk {
         }
     }
 
+    /**
+     * Returns a typed json string to be serialized
+     * @param jsonString
+     * @return
+     */
+    public TypedJsonString createTypedJsonString(String jsonString) {
+        return new TypedJsonString(jsonString);
+    }
+
     protected void impression(final URL url) {
         new Thread(new Runnable() {
             @Override
