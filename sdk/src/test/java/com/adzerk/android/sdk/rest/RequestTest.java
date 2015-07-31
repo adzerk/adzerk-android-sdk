@@ -25,7 +25,8 @@ public class RequestTest {
     final static Placement placement = new Placement("div1", 9709, 70464, 5);
     final static List<Placement> placements = Arrays.asList(placement);
 
-    @Mock NativeAdService api;
+    @Mock
+    AdzerkService api;
 
     @Before
     public void setUp() throws Exception {
