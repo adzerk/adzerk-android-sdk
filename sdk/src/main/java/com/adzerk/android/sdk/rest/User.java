@@ -75,6 +75,19 @@ public class User  {
     }
 
     /**
+     * Returns true if user has specified interest
+     * @param interest keyword
+     * @return true if user has interest
+     */
+    public boolean hasInterest(String interest) {
+        if (interests != null) {
+            return interests.contains(interest);
+        }
+
+        return false;
+    }
+
+    /**
      * Returns true if User has opted out of tracking
      * @return true if opted out
      */
