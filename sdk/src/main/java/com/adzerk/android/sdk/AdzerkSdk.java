@@ -142,6 +142,15 @@ public class AdzerkSdk {
     }
 
     /**
+     * Send a synchronous request to the Native Ads API.
+     *
+     * @param request Request specifying one or more Placements
+     */
+    public Response requestSynchronous(Request request) {
+        return getNativeAdsService().request(request);
+    }
+
+    /**
      * Set custom properties for User, specifying properties via JSON string.
      * <p/>
      * @param networkId unique network id
@@ -285,15 +294,6 @@ public class AdzerkSdk {
                 }
             }
         });
-    }
-
-    /**
-     * Send a synchronous request to the Native Ads API.
-     *
-     * @param request Request specifying one or more Placements
-     */
-    public Response requestSynchronous(Request request) {
-        return getNativeAdsService().request(request);
     }
 
     /**
