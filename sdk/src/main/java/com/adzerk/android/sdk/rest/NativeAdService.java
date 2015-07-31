@@ -32,7 +32,7 @@ public interface NativeAdService {
     void postUserProperties(@Path("networkId") long networkId, @Query("userKey") String userKey, @Body TypedInput body, ResponseCallback callback);
 
     @POST("/udb/{networkId}/custom")
-    void postUserProperties(@Path("networkId") long networkId, @Query("userKey") String userKey, @Body TypedInput body);
+    Object postUserProperties(@Path("networkId") long networkId, @Query("userKey") String userKey, @Body TypedInput body);
 
     /**
      * Set the custom properties of a User by specifying properties using a Map object
@@ -48,7 +48,7 @@ public interface NativeAdService {
 
     @Headers( "Content-Type: application/json" )
     @POST("/udb/{networkId}/custom")
-    void postUserProperties(@Path("networkId") long networkId, @Query("userKey") String userKey, @Body Map<String, Object> body);
+    Object postUserProperties(@Path("networkId") long networkId, @Query("userKey") String userKey, @Body Map<String, Object> body);
 
     /**
      * Reads a User from UserDB.
@@ -72,7 +72,7 @@ public interface NativeAdService {
     void setUserInterest(@Path("networkId") long networkId, @Query("userKey") String userKey, @Query("interest") String interest, ResponseCallback callback);
 
     @GET("/udb/{networkId}/interest/i.gif")
-    void setUserInterest(@Path("networkId") long networkId, @Query("userKey") String userKey, @Query("interest") String interest);
+    Object setUserInterest(@Path("networkId") long networkId, @Query("userKey") String userKey, @Query("interest") String interest);
 
     /**
      * Sets a flag to allow User to opt-out of UserDB tracking. This call clears the entire user record and then
@@ -84,7 +84,7 @@ public interface NativeAdService {
     void setUserOptout(@Path("networkId") long networkId, @Query("userKey") String userKey, ResponseCallback callback);
 
     @GET("/udb/{networkId}/optout/i.gif")
-    void setUserOptout(@Path("networkId") long networkId, @Query("userKey") String userKey);
+    Object setUserOptout(@Path("networkId") long networkId, @Query("userKey") String userKey);
 
     /**
      * Retargeting creates a new number set called Segments-{brandId} that contains each of the segments.
@@ -96,6 +96,6 @@ public interface NativeAdService {
                             @Query("userKey") String userKey, ResponseCallback callback);
 
     @GET("/udb/{networkId}/rt/{brandId}/{segment}/i.gif")
-    void setUserRetargeting(@Path("networkId") long networkId, @Path("brandId") long brandId, @Path("segment") String segement,
+    Object setUserRetargeting(@Path("networkId") long networkId, @Path("brandId") long brandId, @Path("segment") String segement,
                             @Query("userKey") String userKey);
 }
