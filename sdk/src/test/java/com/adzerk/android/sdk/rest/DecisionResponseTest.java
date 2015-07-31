@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(sdk=21, constants=BuildConfig.class)
-public class ResponseTest {
+public class DecisionResponseTest {
 
     AdzerkSdk sdk;
     MockClient mockClient;
@@ -27,7 +27,7 @@ public class ResponseTest {
 
     @Test
     public void itShouldDeserializeDecisions() {
-        Response response = sdk.requestSynchronous(createTestRequest());
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
         assertThat(response).isNotNull();
 
         // User
@@ -57,7 +57,7 @@ public class ResponseTest {
 
     @Test
     public void itShouldDeserializeContents() {
-        Response response = sdk.requestSynchronous(createTestRequest());
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
         assertThat(response).isNotNull();
 
         Content content = response.getDecision("div1").getContents().get(0);

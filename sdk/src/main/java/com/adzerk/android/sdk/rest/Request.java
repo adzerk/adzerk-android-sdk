@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.net.InetAddress;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +28,7 @@ import java.util.Set;
  *     .build();
  *
  * // Issue the Request
- * sdk.request(request, listener);
+ * sdk.requestPlacement(request, listener);
  * }
  * </pre>
  * @see com.adzerk.android.sdk.rest.Request.Builder

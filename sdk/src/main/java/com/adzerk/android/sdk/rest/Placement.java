@@ -73,7 +73,7 @@ public class Placement {
      * </pre>
      *
      * The Response to an ad Request returns a corresponding Decision for each Placement. The Decision contains the
-     * ad that was selected for a given Placement. The Response relates a Decision to Placement by divName.
+     * ad that was selected for a given Placement. The DecisionResponse relates a Decision to Placement by divName.
      *
      * @param divName       unique name for the placement
      * @param networkId     network id to use when selecting an ad

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * A Decision represents the ad that was selected to be served for a given {@link Placement}.
  * <p>
- * A {@link Response} will contain zero or more Decisions, one per Placement that was sent in on the request.
+ * A {@link DecisionResponse} will contain zero or more Decisions, one per Placement that was sent in on the requestPlacement.
  * If no ad was selected for a given Placement, the corresponding Decision entry will be undefined (null).
  */
 public class Decision {
