@@ -38,10 +38,8 @@ android {
 version =  "${versionMajor}.${versionMinor}.${versionPatch}"
 
 bintray {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
+    user = BINTRAY_USER
+    key = BINTRAY_API_KEY
 
     configurations = ['archives']
     pkg {
