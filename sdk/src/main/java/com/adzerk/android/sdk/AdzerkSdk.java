@@ -181,6 +181,18 @@ public class AdzerkSdk {
     }
 
     /**
+     * Set custom properties for User, specifying properties via JSON string.
+     * <p/>
+     * @param networkId unique network id
+     * @param userKey   unique User key
+     * @param json      a JSON String representing the custom properties, ie. { "age": 27, "gender": "male }
+     */
+    public void setUserPropertiesSynchronous(long networkId, String userKey, String json) {
+        TypedJsonString body = new TypedJsonString(json);
+        getNativeAdsService().postUserProperties(networkId, userKey, body);
+    }
+
+    /**
      * Set custom properties for User, specifying properties via a Map object
      * <p/>
      * @param networkId     unique network id
@@ -189,7 +201,6 @@ public class AdzerkSdk {
      * @param listener      callback listener
      */
     public void setUserProperties(long networkId, String userKey, Map<String, Object> properties, @Nullable final ResponseListener listener) {
-
 
         getNativeAdsService().postUserProperties(networkId, userKey, properties, new ResponseCallback() {
 
@@ -207,6 +218,17 @@ public class AdzerkSdk {
                 }
             }
         });
+    }
+
+    /**
+     * Set custom properties for User, specifying properties via a Map object
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param properties    map of key-value pairs
+     */
+    public void setUserPropertiesSynchronous(long networkId, String userKey, Map<String, Object> properties) {
+        getNativeAdsService().postUserProperties(networkId, userKey, properties);
     }
 
     /**
@@ -236,6 +258,16 @@ public class AdzerkSdk {
         });
     }
 
+    /**
+     * Returns information about the User specified by userKey.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @return user object
+     */
+    public User readUserSynchronous(long networkId, String userKey) {
+        return getNativeAdsService().readUser(networkId, userKey);
+    }
 
     /**
      * Sets an interest for a User. The User object contains a list of user interest keywords.
@@ -247,8 +279,47 @@ public class AdzerkSdk {
      */
     public void setUserInterest(long networkId, String userKey, String interest, @Nullable final ResponseListener listener) {
 
-
         getNativeAdsService().setUserInterest(networkId, userKey, interest, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets an interest for a User. The User object contains a list of user interest keywords.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param interest      name of interest
+     */
+    public void setUserInterest(long networkId, String userKey, String interest) {
+        getNativeAdsService().setUserInterest(networkId, userKey, interest);
+    }
+
+    /**
+     * Sets ad retargeting for brand and segment.
+     * <p/>
+     * @param networkId     unique network id
+     * @param brandId       unique brand id
+     * @param segment       segment identifier
+     * @param userKey       unique User key
+     * @param listener      callback listener
+     */
+    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey, @Nullable final ResponseListener listener) {
+
+        getNativeAdsService().setUserRetargeting(networkId, brandId, segment, userKey, new ResponseCallback() {
 
             @Override
             public void success(retrofit.client.Response response) {
@@ -273,27 +344,9 @@ public class AdzerkSdk {
      * @param brandId       unique brand id
      * @param segment       segment identifier
      * @param userKey       unique User key
-     * @param listener      callback listener
      */
-    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey, @Nullable final ResponseListener listener) {
-
-
-        getNativeAdsService().setUserRetargeting(networkId, brandId, segment, userKey, new ResponseCallback() {
-
-            @Override
-            public void success(retrofit.client.Response response) {
-                if (listener != null) {
-                    listener.success(null);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                if (listener != null) {
-                    listener.error(error);
-                }
-            }
-        });
+    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey) {
+        getNativeAdsService().setUserRetargeting(networkId, brandId, segment, userKey);
     }
 
     /**
