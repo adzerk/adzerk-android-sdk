@@ -1,13 +1,21 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 0
+def versionBuild = 0
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
     buildTypes {
         release {
@@ -25,6 +33,79 @@ android {
         androidTest.setRoot('src/test')
     }
 }
+
+// Bintray user info from local properties
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+def githubId = properties.getProperty("github.id")
+def githubName = properties.getProperty("github.name")
+def githubEmail = properties.getProperty("github.email")
+
+// GitHub
+def github = [
+        user: properties.getProperty("github.id"),
+        name: properties.getProperty("github.name"),
+        email: properties.getProperty("github.email"),
+        url: 'https://github.com/fmedlin/adzerk-android-sdk',
+        git: 'https://github.com/fmedlin/adzerk-android-sdk.git'
+]
+
+// Bintray package version
+version =  "${versionMajor}.${versionMinor}.${versionPatch}"
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        userOrg = 'adzerk'
+        repo = 'Maven'
+        name = 'com.adzerk.android.sdk'
+        desc = 'Adzerk Android SDK'
+        websiteUrl = github.url
+        issueTrackerUrl = github.url + '/issues'
+        vcsUrl = github.git
+        licenses = ['"Apache-2.0"']
+        labels = ['aar', 'android', 'library', 'adzerk', 'sdk', 'advertising']
+        publicDownloadNumbers = false
+    }
+}
+
+// Maven groupId
+group = 'adzerk'
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'com.adzerk.android.sdk'
+                url 'https://github.com/fmedlin/adzerk-android-sdk'
+                licenses {
+                    license {
+                        name 'Apache-2.0'
+                        url 'http://opensource.org/licenses/Apache-2.0'
+                    }
+                }
+                developers {
+                    developer {
+                        id  github.user
+                        name github.name
+                        email github.email
+                    }
+                }
+                scm {
+                    connection github.git
+                    developerConnection github.git
+                    url github.url
+                }
+            }
+        }
+    }
+}
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
