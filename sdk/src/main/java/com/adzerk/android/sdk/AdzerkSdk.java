@@ -309,6 +309,43 @@ public class AdzerkSdk {
     }
 
     /**
+     * Sets a flag to allow User to opt-out of tracking.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param listener      callback listener
+     */
+    public void setUserOptout(long networkId, String userKey, @Nullable final ResponseListener listener) {
+
+        getNativeAdsService().setUserOptout(networkId, userKey, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets a flag to allow User to opt-out of tracking.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     */
+    public void setUserOptout(long networkId, String userKey) {
+        getNativeAdsService().setUserOptout(networkId, userKey);
+    }
+
+    /**
      * Sets ad retargeting for brand and segment.
      * <p/>
      * @param networkId     unique network id
