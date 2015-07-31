@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import java.util.Map;
 
 /**
- * Contains the custom properties parse from the User object.
+ * Contains the custom properties parse from the User object. Not intended for API consumers.
  * @see User
  */
 public class UserProperties {
