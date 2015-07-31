@@ -1,6 +1,5 @@
 package com.adzerk.android.sdk;
 
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -9,7 +8,6 @@ import com.adzerk.android.sdk.rest.NativeAdService;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.Response;
 import com.adzerk.android.sdk.rest.User;
-import com.adzerk.android.sdk.rest.UserDbService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -57,14 +55,12 @@ import retrofit.mime.TypedString;
  */
 public class AdzerkSdk {
     static final String TAG = AdzerkSdk.class.getSimpleName();
-    static final String NATIVE_AD_ENDPOINT = "http://engine.adzerk.net/api/v2";
 
-    static final String USERDB_ENDPOINT = "http://engine.adzerk.net/udb/";
+    static final String ADZERK_ENDPOINT = "https://engine.adzerk.net";
 
     static AdzerkSdk instance;
 
-    NativeAdService nativeAdsService;
-    UserDbService userDbService;
+    NativeAdService service;
 
     Client client;
 
@@ -98,18 +94,9 @@ public class AdzerkSdk {
      * @return sdk instance
      */
     public static AdzerkSdk createInstance(NativeAdService nativeAds) {
-        return new AdzerkSdk(nativeAds, null, null);
+        return new AdzerkSdk(nativeAds, null);
     }
 
-    /**
-     * Injection point for tests only. Not intended for public consumption.
-     *
-     * @param userDbService service api
-     * @return sdk instance
-     */
-    public static AdzerkSdk createInstance(UserDbService userDbService) {
-        return new AdzerkSdk(null, userDbService, null);
-    }
 
     /**
      * Injection point for tests only. Not intended for public consumption.
@@ -118,16 +105,15 @@ public class AdzerkSdk {
      * @return sdk instance
      */
     public static AdzerkSdk createInstance(Client client) {
-        return new AdzerkSdk(null, null,  client);
+        return new AdzerkSdk(null, client);
     }
 
     private AdzerkSdk() {
-        nativeAdsService = getNativeAdsService();
-        userDbService = getUserDBService();
+        service = getNativeAdsService();
     }
 
-    private AdzerkSdk(NativeAdService nativeAdsService, UserDbService userDbService, Client client) {
-        this.nativeAdsService = nativeAdsService;
+    private AdzerkSdk(NativeAdService service, Client client) {
+        this.service = service;
         this.client = client;
     }
 
@@ -167,7 +153,7 @@ public class AdzerkSdk {
 
         TypedJsonString body = new TypedJsonString(json);
 
-        getUserDBService().postUserProperties(networkId, userKey, body, new ResponseCallback() {
+        getNativeAdsService().postUserProperties(networkId, userKey, body, new ResponseCallback() {
 
             @Override
             public void success(retrofit.client.Response response) {
@@ -196,7 +182,7 @@ public class AdzerkSdk {
     public void setUserProperties(long networkId, String userKey, Map<String, Object> properties, @Nullable final ResponseListener listener) {
 
 
-        getUserDBService().postUserProperties(networkId, userKey, properties, new ResponseCallback() {
+        getNativeAdsService().postUserProperties(networkId, userKey, properties, new ResponseCallback() {
 
             @Override
             public void success(retrofit.client.Response response) {
@@ -223,7 +209,7 @@ public class AdzerkSdk {
      */
     public void readUser(long networkId, String userKey, @Nullable final ResponseListener<User> listener) {
 
-        getUserDBService().readUser(networkId, userKey, new Callback<User>() {
+        getNativeAdsService().readUser(networkId, userKey, new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response2) {
@@ -281,13 +267,13 @@ public class AdzerkSdk {
 
     // Create service for the Native Ads API
     private NativeAdService getNativeAdsService() {
-        if (nativeAdsService == null ) {
+        if (service == null ) {
             Gson gson = new GsonBuilder()
                   .registerTypeAdapter(ContentData.class, new ContentDataDeserializer())
                   .create();
 
             Builder builder = new RestAdapter.Builder()
-                    .setEndpoint(NATIVE_AD_ENDPOINT)
+                    .setEndpoint(ADZERK_ENDPOINT)
                     .setConverter(new GsonConverter(gson))
                     .setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -296,10 +282,10 @@ public class AdzerkSdk {
                 builder.setClient(client);
             }
 
-            nativeAdsService = builder.build().create(NativeAdService.class);
+            service = builder.build().create(NativeAdService.class);
         }
 
-        return nativeAdsService;
+        return service;
     }
 
     // Capture the default deserialization and JsonObject for the 'data.customData' element
@@ -313,27 +299,6 @@ public class AdzerkSdk {
 
             return new ContentData(map, customDataObject);
         }
-    }
-
-    private UserDbService getUserDBService() {
-        if (userDbService == null ) {
-            Gson gson = new GsonBuilder().create();
-
-            Builder builder = new RestAdapter.Builder()
-                  .setEndpoint(USERDB_ENDPOINT)
-                  .setConverter(new GsonConverter(gson))
-                  .setLogLevel(RestAdapter.LogLevel.FULL);
-
-            // test client
-            if (client != null) {
-                builder.setClient(client);
-                builder.setExecutors(AsyncTask.THREAD_POOL_EXECUTOR, AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-
-            userDbService = builder.build().create(UserDbService.class);
-        }
-
-        return userDbService;
     }
 
     private class TypedJsonString extends TypedString {
