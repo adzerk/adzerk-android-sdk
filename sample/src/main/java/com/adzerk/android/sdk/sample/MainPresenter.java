@@ -129,7 +129,7 @@ public class MainPresenter {
                                   .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(IMG_FLIGHT_ID))
                                   .build(),
 
-                            new ResponseListener() {
+                            new ResponseListener<Response>() {
 
                                 @Override
                                 public void success(Response response) {
@@ -154,7 +154,7 @@ public class MainPresenter {
                                 .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(HTML_FLIGHT_ID))
                                 .build(),
 
-                          new ResponseListener() {
+                          new ResponseListener<Response>() {
 
                               @Override
                               public void success(Response response) {

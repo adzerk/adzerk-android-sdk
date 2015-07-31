@@ -7,6 +7,8 @@ import com.adzerk.android.sdk.rest.ContentData;
 import com.adzerk.android.sdk.rest.NativeAdService;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.Response;
+import com.adzerk.android.sdk.rest.User;
+import com.adzerk.android.sdk.rest.UserProperties;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -22,11 +24,13 @@ import java.net.URL;
 import java.util.Map;
 
 import retrofit.Callback;
+import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.Builder;
 import retrofit.RetrofitError;
 import retrofit.client.Client;
 import retrofit.converter.GsonConverter;
+import retrofit.mime.TypedString;
 
 /**
  * The Adzerk SDK provides the API for requesting native ads for you app.
@@ -52,20 +56,22 @@ import retrofit.converter.GsonConverter;
  */
 public class AdzerkSdk {
     static final String TAG = AdzerkSdk.class.getSimpleName();
-    static final String NATIVE_AD_ENDPOINT = "http://engine.adzerk.net/api/v2";
+
+    static final String ADZERK_ENDPOINT = "https://engine.adzerk.net";
 
     static AdzerkSdk instance;
 
     NativeAdService service;
+
     Client client;
 
     /**
      * Listener for the Response to an ad Request
      */
-    public interface ResponseListener {
+    public interface ResponseListener<T> {
         //TODO: Fine for a starting place, but we should use generic args so that we aren't
         //TODO: leaking retrofit abstractions through the sdk.
-        public void success(Response response);
+        public void success(@Nullable T response);
         public void error(RetrofitError error);
     }
 
@@ -85,12 +91,13 @@ public class AdzerkSdk {
     /**
      * Injection point for tests only. Not intended for public consumption.
      *
-     * @param api service api
+     * @param nativeAds service api
      * @return sdk instance
      */
-    public static AdzerkSdk createInstance(NativeAdService api) {
-        return new AdzerkSdk(api, null);
+    public static AdzerkSdk createInstance(NativeAdService nativeAds) {
+        return new AdzerkSdk(nativeAds, null);
     }
+
 
     /**
      * Injection point for tests only. Not intended for public consumption.
@@ -118,11 +125,11 @@ public class AdzerkSdk {
      * @param listener Can be null, but caller will never get notifications.
      */
     public void request(Request request, @Nullable final ResponseListener listener) {
-        getNativeAdsService().request(request, new Callback<Response>() {
+        getNativeAdsService().request(request, new Callback() {
             @Override
-            public void success(Response response, retrofit.client.Response response2) {
+            public void success(Object o, retrofit.client.Response response2) {
                 if (listener != null) {
-                    listener.success(response);
+                    listener.success(null);
                 }
             }
 
@@ -145,6 +152,242 @@ public class AdzerkSdk {
     }
 
     /**
+     * Set custom properties for User, specifying properties via JSON string.
+     * <p/>
+     * @param networkId unique network id
+     * @param userKey   unique User key
+     * @param json      a JSON String representing the custom properties, ie. { "age": 27, "gender": "male }
+     * @param listener  callback listener
+     */
+    public void setUserProperties(long networkId, String userKey, String json, @Nullable final ResponseListener listener) {
+
+        TypedJsonString body = new TypedJsonString(json);
+
+        getNativeAdsService().postUserProperties(networkId, userKey, body, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Set custom properties for User, specifying properties via JSON string.
+     * <p/>
+     * @param networkId unique network id
+     * @param userKey   unique User key
+     * @param json      a JSON String representing the custom properties, ie. { "age": 27, "gender": "male }
+     */
+    public void setUserPropertiesSynchronous(long networkId, String userKey, String json) {
+        TypedJsonString body = new TypedJsonString(json);
+        getNativeAdsService().postUserProperties(networkId, userKey, body);
+    }
+
+    /**
+     * Set custom properties for User, specifying properties via a Map object
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param properties    map of key-value pairs
+     * @param listener      callback listener
+     */
+    public void setUserProperties(long networkId, String userKey, Map<String, Object> properties, @Nullable final ResponseListener listener) {
+
+        getNativeAdsService().postUserProperties(networkId, userKey, properties, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Set custom properties for User, specifying properties via a Map object
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param properties    map of key-value pairs
+     */
+    public void setUserPropertiesSynchronous(long networkId, String userKey, Map<String, Object> properties) {
+        getNativeAdsService().postUserProperties(networkId, userKey, properties);
+    }
+
+    /**
+     * Returns information about the User specified by userKey.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param listener      callback listener
+     */
+    public void readUser(long networkId, String userKey, @Nullable final ResponseListener<User> listener) {
+
+        getNativeAdsService().readUser(networkId, userKey, new Callback<User>() {
+
+            @Override
+            public void success(User user, retrofit.client.Response response2) {
+                if (listener != null) {
+                    listener.success(user);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Returns information about the User specified by userKey.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @return user object
+     */
+    public User readUserSynchronous(long networkId, String userKey) {
+        return getNativeAdsService().readUser(networkId, userKey);
+    }
+
+    /**
+     * Sets an interest for a User. The User object contains a list of user interest keywords.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param interest      name of interest
+     * @param listener      callback listener
+     */
+    public void setUserInterest(long networkId, String userKey, String interest, @Nullable final ResponseListener listener) {
+
+        getNativeAdsService().setUserInterest(networkId, userKey, interest, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets an interest for a User. The User object contains a list of user interest keywords.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param interest      name of interest
+     */
+    public void setUserInterestSynchronous(long networkId, String userKey, String interest) {
+        getNativeAdsService().setUserInterest(networkId, userKey, interest);
+    }
+
+    /**
+     * Sets a flag to allow User to opt-out of tracking.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     * @param listener      callback listener
+     */
+    public void setUserOptout(long networkId, String userKey, @Nullable final ResponseListener listener) {
+
+        getNativeAdsService().setUserOptout(networkId, userKey, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets a flag to allow User to opt-out of tracking.
+     * <p/>
+     * @param networkId     unique network id
+     * @param userKey       unique User key
+     */
+    public void setUserOptoutSynchronous(long networkId, String userKey) {
+        getNativeAdsService().setUserOptout(networkId, userKey);
+    }
+
+    /**
+     * Sets ad retargeting for brand and segment.
+     * <p/>
+     * @param networkId     unique network id
+     * @param brandId       unique brand id
+     * @param segment       segment identifier
+     * @param userKey       unique User key
+     * @param listener      callback listener
+     */
+    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey, @Nullable final ResponseListener listener) {
+
+        getNativeAdsService().setUserRetargeting(networkId, brandId, segment, userKey, new ResponseCallback() {
+
+            @Override
+            public void success(retrofit.client.Response response) {
+                if (listener != null) {
+                    listener.success(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                if (listener != null) {
+                    listener.error(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets ad retargeting for brand and segment.
+     * <p/>
+     * @param networkId     unique network id
+     * @param brandId       unique brand id
+     * @param segment       segment identifier
+     * @param userKey       unique User key
+     */
+    public void setUserRetargetingSynchronous(long networkId, long brandId, String segment, String userKey) {
+        getNativeAdsService().setUserRetargeting(networkId, brandId, segment, userKey);
+    }
+
+    /**
      * Converts the given String to an impression URL.
      *
      * @param urlString
@@ -158,6 +401,15 @@ public class AdzerkSdk {
             Log.e(TAG, "Failed to impress on url: " + urlString, e);
             return false;
         }
+    }
+
+    /**
+     * Returns a typed json string to be serialized
+     * @param jsonString
+     * @return
+     */
+    public TypedJsonString createTypedJsonString(String jsonString) {
+        return new TypedJsonString(jsonString);
     }
 
     protected void impression(final URL url) {
@@ -178,10 +430,11 @@ public class AdzerkSdk {
         if (service == null ) {
             Gson gson = new GsonBuilder()
                   .registerTypeAdapter(ContentData.class, new ContentDataDeserializer())
+                  .registerTypeAdapter(UserProperties.class, new UserPropertiesDeserializer())
                   .create();
 
             Builder builder = new RestAdapter.Builder()
-                    .setEndpoint(NATIVE_AD_ENDPOINT)
+                    .setEndpoint(ADZERK_ENDPOINT)
                     .setConverter(new GsonConverter(gson))
                     .setLogLevel(RestAdapter.LogLevel.FULL);
 
@@ -196,25 +449,38 @@ public class AdzerkSdk {
         return service;
     }
 
+    // Capture the default deserialization and JsonObject for the 'data.customData' element
     private static class ContentDataDeserializer implements JsonDeserializer<ContentData> {
 
-        /**
-         * Gson invokes this call-back method during deserialization when it encounters a field of the
-         * specified type.
-         */
         @Override
         public ContentData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-
-            // 'data' element
             JsonObject dataObject = json.getAsJsonObject();
-
-            // execute default deserialization of 'data' object to a Map
             Map<String, Object> map = context.deserialize(dataObject, Map.class);
-
-            // get the 'customData' json metadata element
             JsonObject customDataObject = dataObject.getAsJsonObject("customData");
 
             return new ContentData(map, customDataObject);
+        }
+    }
+
+    // Capture the default deserialization and JsonObject for the 'custom' element
+    private static class UserPropertiesDeserializer implements JsonDeserializer<UserProperties> {
+
+        @Override
+        public UserProperties deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject dataObject = json.getAsJsonObject();
+            Map<String, Object> map = context.deserialize(dataObject, Map.class);
+
+            return new UserProperties(map, dataObject);
+        }
+    }
+
+    private class TypedJsonString extends TypedString {
+        public TypedJsonString(String body) {
+            super(body);
+        }
+
+        @Override public String mimeType() {
+            return "application/json";
         }
     }
 }
