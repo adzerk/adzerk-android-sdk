@@ -39,7 +39,7 @@ public class AdzerkSdkTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        sdk = AdzerkSdk.getInstance(api);
+        sdk = AdzerkSdk.createInstance(api);
     }
 
     @Test

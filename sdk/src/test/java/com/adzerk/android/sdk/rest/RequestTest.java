@@ -30,7 +30,7 @@ public class RequestTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        sdk = AdzerkSdk.getInstance(api);
+        sdk = AdzerkSdk.createInstance(api);
     }
 
     @Test

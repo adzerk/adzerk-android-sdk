@@ -3,6 +3,7 @@ package com.adzerk.android.sdk;
 import java.io.IOException;
 import java.util.Collections;
 
+import retrofit.RetrofitError;
 import retrofit.client.Client;
 import retrofit.client.Request;
 import retrofit.client.Response;
@@ -25,10 +26,14 @@ public class MockClient implements Client {
 
     @Override
     public Response execute(Request request) throws IOException {
-        return new Response(request.getUrl(),
-                statusCode,
-                reason,
-                Collections.EMPTY_LIST,
-                new TypedByteArray("application/json", responseString.getBytes()));
+        if (statusCode < 299) {
+            return new Response(request.getUrl(),
+                    statusCode,
+                    reason,
+                    Collections.EMPTY_LIST,
+                    new TypedByteArray("application/json", responseString.getBytes()));
+        }
+
+        throw RetrofitError.networkError("", new IOException());
     }
 }
