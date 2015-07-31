@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adzerk.android.sdk.AdzerkSdk;
+import com.adzerk.android.sdk.AdzerkSdk.AdzerkError;
 import com.adzerk.android.sdk.AdzerkSdk.DecisionListener;
 import com.adzerk.android.sdk.rest.Content;
 import com.adzerk.android.sdk.rest.Decision;
@@ -31,7 +32,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
-import retrofit.RetrofitError;
 
 public class MainPresenter {
     static final long NETWORK_ID = 9792L;
@@ -136,8 +136,8 @@ public class MainPresenter {
                                 }
 
                                 @Override
-                                public void error(RetrofitError error) {
-                                    Log.d(TAG, "Error: " + error.getMessage());
+                                public void error(AdzerkError error) {
+                                    Log.d(TAG, "Error: " + error.getReason());
                                 }
                             }
                     );
@@ -163,8 +163,8 @@ public class MainPresenter {
                                 }
 
                                 @Override
-                                public void error(RetrofitError error) {
-                                    Log.d(TAG, "Error: " + error.getMessage());
+                                public void error(AdzerkError error) {
+                                    Log.d(TAG, "Error: " + error.getReason());
                                 }
                             }
                     );

@@ -66,23 +66,47 @@ public class AdzerkSdk {
     Client client;
 
     /**
+     * Errors returned from Adzerk API calls.
+     */
+    public static class AdzerkError {
+        int statusCode;
+        String reason;
+
+        public AdzerkError(int statusCode, String reason, Exception exception) {
+            this.statusCode = statusCode;
+            this.reason = reason;
+        }
+
+        public AdzerkError(RetrofitError error) {
+            Response response = error.getResponse();
+            if (response != null) {
+                this.statusCode = response.getStatus();
+                this.reason = response.getReason();
+            }
+        }
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        public String getReason() {
+            return reason;
+        }
+    }
+
+    /**
      * Listener for the DecisionResponse to an ad placement Request
      */
     public interface DecisionListener {
-        //TODO: Fine for a starting place, but we should use generic args so that we aren't
-        //TODO: leaking retrofit abstractions through the sdk.
         public void success(DecisionResponse response);
-        public void error(RetrofitError error);
+        public void error(AdzerkError error);
     }
 
     /**
      * Listener for the User response to a userDB request
      */
     public interface UserListener {
-        //TODO: Fine for a starting place, but we should use generic args so that we aren't
-        //TODO: leaking retrofit abstractions through the sdk.
         public void success(User user);
-        public void error(RetrofitError error);
+        public void error(AdzerkError error);
     }
 
     /**
@@ -146,7 +170,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -181,7 +205,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -218,7 +242,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -254,7 +278,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -291,7 +315,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -327,7 +351,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -364,7 +388,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
