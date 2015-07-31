@@ -1,18 +1,15 @@
 package com.adzerk.android.sdk;
 
-import com.adzerk.android.sdk.AdzerkSdk.ResponseListener;
 import com.adzerk.android.sdk.rest.AdzerkService;
+import com.adzerk.android.sdk.rest.DecisionResponse;
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
-import com.adzerk.android.sdk.rest.Response;
 import com.adzerk.android.sdk.rest.User;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -41,7 +38,6 @@ public class AdzerkSdkTest {
     AdzerkSdk sdk;
 
     @Mock AdzerkService api;
-    @Captor ArgumentCaptor<ResponseListener> responseListener;
 
     static String userKey = "ue1-d720342a233c4631a58dfb6b54f43480";
     static long networkId = 9792L;
@@ -55,8 +51,8 @@ public class AdzerkSdkTest {
     @Test
     public void itShouldRequestNativeAd() {
         Request request = createTestRequest();
-        sdk.request(request, null);
-        verify(api).request(argThat(new RequestMatcher(request)), (Callback<Response>) any());
+        sdk.requestPlacement(request, null);
+        verify(api).request(argThat(new RequestMatcher(request)), (Callback<DecisionResponse>) any());
     }
 
     @Test

@@ -16,12 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adzerk.android.sdk.AdzerkSdk;
-import com.adzerk.android.sdk.AdzerkSdk.ResponseListener;
+import com.adzerk.android.sdk.AdzerkSdk.AdzerkError;
+import com.adzerk.android.sdk.AdzerkSdk.DecisionListener;
 import com.adzerk.android.sdk.rest.Content;
 import com.adzerk.android.sdk.rest.Decision;
+import com.adzerk.android.sdk.rest.DecisionResponse;
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
-import com.adzerk.android.sdk.rest.Response;
 import com.adzerk.android.sdk.sample.VikingGenerator.Quote;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Callback;
@@ -31,7 +32,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
-import retrofit.RetrofitError;
 
 public class MainPresenter {
     static final long NETWORK_ID = 9792L;
@@ -123,23 +123,21 @@ public class MainPresenter {
                 case AD_CARD_IMG_VIEW_TYPE:
                     final AdViewHolder adViewHolder = (AdViewHolder) vh;
 
-                    sdk.request(
-
+                    sdk.requestPlacement(
                             new Request.Builder()
-                                  .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(IMG_FLIGHT_ID))
-                                  .build(),
-
-                            new ResponseListener<Response>() {
+                                    .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(IMG_FLIGHT_ID))
+                                    .build(),
+                            new DecisionListener() {
 
                                 @Override
-                                public void success(Response response) {
+                                public void success(DecisionResponse response) {
                                     Decision decision = response.getDecision("div1");
                                     loadAdContent(adViewHolder, decision);
                                 }
 
                                 @Override
-                                public void error(RetrofitError error) {
-                                    Log.d(TAG, "Error: " + error.getMessage());
+                                public void error(AdzerkError error) {
+                                    Log.d(TAG, "Error: " + error.getReason());
                                 }
                             }
                     );
@@ -148,30 +146,27 @@ public class MainPresenter {
                 case AD_CARD_HTML_VIEW_TYPE:
                     final AdWebViewHolder adWebViewHolder = (AdWebViewHolder) vh;
 
-                    sdk.request(
+                    sdk.requestPlacement(
+                            new Request.Builder()
+                                    .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(HTML_FLIGHT_ID))
+                                    .build(),
+                            new DecisionListener() {
+                                @Override
+                                public void success(DecisionResponse response) {
+                                    Decision decision = response.getDecision("div1");
+                                    Content content = decision.getContents().get(0);
+                                    String body = content.getBody();
+                                    String html = "<html>" + body + "</html>";
+                                    adWebViewHolder.webView.loadData(html, "text/html", "UTF-8");
+                                    adWebViewHolder.setClickUrl(decision.getClickUrl());
+                                    sdk.impression(decision.getImpressionUrl());
+                                }
 
-                          new Request.Builder()
-                                .addPlacement(new Placement("div1", NETWORK_ID, SITE_ID, 5).setFlightId(HTML_FLIGHT_ID))
-                                .build(),
-
-                          new ResponseListener<Response>() {
-
-                              @Override
-                              public void success(Response response) {
-                                  Decision decision = response.getDecision("div1");
-                                  Content content = decision.getContents().get(0);
-                                  String body = content.getBody();
-                                  String html = "<html>" + body + "</html>";
-                                  adWebViewHolder.webView.loadData(html, "text/html", "UTF-8");
-                                  adWebViewHolder.setClickUrl(decision.getClickUrl());
-                                  sdk.impression(decision.getImpressionUrl());
-                              }
-
-                              @Override
-                              public void error(RetrofitError error) {
-                                  Log.d(TAG, "Error: " + error.getMessage());
-                              }
-                          }
+                                @Override
+                                public void error(AdzerkError error) {
+                                    Log.d(TAG, "Error: " + error.getReason());
+                                }
+                            }
                     );
 
                     break;

@@ -30,7 +30,7 @@ public class ContentTest {
 
     @Test
     public void itShouldDeserializeResponseContent() {
-        Response response = sdk.requestSynchronous(createTestRequest());
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
         assertThat(response).isNotNull();
 
         // Content

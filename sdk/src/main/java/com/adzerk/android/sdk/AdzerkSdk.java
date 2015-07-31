@@ -3,10 +3,10 @@ package com.adzerk.android.sdk;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.adzerk.android.sdk.rest.ContentData;
 import com.adzerk.android.sdk.rest.AdzerkService;
+import com.adzerk.android.sdk.rest.ContentData;
+import com.adzerk.android.sdk.rest.DecisionResponse;
 import com.adzerk.android.sdk.rest.Request;
-import com.adzerk.android.sdk.rest.Response;
 import com.adzerk.android.sdk.rest.User;
 import com.adzerk.android.sdk.rest.UserProperties;
 import com.google.gson.Gson;
@@ -27,8 +27,10 @@ import retrofit.Callback;
 import retrofit.ResponseCallback;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.Builder;
+import retrofit.RestAdapter.LogLevel;
 import retrofit.RetrofitError;
 import retrofit.client.Client;
+import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedString;
 
@@ -44,12 +46,12 @@ import retrofit.mime.TypedString;
  * AdzerkSdk sdk = AdzerkSdk.getInstance();
  *
  * // Build the Request
- * Request request = new Request.Builder()
+ * Request requestPlacement = new Request.Builder()
  *     .addPlacement(new Placement(name, networkId, siteId, adTypes))
  *     .build();
  *
  * // Issue the Request
- * sdk.request(request, listener);
+ * sdk.requestPlacement(request, listener);
  * }
  * </pre>
  * @see com.adzerk.android.sdk.rest.Request.Builder
@@ -64,13 +66,47 @@ public class AdzerkSdk {
     Client client;
 
     /**
-     * Listener for the Response to an ad Request
+     * Errors returned from Adzerk API calls.
      */
-    public interface ResponseListener<T> {
-        //TODO: Fine for a starting place, but we should use generic args so that we aren't
-        //TODO: leaking retrofit abstractions through the sdk.
-        public void success(@Nullable T response);
-        public void error(RetrofitError error);
+    public static class AdzerkError {
+        int statusCode;
+        String reason;
+
+        public AdzerkError(int statusCode, String reason, Exception exception) {
+            this.statusCode = statusCode;
+            this.reason = reason;
+        }
+
+        public AdzerkError(RetrofitError error) {
+            Response response = error.getResponse();
+            if (response != null) {
+                this.statusCode = response.getStatus();
+                this.reason = response.getReason();
+            }
+        }
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        public String getReason() {
+            return reason;
+        }
+    }
+
+    /**
+     * Listener for the DecisionResponse to an ad placement Request
+     */
+    public interface DecisionListener {
+        public void success(DecisionResponse response);
+        public void error(AdzerkError error);
+    }
+
+    /**
+     * Listener for the User response to a userDB request
+     */
+    public interface UserListener {
+        public void success(User user);
+        public void error(AdzerkError error);
     }
 
     /**
@@ -96,7 +132,6 @@ public class AdzerkSdk {
         return new AdzerkSdk(service, null);
     }
 
-
     /**
      * Injection point for tests only. Not intended for public consumption.
      *
@@ -117,24 +152,25 @@ public class AdzerkSdk {
     }
 
     /**
-     * Send an ad request to the Native Ads API.
+     * Send a request to the Native Ads API.
+     * This is an asynchronous request, results will be returned to the given listener.
      *
      * @param request ad Request specifying one or more Placements
      * @param listener Can be null, but caller will never get notifications.
      */
-    public void request(Request request, @Nullable final ResponseListener listener) {
-        getAdzerkService().request(request, new Callback() {
+    public void requestPlacement(Request request, @Nullable final DecisionListener listener) {
+        getAdzerkService().request(request, new Callback<DecisionResponse>() {
             @Override
-            public void success(Object o, retrofit.client.Response response2) {
+            public void success(DecisionResponse response, Response response2) {
                 if (listener != null) {
-                    listener.success(null);
+                    listener.success(response);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -145,7 +181,7 @@ public class AdzerkSdk {
      *
      * @param request Request specifying one or more Placements
      */
-    public Response requestSynchronous(Request request) {
+    public DecisionResponse requestPlacementSynchronous(Request request) {
         return getAdzerkService().request(request);
     }
 
@@ -155,16 +191,12 @@ public class AdzerkSdk {
      * @param networkId unique network id
      * @param userKey   unique User key
      * @param json      a JSON String representing the custom properties, ie. { "age": 27, "gender": "male }
-     * @param listener  callback listener
+     * @param listener  callback listener, success arg is always null
      */
-    public void setUserProperties(long networkId, String userKey, String json, @Nullable final ResponseListener listener) {
-
-        TypedJsonString body = new TypedJsonString(json);
-
-        getAdzerkService().postUserProperties(networkId, userKey, body, new ResponseCallback() {
-
+    public void setUserProperties(long networkId, String userKey, String json, @Nullable final UserListener listener) {
+        getAdzerkService().postUserProperties(networkId, userKey, new TypedJsonString(json), new ResponseCallback() {
             @Override
-            public void success(retrofit.client.Response response) {
+            public void success(Response response) {
                 if (listener != null) {
                     listener.success(null);
                 }
@@ -173,7 +205,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -187,8 +219,7 @@ public class AdzerkSdk {
      * @param json      a JSON String representing the custom properties, ie. { "age": 27, "gender": "male }
      */
     public void setUserPropertiesSynchronous(long networkId, String userKey, String json) {
-        TypedJsonString body = new TypedJsonString(json);
-        getAdzerkService().postUserProperties(networkId, userKey, body);
+        getAdzerkService().postUserProperties(networkId, userKey, new TypedJsonString(json));
     }
 
     /**
@@ -199,10 +230,8 @@ public class AdzerkSdk {
      * @param properties    map of key-value pairs
      * @param listener      callback listener
      */
-    public void setUserProperties(long networkId, String userKey, Map<String, Object> properties, @Nullable final ResponseListener listener) {
-
+    public void setUserProperties(long networkId, String userKey, Map<String, Object> properties, @Nullable final UserListener listener) {
         getAdzerkService().postUserProperties(networkId, userKey, properties, new ResponseCallback() {
-
             @Override
             public void success(retrofit.client.Response response) {
                 if (listener != null) {
@@ -213,7 +242,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -237,12 +266,10 @@ public class AdzerkSdk {
      * @param userKey       unique User key
      * @param listener      callback listener
      */
-    public void readUser(long networkId, String userKey, @Nullable final ResponseListener<User> listener) {
-
+    public void readUser(long networkId, String userKey, @Nullable final UserListener listener) {
         getAdzerkService().readUser(networkId, userKey, new Callback<User>() {
-
             @Override
-            public void success(User user, retrofit.client.Response response2) {
+            public void success(User user, Response response) {
                 if (listener != null) {
                     listener.success(user);
                 }
@@ -251,7 +278,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -276,10 +303,8 @@ public class AdzerkSdk {
      * @param interest      name of interest
      * @param listener      callback listener
      */
-    public void setUserInterest(long networkId, String userKey, String interest, @Nullable final ResponseListener listener) {
-
+    public void setUserInterest(long networkId, String userKey, String interest, @Nullable final UserListener listener) {
         getAdzerkService().setUserInterest(networkId, userKey, interest, new ResponseCallback() {
-
             @Override
             public void success(retrofit.client.Response response) {
                 if (listener != null) {
@@ -290,7 +315,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -314,10 +339,8 @@ public class AdzerkSdk {
      * @param userKey       unique User key
      * @param listener      callback listener
      */
-    public void setUserOptout(long networkId, String userKey, @Nullable final ResponseListener listener) {
-
+    public void setUserOptout(long networkId, String userKey, @Nullable final UserListener listener) {
         getAdzerkService().setUserOptout(networkId, userKey, new ResponseCallback() {
-
             @Override
             public void success(retrofit.client.Response response) {
                 if (listener != null) {
@@ -328,7 +351,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -353,10 +376,8 @@ public class AdzerkSdk {
      * @param userKey       unique User key
      * @param listener      callback listener
      */
-    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey, @Nullable final ResponseListener listener) {
-
+    public void setUserRetargeting(long networkId, long brandId, String segment, String userKey, @Nullable final UserListener listener) {
         getAdzerkService().setUserRetargeting(networkId, brandId, segment, userKey, new ResponseCallback() {
-
             @Override
             public void success(retrofit.client.Response response) {
                 if (listener != null) {
@@ -367,7 +388,7 @@ public class AdzerkSdk {
             @Override
             public void failure(RetrofitError error) {
                 if (listener != null) {
-                    listener.error(error);
+                    listener.error(new AdzerkError(error));
                 }
             }
         });
@@ -434,7 +455,7 @@ public class AdzerkSdk {
             Builder builder = new RestAdapter.Builder()
                     .setEndpoint(ADZERK_ENDPOINT)
                     .setConverter(new GsonConverter(gson))
-                    .setLogLevel(RestAdapter.LogLevel.FULL);
+                    .setLogLevel(LogLevel.NONE);
 
             // test client
             if (client != null) {
@@ -467,7 +488,6 @@ public class AdzerkSdk {
         public UserProperties deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject dataObject = json.getAsJsonObject();
             Map<String, Object> map = context.deserialize(dataObject, Map.class);
-
             return new UserProperties(map, dataObject);
         }
     }

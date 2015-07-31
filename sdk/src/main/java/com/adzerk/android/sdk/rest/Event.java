@@ -1,7 +1,7 @@
 package com.adzerk.android.sdk.rest;
 
 /**
- * Event information included in Response to an ad request. Once you call an Event URL, Adzerk will track that
+ * Event information included in DecisionResponse to an ad requestPlacement. Once you call an Event URL, Adzerk will track that
  * event for the creative/campaign/advertiser etc. in Adzerk reporting.
  * <p/>
  * Events in Adzerk are data about a way a user interacts with an ad. Standard events included with all Adzerk
