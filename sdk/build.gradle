@@ -1,13 +1,21 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 0
+def versionBuild = 0
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
     buildTypes {
         release {
@@ -25,6 +33,62 @@ android {
         androidTest.setRoot('src/test')
     }
 }
+
+// Bintray package version
+version =  "${versionMajor}.${versionMinor}.${versionPatch}"
+
+bintray {
+    user = BINTRAY_USER
+    key = BINTRAY_API_KEY
+
+    configurations = ['archives']
+    pkg {
+        userOrg = BINTRAY_USERORG
+        repo = BINTRAY_REPO
+        name = 'com.adzerk.android.sdk'
+        desc = 'Adzerk Android SDK'
+        websiteUrl = GITHUB_URL
+        issueTrackerUrl = GITHUB_URL + '/issues'
+        vcsUrl = GITHUB_GIT
+        licenses = [LICENSE_NAME]
+        labels = ['aar', 'android', 'library', 'adzerk', 'sdk', 'advertising']
+        publicDownloadNumbers = false
+    }
+}
+
+// Maven groupId
+group = 'adzerk'
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'com.adzerk.android.sdk'
+                url GITHUB_URL
+                licenses {
+                    license {
+                        name LICENSE_NAME
+                        url LICENSE_URL
+                    }
+                }
+                developers {
+                    developer {
+                        id  GITHUB_ID
+                        name GITHUB_NAME
+                        email GITHUB_EMAIL
+                    }
+                }
+                scm {
+                    connection GITHUB_GIT
+                    developerConnection GITHUB_GIT
+                    url GITHUB_URL
+                }
+            }
+        }
+    }
+}
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
