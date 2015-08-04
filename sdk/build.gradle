@@ -101,3 +101,31 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.0-rc3'
     testCompile 'com.squareup.assertj:assertj-android:1.+'
 }
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    title 'Adzerk SDK v' + version
+    options.addStringOption('Xdoclint:none', '-quiet')
+    exclude 'com/adzerk/android/sdk/rest/AdzerkService.java'
+    exclude 'com/adzerk/android/sdk/rest/ContentData.java'
+    exclude 'com/adzerk/android/sdk/rest/UserProperties.java'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+task findConventions << {
+    println project.getConvention()
+}
