@@ -34,7 +34,7 @@ See the sample app for detailed examples
 
 Grab via gradle
 
-    compile com.adzerk.sdk:adzerk:1.0.0 (Coming Soon)
+    compile 'com.adzerk:sdk:0.1.+'
 
 Snapshots of the development version are available in Sonatype's snapshots repository. (Coming Soon)
 
