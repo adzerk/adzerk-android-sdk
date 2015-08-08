@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.bintray'
 
 def versionMajor = 0
 def versionMinor = 1
-def versionPatch = 0
+def versionPatch = 1
 def versionBuild = 0
 
 android {
@@ -57,7 +57,7 @@ bintray {
 }
 
 // Maven groupId
-group = 'adzerk'
+group = 'com.adzerk'
 
 install {
     repositories.mavenInstaller {
