@@ -51,8 +51,8 @@ public class DecisionResponseTest {
                 .isNotEmpty()
                 .hasSize(3);
 
-        assertThat(div1.getEvents().get(0).getEventId()).isEqualTo(12);
-        assertThat(div1.getEvents().get(0).getEventUrl()).contains("adzerk");
+        assertThat(div1.getEvents().get(0).getId()).isEqualTo(12);
+        assertThat(div1.getEvents().get(0).getUrl()).contains("adzerk");
     }
 
     @Test
@@ -100,14 +100,14 @@ public class DecisionResponseTest {
         "      ]," +
         "       \"impressionUrl\": \"http://engine.adzerk.net/impression\", " +
         "       \"events\": [" +
-        "        { eventId: 12," +
-        "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
+        "        { id: 12," +
+        "          url: \"http://engine.adzerk.net/e.gif?...\"" +
         "        }," +
-        "        { eventId: 13," +
-        "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
+        "        { id: 13," +
+        "          url: \"http://engine.adzerk.net/e.gif?...\"" +
         "        }," +
-        "        { eventId: 14," +
-        "          eventUrl: \"http://engine.adzerk.net/e.gif?...\"" +
+        "        { id: 14," +
+        "          url: \"http://engine.adzerk.net/e.gif?...\"" +
         "        }" +
         "       ]" +
         "    }," +
