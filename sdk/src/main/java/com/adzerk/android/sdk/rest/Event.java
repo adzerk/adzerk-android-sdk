@@ -60,25 +60,25 @@ public class Event {
 
 
     // event identifier
-    int eventId;
+    int id;
 
     // url to call to track an event
-    String eventUrl;
+    String url;
 
     /**
      * Returns an event identifier
      * @return numeric event id
      */
-    public int getEventId() {
-        return eventId;
+    public int getId() {
+        return id;
     }
 
     /**
      * Returns tracking URL of custom event
      * @return tracking url
      */
-    public String getEventUrl() {
-        return eventUrl;
+    public String getUrl() {
+        return url;
     }
 
 }
