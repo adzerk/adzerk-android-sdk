@@ -34,7 +34,7 @@ See the sample app for detailed examples
 
 Grab via gradle
 
-    compile 'com.adzerk:sdk:0.1.+'
+    compile 'com.adzerk:sdk:0.2.+'
 
 Snapshots of the development version are available in Sonatype's snapshots repository. (Coming Soon)
 
@@ -42,7 +42,7 @@ The SDK requires at minimum Java 7 or Android 2.3.
 
 ## License
 
-Copyright 2015 Adzerk, Inc.
+Copyright 2016 Adzerk, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
