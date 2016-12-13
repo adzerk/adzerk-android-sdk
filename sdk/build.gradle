@@ -89,11 +89,17 @@ install {
     }
 }
 
+configurations {
+  javadocDeps
+}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:support-annotations:22.2.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
+
+    javadocDeps 'com.android.support:support-annotations:22.2.0'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.+'
