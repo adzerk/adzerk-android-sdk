@@ -30,7 +30,7 @@ android {
     }
 
     sourceSets {
-        androidTest.setRoot('src/test')
+        test.setRoot('src/test')
     }
 }
 
@@ -98,7 +98,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.+'
     testCompile 'org.mockito:mockito-core:1.9.5'
-    testCompile 'org.robolectric:robolectric:3.0-rc3'
+    testCompile 'org.robolectric:robolectric:3.2.2'
     testCompile 'com.squareup.assertj:assertj-android:1.+'
 }
 
