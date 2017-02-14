@@ -44,7 +44,7 @@ public class VikingGenerator {
 
     private String createHeadshotUrl() {
         final int max = 88;
-        return String.format("http://api.randomuser.me/portraits/med/women/%d.jpg", r.nextInt(max));
+        return String.format("https://api.randomuser.me/portraits/med/women/%d.jpg", r.nextInt(max));
     }
 
     private String createName() {
