@@ -154,6 +154,11 @@ public class MainPresenter {
                                 @Override
                                 public void success(DecisionResponse response) {
                                     Decision decision = response.getDecision("div1");
+                                    if (decision==null) {
+                                        adWebViewHolder.webView.loadData("<center><p>No HTML Ad to display</p></center>", "text/html", "UTF-8");
+                                        return;
+                                    }
+
                                     Content content = decision.getContents().get(0);
                                     String body = content.getBody();
                                     String html = "<html>" + body + "</html>";
