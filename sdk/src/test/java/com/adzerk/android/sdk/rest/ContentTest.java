@@ -13,10 +13,10 @@ import org.robolectric.annotation.Config;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk=21, constants=BuildConfig.class)
+@Config(sdk=25, constants=BuildConfig.class)
 public class ContentTest {
 
     AdzerkSdk sdk;

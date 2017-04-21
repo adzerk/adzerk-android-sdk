@@ -1,12 +1,16 @@
 package com.adzerk.android.sdk.rest;
 
 import com.adzerk.android.sdk.AdzerkSdk;
+import com.adzerk.android.sdk.BuildConfig;
 import com.adzerk.android.sdk.rest.Request.Builder;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,10 +18,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk=25, constants=BuildConfig.class)
 public class RequestTest {
 
     AdzerkSdk sdk;

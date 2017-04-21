@@ -1,20 +1,25 @@
 package com.adzerk.android.sdk.rest;
 
+import com.adzerk.android.sdk.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk=25, constants=BuildConfig.class)
 public class PlacementTest {
 
     @Before
