@@ -24,15 +24,16 @@ import retrofit.Callback;
 import retrofit.ResponseCallback;
 import retrofit.mime.TypedInput;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
+
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk=18, constants=BuildConfig.class, manifest = Config.NONE)
+@Config(sdk=25, constants=BuildConfig.class)
 public class AdzerkSdkTest {
 
     AdzerkSdk sdk;
