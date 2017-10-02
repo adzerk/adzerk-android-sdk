@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -20,17 +22,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Callback;
-import retrofit.ResponseCallback;
-import retrofit.mime.TypedInput;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk=25, constants=BuildConfig.class)
@@ -39,6 +44,16 @@ public class AdzerkSdkTest {
     AdzerkSdk sdk;
 
     @Mock AdzerkService api;
+
+    @Mock Call<DecisionResponse> mockRequestCall;
+    @Mock Call<User> mockUserCall;
+    @Mock Call<Void> mockVoidCall;
+
+    @Mock User mockUser;
+    @Mock DecisionResponse mockDecisionResponse;
+
+    @Mock AdzerkSdk.UserListener mockUserListener;
+    @Mock AdzerkSdk.DecisionListener mockDecisionListener;
 
     static String userKey = "ue1-d720342a233c4631a58dfb6b54f43480";
     static long networkId = 9792L;
@@ -51,9 +66,16 @@ public class AdzerkSdkTest {
 
     @Test
     public void itShouldRequestNativeAd() {
-        Request request = createTestRequest();
-        sdk.requestPlacement(request, null);
-        verify(api).request(argThat(new RequestMatcher(request)), (Callback<DecisionResponse>) any());
+        try {
+            Request request = createTestRequest();
+            when(api.request(request)).thenReturn(mockRequestCall);
+            doAnswerDecisionResponse();
+            sdk.requestPlacement(request, mockDecisionListener);
+            verify(mockDecisionListener, times(1)).success(mockDecisionResponse);
+            verify(api).request(argThat(new RequestMatcher(request)));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test
@@ -68,8 +90,11 @@ public class AdzerkSdkTest {
         map.put("gender", "female");
 
         try {
-            sdk.setUserProperties(networkId, userKey, map, null);
-            verify(api).postUserProperties(eq(networkId), eq(userKey), argThat(new IsMapWithSameContents(map)), (ResponseCallback) any());
+            when(api.postUserProperties(networkId, userKey, map)).thenReturn(mockVoidCall);
+            doAnswerVoidResponse();
+            sdk.setUserProperties(networkId, userKey, map, mockUserListener);
+            verify(mockUserListener, times(1)).success(null);
+            verify(api).postUserProperties(eq(networkId), eq(userKey), argThat(new IsMapWithSameContents(map)));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -79,9 +104,11 @@ public class AdzerkSdkTest {
     public void itShouldSetUserPropertiesFromJson() {
 
         try {
-            sdk.setUserProperties(networkId, userKey, userProperties, null);
-            TypedInput jsonInput = sdk.createTypedJsonString(userProperties);
-            verify(api).postUserProperties(eq(networkId), eq(userKey), eq(jsonInput), (ResponseCallback) any());
+            when(api.postUserProperties(eq(networkId), eq(userKey), any(RequestBody.class))).thenReturn(mockVoidCall);
+            doAnswerVoidResponse();
+            sdk.setUserProperties(networkId, userKey, userProperties, mockUserListener);
+            verify(mockUserListener, times(1)).success(null);
+            verify(api).postUserProperties(eq(networkId), eq(userKey), any(RequestBody.class));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -91,8 +118,11 @@ public class AdzerkSdkTest {
     public void itShouldCallReadUser() {
 
         try {
-            sdk.readUser(networkId, userKey, null);
-            verify(api).readUser(eq(networkId), eq(userKey), (Callback<User>) any());
+            when(api.readUser(networkId, userKey)).thenReturn(mockUserCall);
+            doAnswerUserResponse();
+            sdk.readUser(networkId, userKey, mockUserListener);
+            verify(mockUserListener, times(1)).success(any(User.class));
+            verify(api).readUser(eq(networkId), eq(userKey));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -103,8 +133,11 @@ public class AdzerkSdkTest {
 
         String interest = "ponies";
         try {
-            sdk.setUserInterest(networkId, userKey, interest, null);
-            verify(api).setUserInterest(eq(networkId), eq(userKey), eq(interest), (ResponseCallback) any());
+            when(api.setUserInterest(networkId, userKey, interest)).thenReturn(mockVoidCall);
+            doAnswerVoidResponse();
+            sdk.setUserInterest(networkId, userKey, interest, mockUserListener);
+            verify(mockUserListener, times(1)).success(null);
+            verify(api).setUserInterest(eq(networkId), eq(userKey), eq(interest));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -112,10 +145,12 @@ public class AdzerkSdkTest {
 
     @Test
     public void itShouldSetUserOptout() {
-
         try {
-            sdk.setUserOptout(networkId, userKey, null);
-            verify(api).setUserOptout(eq(networkId), eq(userKey), (ResponseCallback) any());
+            when(api.setUserOptout(networkId, userKey)).thenReturn(mockVoidCall);
+            doAnswerVoidResponse();
+            sdk.setUserOptout(networkId, userKey, mockUserListener);
+            verify(mockUserListener, times(1)).success(null);
+            verify(api).setUserOptout(eq(networkId), eq(userKey));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -126,8 +161,46 @@ public class AdzerkSdkTest {
         long brandId = 999L;
         String segment = "boomers";
         try {
-            sdk.setUserRetargeting(networkId, brandId, segment, userKey, null);
-            verify(api).setUserRetargeting(eq(networkId), eq(brandId), eq(segment), eq(userKey), (ResponseCallback) any());
+            when(api.setUserRetargeting(networkId, brandId, segment, userKey)).thenReturn(mockVoidCall);
+            doAnswerVoidResponse();
+            sdk.setUserRetargeting(networkId, brandId, segment, userKey, mockUserListener);
+            verify(mockUserListener, times(1)).success(null);
+            verify(api).setUserRetargeting(eq(networkId), eq(brandId), eq(segment), eq(userKey));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void itShouldCallUserListenerOnSuccessWithNull() {
+        try {
+            Response<User> response = Response.success(null);
+            AdzerkSdk.AdzerkCallback<User, Void> callback = new AdzerkSdk.AdzerkCallback("UserListenerSuccess", mockUserListener);
+            callback.onResponse(mockUserCall, response);
+            verify(mockUserListener, times(1)).success(null);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void itShouldCallUserListenerSuccessWithUser() {
+        try {
+            Response<User> realResponse = Response.success(mock(User.class));
+            AdzerkSdk.AdzerkCallback<User, User> callback = new AdzerkSdk.AdzerkCallback("UserListenerSuccess", mockUserListener);
+            callback.onResponse(mockUserCall, realResponse);
+            verify(mockUserListener, times(1)).success(any(User.class));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void itShouldCallUserListenerFail() {
+        try {
+            AdzerkSdk.AdzerkCallback<User, User> callback = new AdzerkSdk.AdzerkCallback("UserListenerFail", mockUserListener);
+            callback.onFailure(mockUserCall, mock(Exception.class));
+            verify(mockUserListener, times(1)).error(any(AdzerkSdk.AdzerkError.class));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -142,9 +215,45 @@ public class AdzerkSdkTest {
         return new Request.Builder(placements).build();
     }
 
+    // mock Void api response
+    private void doAnswerVoidResponse() {
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                AdzerkSdk.AdzerkCallback callback = invocation.getArgument(0);
+                callback.onResponse(mockVoidCall, Response.success(null));
+                return null;
+            }
+        }).when(mockVoidCall).enqueue(any(AdzerkSdk.AdzerkCallback.class));
+    }
+
+    // mock User api response
+    private void doAnswerUserResponse() {
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocation) throws Throwable {
+                AdzerkSdk.AdzerkCallback callback = invocation.getArgument(0);
+                callback.onResponse(mockUserCall, Response.success(mockUser));
+                return null;
+            }
+        }).when(mockUserCall).enqueue(any(AdzerkSdk.AdzerkCallback.class));
+    }
+
+    // mock Decision api response
+    private void doAnswerDecisionResponse() {
+        doAnswer(new Answer<DecisionResponse>() {
+            @Override
+            public DecisionResponse answer(InvocationOnMock invocation) throws Throwable {
+                AdzerkSdk.AdzerkCallback callback = invocation.getArgument(0);
+                callback.onResponse(mockUserCall, Response.success(mockDecisionResponse));
+                return null;
+            }
+        }).when(mockRequestCall).enqueue(any(AdzerkSdk.AdzerkCallback.class));
+    }
+
     private static String userProperties = "{ \"age\": 28, \"gender\": \"male\" }";
 
-    static class RequestMatcher extends ArgumentMatcher<Request> {
+    static class RequestMatcher implements ArgumentMatcher<Request> {
 
         Request expected;
 
@@ -153,12 +262,12 @@ public class AdzerkSdkTest {
         }
 
         @Override
-        public boolean matches(Object actual) {
-            return actual == expected;
+        public boolean matches(Request argument) {
+            return argument == expected;
         }
     }
 
-    class IsMapWithSameContents extends ArgumentMatcher<Map<String, Object>> {
+    class IsMapWithSameContents implements ArgumentMatcher<Map<String, Object>> {
 
         Map<String, Object> expected;
 
@@ -167,7 +276,7 @@ public class AdzerkSdkTest {
         }
 
         @Override
-        public boolean matches(Object map) {
+        public boolean matches(Map<String, Object> map) {
             return expected.equals(map);
         }
     }

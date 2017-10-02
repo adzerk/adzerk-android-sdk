@@ -93,11 +93,13 @@ install {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.4.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:2.6.0'
-    testCompile 'org.mockito:mockito-core:1.9.5'
+    testCompile 'org.mockito:mockito-core:2.8.47'
     testCompile 'org.robolectric:robolectric:3.3.1'
     testCompile 'com.squareup.assertj:assertj-android:1.1.1'
 }
