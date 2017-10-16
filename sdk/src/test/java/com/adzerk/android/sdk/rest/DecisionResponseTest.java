@@ -22,7 +22,7 @@ public class DecisionResponseTest {
     @Before
     public void setUp() throws Exception {
         mockClient = new MockClient(JSON_DECISIONS);
-        sdk = AdzerkSdk.createInstance(mockClient);
+        sdk = AdzerkSdk.createInstance(mockClient.buildClient());
     }
 
     @Test

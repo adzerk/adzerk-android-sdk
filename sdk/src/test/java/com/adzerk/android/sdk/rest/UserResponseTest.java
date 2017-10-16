@@ -25,7 +25,7 @@ public class UserResponseTest {
     @Before
     public void setUp() throws Exception {
         mockClient = new MockClient(JSON_USER);
-        sdk = AdzerkSdk.createInstance(mockClient);
+        sdk = AdzerkSdk.createInstance(mockClient.buildClient());
     }
 
     @Test

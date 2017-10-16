@@ -1,15 +1,18 @@
 package com.adzerk.android.sdk;
 
 import java.io.IOException;
-import java.util.Collections;
 
-import retrofit.RetrofitError;
-import retrofit.client.Client;
-import retrofit.client.Request;
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
-public class MockClient implements Client {
+/**
+ * Simple mock client that intercepts http request and replies with provided response.
+ */
+public class MockClient {
     int statusCode = 200;
     String reason = "OK";
     String responseString;
@@ -24,16 +27,29 @@ public class MockClient implements Client {
         this.reason = reason;
     }
 
-    @Override
-    public Response execute(Request request) throws IOException {
-        if (statusCode < 299) {
-            return new Response(request.getUrl(),
-                    statusCode,
-                    reason,
-                    Collections.EMPTY_LIST,
-                    new TypedByteArray("application/json", responseString.getBytes()));
-        }
+    public OkHttpClient buildClient() {
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        builder.addInterceptor(new MockResponseInterceptor());
+        return builder.build();
+    }
 
-        throw RetrofitError.networkError("", new IOException());
+    private class MockResponseInterceptor implements Interceptor {
+
+        private final MediaType MEDIA_JSON = MediaType.parse("application/json");
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Response mockResponse = null;
+
+            mockResponse = new Response.Builder()
+                  .body(ResponseBody.create(MEDIA_JSON, responseString))
+                  .request(chain.request())
+                  .protocol(Protocol.HTTP_2)
+                  .code(statusCode)
+                  .message(reason)
+                  .build();
+
+            return mockResponse;
+        }
     }
 }
