@@ -28,7 +28,7 @@ import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
@@ -273,9 +273,9 @@ public class MainPresenter {
          */
         public static class ContentViewHolder extends ViewHolder {
 
-            @Bind(R.id.head_shot) ImageView imgView;
-            @Bind(R.id.name) TextView txtName;
-            @Bind(R.id.quote) TextView txtQuote;
+            @BindView(R.id.head_shot) ImageView imgView;
+            @BindView(R.id.name) TextView txtName;
+            @BindView(R.id.quote) TextView txtQuote;
 
             public ContentViewHolder(View itemView) {
                 super(itemView);
@@ -297,7 +297,7 @@ public class MainPresenter {
          */
         public static class AdViewHolder extends ContentViewHolder {
 
-            @Bind(R.id.sponsored) TextView txtSponsored;
+            @BindView(R.id.sponsored) TextView txtSponsored;
 
             String clickUrl;
 
@@ -323,8 +323,8 @@ public class MainPresenter {
 
         public static class AdWebViewHolder extends ViewHolder {
 
-            @Bind(R.id.webView) WebView webView;
-            @Bind(R.id.sponsored) TextView txtSponsored;
+            @BindView(R.id.webView) WebView webView;
+            @BindView(R.id.sponsored) TextView txtSponsored;
 
             String clickUrl;
 

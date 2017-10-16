@@ -5,12 +5,12 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainView extends ActivityView {
 
-    @Bind(R.id.recycler) RecyclerView recyclerView;
+    @BindView(R.id.recycler) RecyclerView recyclerView;
 
     public MainView(Activity activity) {
         super(activity);
