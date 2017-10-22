@@ -32,5 +32,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile project(':sdk')
-    // compile 'com.adzerk:sdk:0.1.0'
+    // compile 'com.adzerk:sdk:0.3.0'
 }
