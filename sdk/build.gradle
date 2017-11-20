@@ -8,12 +8,12 @@ def versionPatch = 0
 def versionBuild = 0
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.0"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
@@ -91,17 +91,17 @@ install {
 
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.0.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:2.6.0'
-    testCompile 'org.mockito:mockito-core:2.8.47'
-    testCompile 'org.robolectric:robolectric:3.3.1'
-    testCompile 'com.squareup.assertj:assertj-android:1.1.1'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:2.6.0'
+    testImplementation 'org.mockito:mockito-core:2.8.47'
+    testImplementation 'org.robolectric:robolectric:3.3.1'
+    testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
 }
 
 task sourcesJar(type: Jar) {
