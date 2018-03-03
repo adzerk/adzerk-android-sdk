@@ -9,7 +9,7 @@ def versionBuild = 0
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.0"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 14
@@ -92,7 +92,7 @@ install {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.0.1'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
@@ -128,6 +128,8 @@ artifacts {
     archives sourcesJar
 }
 
-task findConventions << {
-    println project.getConvention()
+task findConventions {
+    doLast {
+        println project.getConvention()
+    }
 }
