@@ -1,33 +1,35 @@
 package com.adzerk.android.sdk.sample;
 
-import com.squareup.otto.Bus;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 public class BusProvider {
     private BusProvider() { }
 
-    static Bus instance;
+    static RxBus instance;
 
-    public static Bus getInstance() {
+    public static RxBus getInstance() {
         if (instance == null) {
-            instance = new Bus();
+            instance = new RxBus();
         }
 
         return instance;
     }
 
-    public static void register(Object... args) {
-        for (Object o : args) {
-            getInstance().register(o);
-        }
-    }
-
-    public static void unregister(Object... args) {
-        for (Object o : args) {
-            getInstance().unregister(o);
-        }
-    }
-
     public static void post(Object event) {
-        getInstance().post(event);
+        getInstance().send(event);
+    }
+
+    static class RxBus {
+
+        private final PublishSubject<Object> _bus = PublishSubject.create();
+
+        public void send(Object o) {
+            _bus.onNext(o);
+        }
+
+        public Observable<Object> toObserverable() {
+            return _bus;
+        }
     }
 }
