@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import io.reactivex.functions.Consumer;
+
 public class MainActivity extends AppCompatActivity {
 
     MainPresenter presenter;
@@ -27,13 +29,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        BusProvider.unregister(presenter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        BusProvider.register(presenter);
+        BusProvider.getInstance().toObserverable().subscribe(new Consumer<Object>() {
+
+            @Override
+            public void accept(Object o) throws Exception {
+                if (o instanceof MainPresenter.AdClickEvent) {
+                    presenter.OnAdClick((MainPresenter.AdClickEvent)o);
+                }
+            }
+        });
     }
 
     @Override

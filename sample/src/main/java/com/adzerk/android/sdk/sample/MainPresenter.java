@@ -24,7 +24,6 @@ import com.adzerk.android.sdk.rest.DecisionResponse;
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.sample.VikingGenerator.Quote;
-import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -62,7 +61,6 @@ public class MainPresenter {
         ));
     }
 
-    @Subscribe
     public void OnAdClick(AdClickEvent event) {
         Activity activity = view.getActivity();
         if (activity != null) {
