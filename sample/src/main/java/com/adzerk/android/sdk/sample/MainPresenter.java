@@ -202,8 +202,7 @@ public class MainPresenter {
             // load the image from the URL in the ad into the ImageView
             if (content.isImage()) {
                 ImageView imgView = vh.imgView;
-                Picasso.with(imgView.getContext())
-                        .load(content.getImageUrl())
+                Picasso.get().load(content.getImageUrl())
                         .into(imgView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -212,8 +211,8 @@ public class MainPresenter {
                             }
 
                             @Override
-                            public void onError() {
-                                Log.d(TAG, "Ignoring ad load error");
+                            public void onError(Exception e) {
+                                Log.e(TAG, "Ignoring ad load error", e);
                             }
                         });
             }
@@ -221,10 +220,7 @@ public class MainPresenter {
 
         private void setHeadShot(ImageView imgView, String url) {
             Log.d(TAG, "Loading headshot from url: " + url);
-            Picasso.with(imgView.getContext())
-                    .load(url)
-                    // TODO: add placeholder image - .placeholder(R.drawable ...
-                  .into(imgView);
+            Picasso.get().load(url).into(imgView);
         }
 
         @Override
