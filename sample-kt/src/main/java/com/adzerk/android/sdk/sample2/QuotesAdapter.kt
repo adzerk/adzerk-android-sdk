@@ -118,16 +118,15 @@ class QuotesAdapter(internal val mainViewModel: MainViewModel) : RecyclerView.Ad
         // load the image from the URL in the ad into the ImageView
         if (content.isImage) {
             val imgView = vh.itemView.head_shot
-            Picasso.with(imgView!!.context)
-                .load(content.imageUrl)
+            Picasso.get().load(content.imageUrl)
                 .into(imgView, object : Callback {
                     override fun onSuccess() {
                         // when the image loads successfully, the ad impression is triggered
                         mainViewModel.makeImpression(decision.impressionUrl)
                     }
 
-                    override fun onError() {
-                        Log.d(TAG, "Ignoring ad load error")
+                    override fun onError(e: Exception) {
+                        Log.e(TAG, "Ignoring ad load error", e)
                     }
                 })
         }
@@ -135,7 +134,7 @@ class QuotesAdapter(internal val mainViewModel: MainViewModel) : RecyclerView.Ad
 
     private fun loadHeadShot(imgView: ImageView?, url: String) {
         Log.d(TAG, "Loading image from url: $url")
-        Picasso.with(imgView?.context).load(url).into(imgView)
+        Picasso.get().load(url).into(imgView)
     }
 
     override fun getItemCount(): Int {
