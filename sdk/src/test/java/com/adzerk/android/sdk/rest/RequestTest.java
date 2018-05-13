@@ -88,6 +88,24 @@ public class RequestTest {
     }
 
     @Test
+    public void itShouldSetUserConsent() {
+
+        try {
+            String key = "testUserKey";
+
+            Request request = new Builder(placements)
+                  .setUser(new User(key))
+                  .setConsent(new Consent(true))
+                  .build();
+
+            assertThat(request.getUser().getKey()).isEqualTo(key);
+            assertThat(request.getConsent().isGdpr()).isEqualTo(true);
+        } catch (IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
+    @Test
     public void itShouldBuildKeywords() {
 
         try {
