@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.0 (05/19/18)
+
+* Support GDPR params & endpoints #64
+
 ## 0.3.0 (10/22/17)
 
 * network library updated: Retrofit2 (v2.3.0)
