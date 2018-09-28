@@ -2,6 +2,15 @@
 
 An Android SDK and sample app for the Adzerk Native and UserDB APIs
 
+## Download
+
+Grab via gradle
+
+    compile 'com.adzerk:sdk:0.4.+'
+
+
+The SDK requires at minimum Java 7 or Android 2.3.
+
 ## Usage
 
 Obtain an instance of the AdzerkSdk class
@@ -10,7 +19,7 @@ Obtain an instance of the AdzerkSdk class
 
 Build a request for placements
 
-    Request request = Builder.request()
+    Request request = new Request.Builder()
           .addPlacement(new Placement("div1", <network_id>, <site_id>, <ad_types...>))
           .addPlacement(new Placement("div2", <network_id>, <site_id>, <ad_types...>))
           .addPlacement(new Placement("div3", <network_id>, <site_id>, <ad_types...>))
@@ -30,14 +39,16 @@ Get content and decisions from the response
 
 See the sample app for detailed examples
 
-## Download
+## Consent
 
-Grab via gradle
+Consent preferences can be specified when building a request. For example, to set GDPR consent for tracking in the European Union (this defaults to false):
 
-    compile 'com.adzerk:sdk:0.3.+'
+    Request request = new Request.Builder(placements)
+        .setUser(new User(key))
+        .setConsent(new Consent(true))
+        .build();
 
-
-The SDK requires at minimum Java 7 or Android 2.3.
+@since SDK v0.4.0+
 
 ## License
 

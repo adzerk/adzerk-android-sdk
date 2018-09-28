@@ -198,9 +198,9 @@ public class AdzerkSdk {
      * @param userKey   unique User key
      * @param json      a JSON String representing the custom properties, ie. { "age": 27, "gender": "male }
      */
-    public void setUserPropertiesSynchronous(long networkId, String userKey, String json) {
+    public void setUserPropertiesSynchronous(long networkId, String userKey, String json) throws IOException {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
-        getAdzerkService().postUserProperties(networkId, userKey, requestBody);
+        getAdzerkService().postUserProperties(networkId, userKey, requestBody).execute();
     }
 
     /**
@@ -223,8 +223,8 @@ public class AdzerkSdk {
      * @param userKey       unique User key
      * @param properties    map of key-value pairs
      */
-    public void setUserPropertiesSynchronous(long networkId, String userKey, Map<String, Object> properties) {
-        getAdzerkService().postUserProperties(networkId, userKey, properties);
+    public void setUserPropertiesSynchronous(long networkId, String userKey, Map<String, Object> properties) throws IOException {
+        getAdzerkService().postUserProperties(networkId, userKey, properties).execute();
     }
 
     /**
@@ -246,14 +246,9 @@ public class AdzerkSdk {
      * @param userKey       unique User key
      * @return user object
      */
-    public User readUserSynchronous(long networkId, String userKey) {
+    public User readUserSynchronous(long networkId, String userKey) throws IOException {
         Call<User> call = getAdzerkService().readUser(networkId, userKey);
-        try {
-            User user = call.execute().body();
-            return  user;
-        } catch (IOException e) {
-            return null;
-        }
+        return call.execute().body();
     }
 
     /**
@@ -276,8 +271,8 @@ public class AdzerkSdk {
      * @param userKey       unique User key
      * @param interest      name of interest
      */
-    public void setUserInterestSynchronous(long networkId, String userKey, String interest) {
-        getAdzerkService().setUserInterest(networkId, userKey, interest);
+    public void setUserInterestSynchronous(long networkId, String userKey, String interest) throws IOException {
+        getAdzerkService().setUserInterest(networkId, userKey, interest).execute();
     }
 
     /**
@@ -298,8 +293,8 @@ public class AdzerkSdk {
      * @param networkId     unique network id
      * @param userKey       unique User key
      */
-    public void setUserOptoutSynchronous(long networkId, String userKey) {
-        getAdzerkService().setUserOptout(networkId, userKey);
+    public void setUserOptoutSynchronous(long networkId, String userKey) throws IOException {
+        getAdzerkService().setUserOptout(networkId, userKey).execute();
     }
 
     /**
@@ -324,8 +319,8 @@ public class AdzerkSdk {
      * @param segment       segment identifier
      * @param userKey       unique User key
      */
-    public void setUserRetargetingSynchronous(long networkId, long brandId, String segment, String userKey) {
-        getAdzerkService().setUserRetargeting(networkId, brandId, segment, userKey);
+    public void setUserRetargetingSynchronous(long networkId, long brandId, String segment, String userKey) throws IOException {
+        getAdzerkService().setUserRetargeting(networkId, brandId, segment, userKey).execute();
     }
 
     /**

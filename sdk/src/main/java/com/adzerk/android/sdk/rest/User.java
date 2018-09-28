@@ -37,6 +37,9 @@ public class User  {
 
     Map<Integer, List<Long>> siteViewTimes;
 
+    // sets data consent preferences
+    Consent consent;
+
     static final String ADVERTISERS = "advertisers";
     static final String CAMPAIGNS = "campaigns";
     static final String CREATIVES = "creatives";
@@ -48,6 +51,15 @@ public class User  {
      */
     public User(String key) {
         this.key = key;
+    }
+
+    /**
+     * Creates User with specified key and consent settings
+     * @param key identifies user
+     */
+    public User(String key, Consent consent) {
+        this.key = key;
+        this.consent = consent;
     }
 
     /**
@@ -216,5 +228,16 @@ public class User  {
      */
     public Map<Integer, List<Long>> getSiteViewTimes() {
         return siteViewTimes;
+    }
+
+    /**
+     * Returns the data consent preferences.
+     *
+     * For example, GDPR consent for tracking in the European Union (This defaults to false).
+     *
+     * @return
+     */
+    public Consent getConsent() {
+        return consent;
     }
 }

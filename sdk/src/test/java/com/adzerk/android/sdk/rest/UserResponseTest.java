@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
@@ -29,7 +31,7 @@ public class UserResponseTest {
     }
 
     @Test
-    public void itShouldDeserializeUser() {
+    public void itShouldDeserializeUser() throws IOException {
         User user = sdk.readUserSynchronous(networkId, userKey);
         assertThat(user).isNotNull();
         assertThat(user.getKey()).isEqualTo(userKey);
@@ -38,6 +40,7 @@ public class UserResponseTest {
         assertThat(user.getCustomProperty("gender")).isEqualTo("male");
         assertThat(user.hasInterest("cats"));
         assertThat(user.isNew()).isFalse();
+        assertThat(user.consent.isGdpr()).isFalse();
     }
     
     static final String JSON_USER = "{" +
@@ -64,6 +67,9 @@ public class UserResponseTest {
           "    ], " +
           "    \"isNew\": false, " +
           "    \"key\": \"ue1-d720342a233c4631a58dfb6b54f43480\", " +
+          "    \"consent\": {" +
+          "        \"gdpr\": false " +
+          "    }, " +
           "    \"optOut\": false, " +
           "    \"partnerUserIds\": {}, " +
           "    \"pendingConversions\": [], " +

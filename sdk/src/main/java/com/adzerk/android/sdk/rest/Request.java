@@ -63,6 +63,9 @@ public class Request {
     // hash of flight ids to arrays of UNIX epoch timestamps representing times the user viewed an ad in the specified flight (used for frequency capping)
     Map<Integer, List<Long>> flightViewTimes;
 
+    // sets data consent preferences
+    Consent consent;
+
     /**
      * Builder to configure a Request for ads.
      * <p>
@@ -94,6 +97,7 @@ public class Request {
         private String ip;
         private Set<Integer> blockedCreatives;
         private Map<Integer, List<Long>> flightViewTimes;
+        private Consent consent;
 
 
         /**
@@ -290,6 +294,19 @@ public class Request {
             return this;
         }
 
+
+        /**
+         * Sets the data consent preferences.
+         *
+         * For example, GDPR consent for tracking in the European Union (This defaults to false).
+         *
+         * @return
+         */
+        public Builder setConsent(Consent consent) {
+            this.consent = consent;
+            return this;
+        }
+
         /**
          * Create the Request
          *
@@ -319,6 +336,7 @@ public class Request {
         setIp(builder.ip);
         setBlockedCreatives(builder.blockedCreatives);
         setAllFlightViewTimes(builder.flightViewTimes);
+        setConsent(builder.consent);
     }
 
     /**
@@ -451,5 +469,20 @@ public class Request {
 
     private void setAllFlightViewTimes(Map<Integer, List<Long>> flightViewTimes) {
         this.flightViewTimes = flightViewTimes;
+    }
+
+    /**
+     * Returns the data consent preferences.
+     *
+     * For example, GDPR consent for tracking in the European Union (This defaults to false).
+     *
+     * @return
+     */
+    public Consent getConsent() {
+        return consent;
+    }
+
+    private void setConsent(Consent consent) {
+        this.consent = consent;
     }
 }

@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 def versionMajor = 0
-def versionMinor = 3
+def versionMinor = 4
 def versionPatch = 0
 def versionBuild = 0
 
@@ -123,6 +123,13 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
+
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompiler.classpath.files
+    })
+}
+
 artifacts {
     archives javadocJar
     archives sourcesJar
