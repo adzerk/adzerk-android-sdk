@@ -6,7 +6,7 @@ An Android SDK and sample app for the Adzerk Native and UserDB APIs
 
 Grab via gradle
 
-    compile 'com.adzerk:sdk:0.4.+'
+    implementation 'com.adzerk:sdk:0.4.+'
 
 
 The SDK requires at minimum Java 7 or Android 2.3.
