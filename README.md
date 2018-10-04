@@ -39,7 +39,7 @@ Get content and decisions from the response
 
 See the sample app for detailed examples
 
-## Consent
+## GDPR Consent
 
 Consent preferences can be specified when building a request. For example, to set GDPR consent for tracking in the European Union (this defaults to false):
 
