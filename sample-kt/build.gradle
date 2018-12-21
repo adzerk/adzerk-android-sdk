@@ -36,6 +36,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    //implementation project(':sdk')
     implementation 'com.adzerk:sdk:0.4.0'
 
     testImplementation 'junit:junit:4.12'
