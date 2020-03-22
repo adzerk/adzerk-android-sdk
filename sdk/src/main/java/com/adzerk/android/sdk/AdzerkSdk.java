@@ -1,7 +1,8 @@
 package com.adzerk.android.sdk;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.adzerk.android.sdk.rest.AdzerkService;
 import com.adzerk.android.sdk.rest.ContentData;
