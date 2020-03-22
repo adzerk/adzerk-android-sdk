@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.5.0 (03/22/2020)
+
+* Android SDK updates for API 29
+* update project documentation
+* add console test logging
+
 ## 0.4.0 (05/19/18)
 
 * Support GDPR params & endpoints #64

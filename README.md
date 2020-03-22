@@ -6,7 +6,7 @@ An Android SDK for the Adzerk Native and UserDB APIs
 
 Grab via gradle
 
-    implementation 'com.adzerk:sdk:0.4.+'
+    implementation 'com.adzerk:sdk:0.5.+'
 
 
 The SDK requires at minimum Java 7 or Android 2.3.
@@ -47,6 +47,37 @@ Consent preferences can be specified when building a request. For example, to se
         .build();
 
 @since SDK v0.4.0+
+
+## Building
+Use gradlew to build library archive
+```
+./gradlew assemble
+```
+output: `sdk/build/outputs/aar`
+
+## Testing
+Run unit tests
+```
+./gradlew test
+```
+Specify `--rerun-tasks` to rerun up-to-date tests. To view test reports see:
+
+output: `sdk/build/reports/tests`
+
+## Documentation
+Generate the SDK documentation
+```
+./gradlew javadoc
+```
+
+output: `sdk/build/docs/javadoc`
+
+## Publishing
+Update `gradle.properties` with your Bintray account information
+```
+./gradlew bintrayUpload
+```
+Login in to your Bintray account to publish the uploaded build.
 
 ## License
 
