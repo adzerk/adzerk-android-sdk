@@ -1,6 +1,6 @@
 # Adzerk Android SDK
 
-An Android SDK and sample app for the Adzerk Native and UserDB APIs
+An Android SDK for the Adzerk Native and UserDB APIs
 
 ## Download
 
@@ -36,8 +36,6 @@ Get content and decisions from the response
         Decision decision = response.getDecision("div1");
         ...
     }
-
-See the sample app for detailed examples
 
 ## GDPR Consent
 
