@@ -29,7 +29,7 @@ public class PlacementTest {
     @Test
     public void itShouldThrowOnNoAdType() {
         try {
-            Placement div1 = new Placement("div1", 9999, 77777);
+            Placement div1 = new Placement("div1", 9999L, 77777L);
         } catch (IllegalArgumentException e) {
             // success
         }
@@ -38,7 +38,7 @@ public class PlacementTest {
     @Test
     public void itShouldThrowOnNullDivName() {
         try {
-            Placement div1 = new Placement(null, 9999, 77777, 5);
+            Placement div1 = new Placement(null, 9999L, 77777L, 5);
         } catch (IllegalArgumentException e) {
             // success
         }
@@ -78,7 +78,7 @@ public class PlacementTest {
             final Set<Integer> eventIds = new HashSet(Arrays.asList(1, 2, 3));
 
             // create placement & set optional attributes
-            Placement div1 = new Placement("div1", 9999, 77777, 5, 6)
+            Placement div1 = new Placement("div1", 9999L, 77777L, 5, 6)
                 .setZoneIds(zoneIds)
                 .setCampaignId(campaignId)
                 .setFlightId(flightId)
@@ -103,7 +103,7 @@ public class PlacementTest {
     public void itShouldAddOptionalAttributes() {
         try {
             // create placement and add optional zone and event ids
-            Placement div1 = new Placement("div1", 9999, 77777, 5, 6)
+            Placement div1 = new Placement("div1", 9999L, 77777L, 5, 6)
                   .addZoneIds(10, 11, 11, 12)
                   .addEventIds(1, 1, 2);
 
@@ -121,7 +121,7 @@ public class PlacementTest {
     @Test
     public void itShouldSetProperties() {
         // create placement and add properties
-        Placement div1 = new Placement("div1", 123, 456, 4, 5)
+        Placement div1 = new Placement("div1", 123L, 456L, 4, 5)
             .addProperty("foo", 42)
             .addProperty("bar", "example")
             .addProperty("baz", Arrays.asList("one", "two"));
@@ -136,7 +136,7 @@ public class PlacementTest {
     public void itShouldSerializePlacements() {
 
         // create placements will all attributes
-        Placement div1 = new Placement("div1", 123, 456, 4, 5)
+        Placement div1 = new Placement("div1", 123L, 456L, 4, 5)
             .addZoneIds(789)
             .setCampaignId(123)
             .setFlightId(456)

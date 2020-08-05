@@ -6,8 +6,11 @@ import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.User;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
@@ -17,16 +20,22 @@ import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.RequestBody;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Matchers.any;
@@ -42,6 +51,7 @@ import static org.mockito.Mockito.when;
 public class AdzerkSdkTest {
 
     AdzerkSdk sdk;
+    MockWebServer mockWebServer;
 
     @Mock AdzerkService api;
 
@@ -59,9 +69,41 @@ public class AdzerkSdkTest {
     static long networkId = 9792L;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
+        mockWebServer = new MockWebServer();
+        mockWebServer.start();
         MockitoAnnotations.initMocks(this);
         sdk = AdzerkSdk.createInstance(api);
+    }
+
+    @After
+    public void teardown() throws IOException {
+        mockWebServer.shutdown();
+    }
+
+    @Test
+    public void itShouldAddSdkVersionHeader() throws Exception {
+        mockWebServer.enqueue(new MockResponse());
+
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        Request request = createTestRequest();
+        sdk.requestPlacementSynchronous(request);
+
+        RecordedRequest httpRequest = mockWebServer.takeRequest();
+        assertEquals("adzerk-android-sdk:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
+    }
+
+    @Test
+    public void itShouldSetDefaultNetworkIdForPlacement() throws Exception {
+        mockWebServer.enqueue(new MockResponse());
+
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        List<Placement> placements = Arrays.asList(new Placement("div0", 70464L, 5));
+        Request request = new Request.Builder(placements).build();
+        sdk.requestPlacementSynchronous(request);
+
+        RecordedRequest httpRequest = mockWebServer.takeRequest();
+        assertThat(httpRequest.getBody().toString().contains("\"networkId\":23"));
     }
 
     @Test
@@ -204,6 +246,34 @@ public class AdzerkSdkTest {
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
+    @Test
+    public void builderShouldRequireNetworkId() {
+        exceptionRule.expect(IllegalStateException.class);
+        exceptionRule.expectMessage("A networkId is required");
+        new AdzerkSdk.Builder().build();
+    }
+
+    @Test
+    public void builderShouldOverrideHostname() {
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname("myhost.acme.com").build();
+        assertTrue(sdk.baseUrl.contains("myhost.acme.com"));
+    }
+
+    @Test
+    public void builderShouldSetDefaultNetworkId() {
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).build();
+        assertTrue(sdk.defaultNetworkId == 23L);
+    }
+
+    @Test
+    public void builderShouldSetEDashHostname() {
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).build();
+        assertTrue(sdk.baseUrl.equals("https://e-23.adzerk.net"));
     }
 
     private Request createTestRequest() {
