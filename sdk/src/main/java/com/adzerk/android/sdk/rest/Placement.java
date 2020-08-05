@@ -64,10 +64,40 @@ public class Placement {
     /**
      * Creates a Placement with all required fields. A Placement identifies a place where an ad can be served
      * and has a unique divName. To request multiple ads using a single Request you specify multiple Placements.
+     * The SDK will provide the default networkId.
      *
      * <pre>
      * {@code
      * // create placement with required arguments
+     * Placement div1 = new Placement("div1", 1L, 5);
+     * }
+     * </pre>
+     *
+     * The Response to an ad Request returns a corresponding Decision for each Placement. The Decision contains the
+     * ad that was selected for a given Placement. The DecisionResponse relates a Decision to Placement by divName.
+     *
+     * @param divName       unique name for the placement
+     * @param siteId        site id to use when selecting an ad
+     * @param adTypes       one or more integer ad types to use when selecting an ad
+     */
+    public Placement(@NonNull String divName, long siteId, int... adTypes) {
+        setDivName(divName);
+        setSiteId(siteId);
+
+        if (adTypes == null || adTypes.length < 1) {
+            throw new IllegalArgumentException("At least one ad type must be specified");
+        }
+
+        addAdTypes(adTypes);
+    }
+
+    /**
+     * Creates a Placement and for specified networkId. A Placement identifies a place where an ad can be served
+     * and has a unique divName. To request multiple ads using a single Request you specify multiple Placements.
+     *
+     * <pre>
+     * {@code
+     * // create placement for networkId with required arguments
      * Placement div1 = new Placement("div1", 1L, 2L, 5);
      * }
      * </pre>
