@@ -400,7 +400,7 @@ public class AdzerkSdk {
     private static class SdkVersionRequestInterceptor implements Interceptor {
 
         static String SDK_VERSION_HEADER = "X-Adzerk-Sdk-Version";
-        static String SDK_VERSION = "adzerk-android-sdk:" + BuildConfig.VERSION_NAME;
+        static String SDK_VERSION = "adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME;
 
         @Override
         public okhttp3.Response intercept(Chain chain) throws IOException {
