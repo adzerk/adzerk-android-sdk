@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -379,11 +380,14 @@ public class AdzerkSdk {
             if (client != null) {
                 builder.client(client);
             } else {
-                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
                 HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
                 //loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                httpClient.addInterceptor(loggingInterceptor);
+
+                OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+                        .addInterceptor(new SdkVersionRequestInterceptor())
+                        .addInterceptor((loggingInterceptor));
+
                 builder.client(httpClient.build());
             }
 
@@ -392,6 +396,22 @@ public class AdzerkSdk {
 
         return service;
     }
+
+    private static class SdkVersionRequestInterceptor implements Interceptor {
+
+        static String SDK_VERSION_HEADER = "X-Adzerk-Sdk-Version";
+        static String SDK_VERSION = "adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME;
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            okhttp3.Request original = chain.request();
+            okhttp3.Request.Builder requestBuilder = original.newBuilder()
+                    .header(SDK_VERSION_HEADER, SDK_VERSION);
+            okhttp3.Request request = requestBuilder.build();
+
+            return chain.proceed(request);
+        }
+    };
 
     // Capture the default deserialization and JsonObject for the 'data.customData' element
     private static class ContentDataDeserializer implements JsonDeserializer<ContentData> {
