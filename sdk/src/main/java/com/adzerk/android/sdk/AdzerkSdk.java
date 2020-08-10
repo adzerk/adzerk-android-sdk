@@ -1,5 +1,6 @@
 package com.adzerk.android.sdk;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -44,8 +45,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * <p>
  * <pre>
  * {@code
- * // Get instance of the SDK
- * AdzerkSdk sdk = AdzerkSdk.getInstance();
+ * // Create instance of the SDK
+ * AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).build();
  *
  * // Build the Request
  * Request request = new Request.Builder()
@@ -60,9 +61,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class AdzerkSdk {
     static final String TAG = AdzerkSdk.class.getSimpleName();
-    static final String ADZERK_ENDPOINT = "https://engine.adzerk.net";
 
-    static AdzerkSdk instance;
+    long defaultNetworkId;
+    String baseUrl;
 
     AdzerkService service;
     OkHttpClient client;
@@ -93,8 +94,8 @@ public class AdzerkSdk {
     }
 
     private interface AdzerkCallbackListener<T> {
-        public void success(T response);
-        public void error(AdzerkError error);
+        void success(T response);
+        void error(AdzerkError error);
     }
 
     /**
@@ -109,18 +110,48 @@ public class AdzerkSdk {
     public interface UserListener extends AdzerkCallbackListener<User> {
     }
 
+    public static class Builder {
 
-    /**
-     * Returns the SDK instance for making Adzerk API calls.
-     *
-     * @return sdk instance
-     */
-    public static AdzerkSdk getInstance() {
-        if (instance == null) {
-            instance = new AdzerkSdk();
+        static final String E_DASH_HOSTNAME_FORMAT = "e-%d.adzerk.net";
+        static final String BASE_URL_FORMAT = "%s://%s";
+
+        private long networkId;
+        private String hostname;
+        private String protocol = "https";
+
+        public Builder() {
         }
 
-        return instance;
+        public Builder networkId(long networkId) {
+            this.networkId = networkId;
+            return this;
+        }
+
+        public Builder hostname(String hostname) {
+            this.hostname = hostname;
+            return this;
+        }
+
+        public Builder protocol(String protocol) {
+            this.protocol = protocol;
+            return this;
+        }
+
+        public AdzerkSdk build() {
+            if (this.networkId == 0L) {
+                throw new IllegalStateException("A networkId is required");
+            }
+            String baseUrl = createBaseUrl();
+            return new AdzerkSdk(baseUrl, this.networkId);
+        }
+
+        private String createBaseUrl() {
+            if (!TextUtils.isEmpty(this.hostname)) {
+                return String.format(BASE_URL_FORMAT, this.protocol, this.hostname);
+            }
+
+            return String.format(BASE_URL_FORMAT, this.protocol, String.format(E_DASH_HOSTNAME_FORMAT, this.networkId));
+        }
     }
 
     /**
@@ -143,11 +174,16 @@ public class AdzerkSdk {
         return new AdzerkSdk(null, client);
     }
 
-    private AdzerkSdk() {
+    private AdzerkSdk(String baseUrl, long networkId) {
+        this.baseUrl = baseUrl;
+        this.defaultNetworkId = networkId;
         service = getAdzerkService();
     }
 
+    // Internal use - support for unit tests
     private AdzerkSdk(AdzerkService service, OkHttpClient client) {
+        this.baseUrl = "https://engine.adzerk.net";
+        this.defaultNetworkId = 9792L;
         this.service = service;
         this.client = client;
     }
@@ -160,6 +196,11 @@ public class AdzerkSdk {
      * @param listener Can be null, but caller will never get notifications.
      */
     public void requestPlacement(Request request, @Nullable final DecisionListener listener) {
+        request.getPlacements().forEach( p -> {
+            if (p.getNetworkId() == 0L) {
+                p.setNetworkId(this.defaultNetworkId);
+            }
+        });
         Call<DecisionResponse> call = getAdzerkService().request(request);
         call.enqueue(new AdzerkCallback<DecisionResponse, DecisionResponse>("RequestPlacement", listener));
     }
@@ -170,6 +211,11 @@ public class AdzerkSdk {
      * @param request Request specifying one or more Placements
      */
     public DecisionResponse requestPlacementSynchronous(Request request) {
+        request.getPlacements().forEach( p -> {
+            if (p.getNetworkId() == 0L) {
+                p.setNetworkId(this.defaultNetworkId);
+            }
+        });
         Call<DecisionResponse> call = getAdzerkService().request(request);
 
         try {
@@ -373,7 +419,7 @@ public class AdzerkSdk {
                   .create();
 
             Retrofit.Builder builder = new Retrofit.Builder()
-                  .baseUrl(ADZERK_ENDPOINT)
+                  .baseUrl(baseUrl)
                   .addConverterFactory(GsonConverterFactory.create(gson));
 
             // test client
