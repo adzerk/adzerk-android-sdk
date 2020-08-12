@@ -6,28 +6,32 @@ An Android SDK for the Adzerk Native and UserDB APIs
 
 Grab via gradle
 
-    implementation 'com.adzerk:sdk:0.5.+'
+    implementation 'com.adzerk:sdk:1.0.+'
 
 
-The SDK requires at minimum Java 7 or Android 2.3.
+The SDK requires a minimum Android 8.0 (API level 26) and Java 8
 
 ## Usage
 
-Obtain an instance of the AdzerkSdk class
+Create an instance of the AdzerkSdk for your `networkId`:
 
-    AdzerkSdk sdk = AdzerkSdk.getInstance();
+    AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).build();
+
+Create an instance of the AdzerkSdk and also provide a hostname:
+
+    AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname("custom.host.com").build();
 
 Build a request for placements
 
     Request request = new Request.Builder()
-          .addPlacement(new Placement("div1", <network_id>, <site_id>, <ad_types...>))
-          .addPlacement(new Placement("div2", <network_id>, <site_id>, <ad_types...>))
-          .addPlacement(new Placement("div3", <network_id>, <site_id>, <ad_types...>))
+          .addPlacement(new Placement("div1", <site_id>, <ad_types...>))
+          .addPlacement(new Placement("div2", <site_id>, <ad_types...>))
+          .addPlacement(new Placement("div3", <site_id>, <ad_types...>))
           .build();
 
 Submit the request and get a callback for the response
 
-    sdk.request(request, listener);
+    sdk.requestPlacement(request, listener);
 
 Get content and decisions from the response
 
@@ -73,6 +77,8 @@ Generate the SDK documentation
 output: `sdk/build/docs/javadoc`
 
 ## Publishing
+Update the version string properties in `sdk/build.gradle`
+
 Update `gradle.properties` with your Bintray account information
 ```
 ./gradlew bintrayUpload
