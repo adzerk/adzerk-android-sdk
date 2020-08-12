@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.0.0 (08/12/2020)
+
+* add support for Adzerk e-dash domains #68
+* add Adzerk SDK version header to requests #67
+* add support of custom hostname
+* default placements to top-level networkId
+
 ## 0.5.0 (03/22/2020)
 
 * Android SDK updates for API 29
