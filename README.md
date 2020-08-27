@@ -9,7 +9,9 @@ Grab via gradle
     implementation 'com.adzerk:sdk:1.0.+'
 
 
-The SDK requires a minimum Android 8.0 (API level 26) and Java 8
+The SDK uses Java 8 and supports a minimum Android 5.1 (API level 22).
+
+To target a client application with minimum SDK <26, refer to the [Android Java 8 support documentation](https://developer.android.com/studio/write/java8-support).
 
 ## Usage
 
