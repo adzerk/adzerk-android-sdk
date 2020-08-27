@@ -92,7 +92,7 @@ public class Content {
      * Returns the object containing the both data and metadata for the creative
      * @return content data
      */
-    private ContentData getContentData() {
+    public ContentData getContentData() {
         return contentData;
     }
 
