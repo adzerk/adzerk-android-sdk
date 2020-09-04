@@ -90,7 +90,7 @@ public class AdzerkSdkTest {
         sdk.requestPlacementSynchronous(request);
 
         RecordedRequest httpRequest = mockWebServer.takeRequest();
-        assertEquals("adzerk-android-sdk:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
+        assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
     }
 
     @Test

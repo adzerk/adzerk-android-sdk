@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.0.1 (08/27/2020)
+- enable minSDK 22
+
 ## 1.0.0 (08/12/2020)
 
 * add support for Adzerk e-dash domains #68
