@@ -66,6 +66,9 @@ public class Request {
     // sets data consent preferences
     Consent consent;
 
+    // enables automatic filtering-out of impressions from bots and spiders; defaults to false
+    boolean enableBotFiltering = false;
+
     /**
      * Builder to configure a Request for ads.
      * <p>
@@ -98,6 +101,7 @@ public class Request {
         private Set<Integer> blockedCreatives;
         private Map<Integer, List<Long>> flightViewTimes;
         private Consent consent;
+        private boolean enableBotFiltering = false;
 
 
         /**
@@ -300,10 +304,22 @@ public class Request {
          *
          * For example, GDPR consent for tracking in the European Union (This defaults to false).
          *
-         * @return
+         * @return request builder
          */
         public Builder setConsent(Consent consent) {
             this.consent = consent;
+            return this;
+        }
+
+        /**
+         * Enable or disable bot filtering feature. Bot filtering automatically filters out
+         * impressions from bots and spiders. Disabled by default for mobile clients.
+         *
+         * @param enableBotFiltering enable or disable bot filtering feature
+         * @return request builder
+         */
+        public Builder setBotFilteringEnabled(boolean enableBotFiltering) {
+            this.enableBotFiltering = enableBotFiltering;
             return this;
         }
 
@@ -337,6 +353,7 @@ public class Request {
         setBlockedCreatives(builder.blockedCreatives);
         setAllFlightViewTimes(builder.flightViewTimes);
         setConsent(builder.consent);
+        setBotFilteringEnabled(builder.enableBotFiltering);
     }
 
     /**
@@ -484,5 +501,19 @@ public class Request {
 
     private void setConsent(Consent consent) {
         this.consent = consent;
+    }
+
+    /**
+     * Returns whether bot filtering feature is enabled. Bot filtering automatically filters out
+     * impressions from bots and spiders. Disabled by default for mobile clients.
+     *
+     * @return true if bot filtering has been enabled; default is false
+     */
+    public boolean isBotFilteringEnabled() {
+        return this.enableBotFiltering;
+    }
+
+    private void setBotFilteringEnabled(boolean enableBotFiltering) {
+        this.enableBotFiltering = enableBotFiltering;
     }
 }
