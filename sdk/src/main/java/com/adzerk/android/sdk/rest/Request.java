@@ -51,9 +51,6 @@ public class Request {
     // URL to use as the current page URL when selecting an ad
     String url;
 
-    // UNIX epoch timestamp to use when selecting an ad
-    Long time;
-
     // IP address to use when selecting the ad; if specified, overrides the IP the request is made from
     String ip;
 
@@ -93,7 +90,6 @@ public class Request {
         private Set<String> keywords;
         private String referrer;
         private String url;
-        private Long time;
         private String ip;
         private Set<Integer> blockedCreatives;
         private Map<Integer, List<Long>> flightViewTimes;
@@ -223,17 +219,6 @@ public class Request {
         }
 
         /**
-         * Timestamp to use when selecting an ad
-         *
-         * @param time  UNIX epoch timestamp
-         * @return request builder
-         */
-        public Builder setTime(long time) {
-            this.time = time;
-            return this;
-        }
-
-        /**
          * IP address to use when selecting the ad. If specified, overrides the IP the request is made from
          *
          * @param ip    ip address
@@ -330,9 +315,6 @@ public class Request {
         setKeywords(builder.keywords);
         setReferrer(builder.referrer);
         setUrl(builder.url);
-        if (builder.time != null) {
-            setTime(builder.time);
-        }
         setIp(builder.ip);
         setBlockedCreatives(builder.blockedCreatives);
         setAllFlightViewTimes(builder.flightViewTimes);
@@ -402,19 +384,6 @@ public class Request {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    /**
-     * Returns the UNIX epoch timestamp to use when selecting an ad
-     *
-     * @return  epoch timestamp
-     */
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
     }
 
     /**
