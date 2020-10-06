@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.adzerk.android.sdk.rest.AdzerkService;
 import com.adzerk.android.sdk.rest.ContentData;
 import com.adzerk.android.sdk.rest.DecisionResponse;
+import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.User;
 import com.adzerk.android.sdk.rest.UserProperties;
@@ -196,11 +197,11 @@ public class AdzerkSdk {
      * @param listener Can be null, but caller will never get notifications.
      */
     public void requestPlacement(Request request, @Nullable final DecisionListener listener) {
-        request.getPlacements().forEach( p -> {
+        for (Placement p : request.getPlacements()) {
             if (p.getNetworkId() == 0L) {
                 p.setNetworkId(this.defaultNetworkId);
             }
-        });
+        }
         Call<DecisionResponse> call = getAdzerkService().request(request);
         call.enqueue(new AdzerkCallback<DecisionResponse, DecisionResponse>("RequestPlacement", listener));
     }
@@ -211,11 +212,11 @@ public class AdzerkSdk {
      * @param request Request specifying one or more Placements
      */
     public DecisionResponse requestPlacementSynchronous(Request request) {
-        request.getPlacements().forEach( p -> {
+        for (Placement p : request.getPlacements()) {
             if (p.getNetworkId() == 0L) {
                 p.setNetworkId(this.defaultNetworkId);
             }
-        });
+        }
         Call<DecisionResponse> call = getAdzerkService().request(request);
 
         try {

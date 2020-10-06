@@ -60,6 +60,9 @@ public class Placement {
     // array of numeric event types. Requests tracking URLs for custom events
     Set<Integer> eventIds;
 
+    // maximum number of winners (selections) that can be included in the placement
+    Integer count;
+
 
     /**
      * Creates a Placement with all required fields. A Placement identifies a place where an ad can be served
@@ -385,5 +388,24 @@ public class Placement {
             this.eventIds.add(eventId);
         }
         return this;
+    }
+
+    /**
+     * Returns the maximum number of winners requested per Placement
+     *
+     *  @return number of ads requested
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     * Maximum number of winners (selections) that can be included in the Placement
+     *
+     * @param count number of ads to return (between 1 and 20)
+     **/
+    public Placement setCount(int count) {
+        this.count = count;
+        return  this;
     }
 }
