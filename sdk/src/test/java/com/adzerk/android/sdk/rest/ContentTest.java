@@ -34,7 +34,7 @@ public class ContentTest {
         assertThat(response).isNotNull();
 
         // Content
-        Decision div1 = response.getDecision("div1");
+        Decision div1 = response.getDecisions("div1").get(0);
         List<Content> contents = div1.getContents();
         assertThat(contents.size()).isEqualTo(1);
         Content div1Content = contents.get(0);
