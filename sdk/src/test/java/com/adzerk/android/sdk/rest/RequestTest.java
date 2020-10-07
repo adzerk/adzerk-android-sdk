@@ -2,7 +2,15 @@ package com.adzerk.android.sdk.rest;
 
 import com.adzerk.android.sdk.AdzerkSdk;
 import com.adzerk.android.sdk.BuildConfig;
+import com.adzerk.android.sdk.TestData;
+import com.adzerk.android.sdk.gson.FlattenTypeAdapterFactory;
 import com.adzerk.android.sdk.rest.Request.Builder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +27,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
@@ -309,4 +319,94 @@ public class RequestTest {
         }
     }
 
+    @Test
+    public void itShouldBuildAdditionalOptions() {
+        String[] strings = new String[] {"value1","value2","value3" };
+        try {
+            Request request = new Builder(placements)
+                    .addAdditionalOption("string", "string1")
+                    .addAdditionalOption("int", 123)
+                    .addAdditionalOption("boolean", true)
+                    .addAdditionalOption("strings", strings)
+                    .addAdditionalOption("javaObject", new TestData.ObjectWithDefaultFieldNames("foo", 99, false))
+                    .addAdditionalOption("customObject", new TestData.ObjectWithCustomFieldNames("foo", 99, false))
+                    .build();
+
+            JsonElement stringElement = request.additionalOptions.get("string");
+            assertNotNull(stringElement);
+            assertThat(stringElement instanceof JsonPrimitive);
+            assertEquals("string1", stringElement.getAsString());
+
+            JsonElement intElement = request.additionalOptions.get("int");
+            assertNotNull(intElement);
+            assertThat(intElement instanceof JsonPrimitive);
+            assertEquals(123, intElement.getAsInt());
+
+            JsonElement booleanElement = request.additionalOptions.get("boolean");
+            assertNotNull(booleanElement);
+            assertThat(booleanElement instanceof JsonPrimitive);
+            assertEquals(true, booleanElement.getAsBoolean());
+
+            JsonElement stringsElement = request.additionalOptions.get("strings");
+            assertNotNull(stringsElement);
+            assertThat(stringsElement instanceof JsonArray);
+            JsonArray stringsArray = stringsElement.getAsJsonArray();
+            assertEquals(strings[0], stringsArray.get(0).getAsString());
+            assertEquals(strings[1], stringsArray.get(1).getAsString());
+            assertEquals(strings[2], stringsArray.get(2).getAsString());
+
+            JsonElement javaObjectElement = request.additionalOptions.get("javaObject");
+            assertNotNull(javaObjectElement);
+            assertThat(javaObjectElement.isJsonObject());
+            JsonObject myObjectWithDefaultFieldNames = javaObjectElement.getAsJsonObject();
+            assertNotNull(myObjectWithDefaultFieldNames.get("stringField"));
+            assertEquals("foo", myObjectWithDefaultFieldNames.get("stringField").getAsString());
+            assertNotNull(myObjectWithDefaultFieldNames.get("intField"));
+            assertEquals(99, myObjectWithDefaultFieldNames.get("intField").getAsInt());
+            assertNotNull(myObjectWithDefaultFieldNames.get("booleanField"));
+            assertEquals(false, myObjectWithDefaultFieldNames.get("booleanField").getAsBoolean());
+
+            JsonElement customObjectElement = request.additionalOptions.get("customObject");
+            assertNotNull(customObjectElement);
+            assertThat(customObjectElement.isJsonObject());
+            JsonObject myObjectWithCustomFieldNames = customObjectElement.getAsJsonObject();
+            assertNotNull(myObjectWithCustomFieldNames.get("name"));
+            assertEquals("foo", myObjectWithCustomFieldNames.get("name").getAsString());
+            assertNotNull(myObjectWithCustomFieldNames.get("age"));
+            assertEquals(99, myObjectWithCustomFieldNames.get("age").getAsInt());
+            assertNotNull(myObjectWithCustomFieldNames.get("employee"));
+            assertEquals(false, myObjectWithCustomFieldNames.get("employee").getAsBoolean());
+
+            Gson gson = new GsonBuilder().registerTypeAdapterFactory(new FlattenTypeAdapterFactory()).create();
+            String json = gson.toJson(request);
+            assertNotNull(json);
+            assertEquals(jsonRequest, json);
+            System.out.println(json);
+
+        }  catch (IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
+    String jsonRequest = "{\"placements\":[{" +
+            "\"divName\":\"div1\"," +
+            "\"networkId\":0," +
+            "\"siteId\":9709," +
+            "\"adTypes\":[70464,5]}]," +
+            "\"enableBotFiltering\":false," +
+            "\"javaObject\":{" +
+            "\"stringField\":\"foo\"," +
+            "\"intField\":99," +
+            "\"booleanField\":false" +
+            "}," +
+            "\"boolean\":true," +
+            "\"string\":\"string1\"," +
+            "\"strings\":[\"value1\",\"value2\",\"value3\"]," +
+            "\"customObject\":{" +
+            "\"name\":\"foo\"," +
+            "\"age\":99," +
+            "\"employee\":false" +
+            "}," +
+            "\"int\":123" +
+            "}";
 }
