@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.0.0 (TBD)
+- new: add support for requesting multi-winner Placements by specifying a count on Placement for ad request #74 
+   - breaking: `DecisionResponse getDecision(name)` has been replaced by `getDecisions(name)` which returns `List<Decision>` 
+   - breaking: `DecisionResponse getDecisions()` now returns a map from Placement name to decision list `Map<String, List<Decision>>`
+- new: add support for `botFiltering` option #76
+- fix: remote outdated `time` field from ad Request #77
+
 ## 1.0.1 (08/27/2020)
 - enable minSDK 22
 
