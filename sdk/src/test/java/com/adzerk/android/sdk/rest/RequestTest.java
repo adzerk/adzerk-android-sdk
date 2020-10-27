@@ -287,4 +287,26 @@ public class RequestTest {
         }
     }
 
+    @Test
+    public void itShouldDisableBotFiltering() {
+
+        try {
+            Request request = new Builder(placements).build();
+            assertThat(request.isBotFilteringEnabled()).isEqualTo(false);
+        } catch (IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void itShouldEnableBotFiltering() {
+
+        try {
+            Request request = new Builder(placements).setBotFilteringEnabled(true).build();
+            assertThat(request.isBotFilteringEnabled()).isEqualTo(true);
+        } catch (IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
 }
