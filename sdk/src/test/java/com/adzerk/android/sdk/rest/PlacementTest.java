@@ -84,7 +84,8 @@ public class PlacementTest {
                 .setFlightId(flightId)
                 .setAdId(adId)
                 .setClickUrl(clickUrl)
-                .setEventIds(eventIds);
+                .setEventIds(eventIds)
+                .setCount(4);
 
             // verify
             assertThat(div1.getZoneIds()).containsAll(zoneIds);
@@ -93,6 +94,7 @@ public class PlacementTest {
             assertThat(div1.getAdId()).isEqualTo(adId);
             assertThat(div1.getClickUrl()).isEqualTo(clickUrl);
             assertThat(div1.getEventIds()).containsAll(eventIds);
+            assertThat(div1.getCount()).isEqualTo(4);
 
         } catch(IllegalArgumentException e) {
             fail("Should not throw exception: " + e.getMessage());
@@ -160,6 +162,24 @@ public class PlacementTest {
         assertThat(jsonElement).isEqualToComparingFieldByField(expectedJsonElement);
     }
 
+    @Test
+    public void itShouldSerializePlacementWithCount() {
+        // create placements will count attribute
+        Placement div1 = new Placement("div1", 123L, 456L, 4, 5)
+                .setCount(4);
+
+        // serialize Placement to json
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(div1);
+        JsonElement jsonElement = gson.toJsonTree(div1);
+
+        // expected json
+        JsonElement expectedJsonElement = gson.fromJson(jsonPlacementWithCount, JsonElement.class);
+
+        // verify results
+        assertThat(json).isNotEmpty();
+        assertThat(jsonElement).isEqualToComparingFieldByField(expectedJsonElement);
+    }
 
     public static final String jsonPlacement1 = "{" +
           "  \"divName\": \"div1\"," +
@@ -179,4 +199,11 @@ public class PlacementTest {
           "  }" +
           "}";
 
+    public static final String jsonPlacementWithCount = "{" +
+            "  \"divName\": \"div1\"," +
+            "  \"networkId\": 123," +
+            "  \"siteId\": 456," +
+            "  \"adTypes\": [4, 5]," +
+            "  \"count\": 4" +
+            "}";
 }
