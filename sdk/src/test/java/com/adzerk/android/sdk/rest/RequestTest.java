@@ -194,22 +194,6 @@ public class RequestTest {
     }
 
     @Test
-    public void itShouldBuildTime() {
-        try {
-            long time = 1437425417;
-
-            Request request = new Builder(placements)
-                  .setTime(time)
-                  .build();
-
-            assertThat(request.getTime()).isEqualTo(time);
-
-        } catch (IllegalArgumentException e) {
-            fail("Should not throw exception: " + e.getMessage());
-        }
-    }
-
-    @Test
     public void itShouldBuildIp() {
         try {
             String ip = "192.168.1.1";
@@ -247,7 +231,6 @@ public class RequestTest {
         try {
             int blocked1 = 1;
             int blocked2 = 2;
-            int blocked3 = 3;
 
             Request request = new Builder(placements)
                   .addBlockedCreatives(blocked1, blocked2)
