@@ -6,7 +6,7 @@ An Android SDK for the Adzerk Native and UserDB APIs
 
 Grab via gradle
 
-    implementation 'com.adzerk:sdk:1.0.+'
+    implementation 'com.adzerk:sdk:2.0.+'
 
 
 The SDK uses Java 8 and supports a minimum Android 5.1 (API level 22).
@@ -39,9 +39,20 @@ Get content and decisions from the response
 
     @Override
     public void success(Response response) {
-        Decision decision = response.getDecision("div1");
+        Decision firstDecision = response.getDecisions("div1").get(0);
         ...
     }
+    
+## Multi-Winner Placements
+A multi-winner placement returns multiple selections inside a single placement object.
+
+To request multiple winners, specify a count for the Placement object. This requests the maximum number of winners (selections) that can be included in the placement.
+
+    Request request = new Request.Builder()
+       .addPlacement(new Placement("div1", <site_id>, <ad_types...>).setCount(3))
+       .build();
+
+@since SDK v2.0.0+
 
 ## GDPR Consent
 

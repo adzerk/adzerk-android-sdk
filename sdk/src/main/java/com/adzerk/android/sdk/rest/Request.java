@@ -51,9 +51,6 @@ public class Request {
     // URL to use as the current page URL when selecting an ad
     String url;
 
-    // UNIX epoch timestamp to use when selecting an ad
-    Long time;
-
     // IP address to use when selecting the ad; if specified, overrides the IP the request is made from
     String ip;
 
@@ -65,6 +62,9 @@ public class Request {
 
     // sets data consent preferences
     Consent consent;
+
+    // enables automatic filtering-out of impressions from bots and spiders; defaults to false
+    boolean enableBotFiltering = false;
 
     /**
      * Builder to configure a Request for ads.
@@ -93,11 +93,11 @@ public class Request {
         private Set<String> keywords;
         private String referrer;
         private String url;
-        private Long time;
         private String ip;
         private Set<Integer> blockedCreatives;
         private Map<Integer, List<Long>> flightViewTimes;
         private Consent consent;
+        private boolean enableBotFiltering = false;
 
 
         /**
@@ -223,17 +223,6 @@ public class Request {
         }
 
         /**
-         * Timestamp to use when selecting an ad
-         *
-         * @param time  UNIX epoch timestamp
-         * @return request builder
-         */
-        public Builder setTime(long time) {
-            this.time = time;
-            return this;
-        }
-
-        /**
          * IP address to use when selecting the ad. If specified, overrides the IP the request is made from
          *
          * @param ip    ip address
@@ -300,10 +289,22 @@ public class Request {
          *
          * For example, GDPR consent for tracking in the European Union (This defaults to false).
          *
-         * @return
+         * @return request builder
          */
         public Builder setConsent(Consent consent) {
             this.consent = consent;
+            return this;
+        }
+
+        /**
+         * Enable or disable bot filtering feature. Bot filtering automatically filters out
+         * impressions from bots and spiders. Disabled by default for mobile clients.
+         *
+         * @param enableBotFiltering enable or disable bot filtering feature
+         * @return request builder
+         */
+        public Builder setBotFilteringEnabled(boolean enableBotFiltering) {
+            this.enableBotFiltering = enableBotFiltering;
             return this;
         }
 
@@ -330,13 +331,11 @@ public class Request {
         setKeywords(builder.keywords);
         setReferrer(builder.referrer);
         setUrl(builder.url);
-        if (builder.time != null) {
-            setTime(builder.time);
-        }
         setIp(builder.ip);
         setBlockedCreatives(builder.blockedCreatives);
         setAllFlightViewTimes(builder.flightViewTimes);
         setConsent(builder.consent);
+        setBotFilteringEnabled(builder.enableBotFiltering);
     }
 
     /**
@@ -402,19 +401,6 @@ public class Request {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    /**
-     * Returns the UNIX epoch timestamp to use when selecting an ad
-     *
-     * @return  epoch timestamp
-     */
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
     }
 
     /**
@@ -484,5 +470,19 @@ public class Request {
 
     private void setConsent(Consent consent) {
         this.consent = consent;
+    }
+
+    /**
+     * Returns whether bot filtering feature is enabled. Bot filtering automatically filters out
+     * impressions from bots and spiders. Disabled by default for mobile clients.
+     *
+     * @return true if bot filtering has been enabled; default is false
+     */
+    public boolean isBotFilteringEnabled() {
+        return this.enableBotFiltering;
+    }
+
+    private void setBotFilteringEnabled(boolean enableBotFiltering) {
+        this.enableBotFiltering = enableBotFiltering;
     }
 }
