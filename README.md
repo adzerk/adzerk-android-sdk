@@ -43,6 +43,20 @@ Get content and decisions from the response
         ...
     }
     
+## Additional options
+Additional optional parameters supported by the API may be specified via the Builder on the Request or Placement.
+
+Example: to specify eCPM partitions for a Placement:
+
+    String[] ecpmPartitions = new String[]{"main", "detail", "footer"};
+    Request request = new Request.Builder()
+        .addPlacement(new Placement("div1", 1133898L, 163)
+            .setCount(ecpmPartitions.length)
+            .addAdditionalOption("ecpmPartitions", ecpmPartitions))
+        .build();
+
+@since SDK v2.1.0+
+
 ## Multi-Winner Placements
 A multi-winner placement returns multiple selections inside a single placement object.
 
