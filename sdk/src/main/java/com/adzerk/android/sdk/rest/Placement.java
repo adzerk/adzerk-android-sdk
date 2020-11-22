@@ -3,6 +3,9 @@ package com.adzerk.android.sdk.rest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.adzerk.android.sdk.gson.FlattenAdditionalOptions;
+import com.google.gson.JsonElement;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,6 +28,7 @@ import java.util.Set;
  *
  *
  */
+@FlattenAdditionalOptions(fieldName = "additionalOptions")
 public class Placement {
 
     // unique name for the placement (required)
@@ -63,6 +67,10 @@ public class Placement {
     // maximum number of winners (selections) that can be included in the placement
     Integer count;
 
+    // options to be added to the Placement
+    public AdditionalOptions additionalOptions;
+
+    transient AdditionalOptions.Builder additionalOptionsBuilder = new AdditionalOptions.Builder();
 
     /**
      * Creates a Placement with all required fields. A Placement identifies a place where an ad can be served
@@ -407,5 +415,122 @@ public class Placement {
     public Placement setCount(int count) {
         this.count = count;
         return  this;
+    }
+
+    /**
+     * Add an additional option to the Request with a string value
+     *
+     * @param key name of json attribute
+     * @param value a String value
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, String value) {
+        additionalOptions = additionalOptionsBuilder.add(key, value).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request with a numeric value
+     *
+     * @param key name of json attribute
+     * @param value a Number values
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, Number value) {
+        additionalOptions = additionalOptionsBuilder.add(key, value).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request with a boolean value
+     *
+     * @param key name of json attribute
+     * @param value a Boolean values
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, Boolean value) {
+        additionalOptions = additionalOptionsBuilder.add(key, value).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request with array of string values
+     *
+     * @param key name of json attribute
+     * @param values array of String values
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, String[] values) {
+        additionalOptions = additionalOptionsBuilder.add(key, values).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request with array of numeric values
+     *
+     * @param key name of json attribute
+     * @param values array of Number values
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, Number[] values) {
+        additionalOptions = additionalOptionsBuilder.add(key, values).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request with array of boolean values
+     *
+     * @param key name of json attribute
+     * @param values array of boolean values
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, Boolean[] values) {
+        additionalOptions = additionalOptionsBuilder.add(key, values).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request. Value may be any supported JsonElement type.
+     *
+     * @param key name of json attribute
+     * @param value json element
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, JsonElement value) {
+        additionalOptions = additionalOptionsBuilder.add(key, value).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request. Value must be an Object serializable to json.
+     *
+     * @param key name of json attribute
+     * @param value an Object that can be auto-serialized to json
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, Object value) {
+        additionalOptions = additionalOptionsBuilder.add(key, value).build();
+        return this;
+    }
+
+    /**
+     * Add an additional option to the Request. Value must be an Object array serializable to json.
+     *
+     * @param key name of json attribute
+     * @param values an Object array that can be auto-serialized to json
+     * @return placement
+     */
+    public Placement addAdditionalOption(String key, Object[] values) {
+        additionalOptions = additionalOptionsBuilder.add(key, values).build();
+        return this;
+    }
+
+    /**
+     * Returns the additional options to be added to the Placement
+     *
+     * @return
+     */
+    public AdditionalOptions getAdditionalOptions() {
+        return additionalOptions;
     }
 }
