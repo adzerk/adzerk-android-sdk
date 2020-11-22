@@ -1,5 +1,10 @@
 package com.adzerk.android.sdk.rest;
 
+import android.location.Location;
+
+import com.adzerk.android.sdk.gson.MatchedPointsDeserializer;
+import com.google.gson.annotations.JsonAdapter;
+
 import java.util.List;
 
 /**
@@ -33,6 +38,9 @@ public class Decision {
 
     // url endpoint that, using a GET, triggers the recording of the impression
     String impressionUrl;
+
+    @JsonAdapter(MatchedPointsDeserializer.class)
+    List<Location> matchedPoints;
 
     /**
      * Returns id for the ad that was selected
@@ -98,4 +106,7 @@ public class Decision {
         return events;
     }
 
+    public List<Location> getMatchedPoints() {
+        return matchedPoints;
+    }
 }
