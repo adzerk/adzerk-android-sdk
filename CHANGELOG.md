@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 2.1.0 (TBD)
+## 2.1.0 (11/22/2020)
 - new: add support to specify additional optional parameters at the Request and Placement levels #75
 - new: adds `matchedPoints` to DecisionResponse to support GeoDistance Targeting  #78
 
