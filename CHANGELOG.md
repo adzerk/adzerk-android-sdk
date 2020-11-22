@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.1.0 (11/22/2020)
+- new: add support to specify additional optional parameters at the Request and Placement levels #75
+- new: adds `matchedPoints` to DecisionResponse to support GeoDistance Targeting  #78
+
 ## 2.0.0 (10/28/2020)
 - new: add support for requesting multi-winner Placements by specifying a count on Placement for ad request #74 
    - breaking: `DecisionResponse getDecision(name)` has been replaced by `getDecisions(name)` which returns `List<Decision>` 

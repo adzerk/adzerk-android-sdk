@@ -4,6 +4,7 @@ import com.adzerk.android.sdk.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
@@ -179,6 +182,31 @@ public class PlacementTest {
         // verify results
         assertThat(json).isNotEmpty();
         assertThat(jsonElement).isEqualToComparingFieldByField(expectedJsonElement);
+    }
+
+    @Test
+    public void itShouldBuildAdditionalOptions() {
+        Placement div1 = new Placement("div1", 123L, 456L, 4, 5)
+                .setCount(4)
+                .addAdditionalOption("string", "string1")
+                .addAdditionalOption("int", 123)
+                .addAdditionalOption("boolean", true);
+
+        JsonElement stringElement = div1.additionalOptions.get("string");
+        assertNotNull(stringElement);
+        assertThat(stringElement instanceof JsonPrimitive);
+        assertEquals("string1", stringElement.getAsString());
+
+        JsonElement intElement = div1.additionalOptions.get("int");
+        assertNotNull(intElement);
+        assertThat(intElement instanceof JsonPrimitive);
+        assertEquals(123, intElement.getAsInt());
+
+        JsonElement booleanElement = div1.additionalOptions.get("boolean");
+        assertNotNull(booleanElement);
+        assertThat(booleanElement instanceof JsonPrimitive);
+        assertEquals(true, booleanElement.getAsBoolean());
+
     }
 
     public static final String jsonPlacement1 = "{" +

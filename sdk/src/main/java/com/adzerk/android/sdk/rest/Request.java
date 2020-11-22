@@ -2,6 +2,10 @@ package com.adzerk.android.sdk.rest;
 
 import androidx.annotation.NonNull;
 
+import com.adzerk.android.sdk.gson.FlattenAdditionalOptions;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +38,7 @@ import java.util.Set;
  * @see com.adzerk.android.sdk.rest.Request.Builder
  * @see com.adzerk.android.sdk.AdzerkSdk
  */
+@FlattenAdditionalOptions(fieldName = "additionalOptions")
 public class Request {
 
     // list of placements where an ad can be served (required)
@@ -65,6 +70,9 @@ public class Request {
 
     // enables automatic filtering-out of impressions from bots and spiders; defaults to false
     boolean enableBotFiltering = false;
+
+    // options to be added to the Placement
+    public AdditionalOptions additionalOptions;
 
     /**
      * Builder to configure a Request for ads.
@@ -98,6 +106,9 @@ public class Request {
         private Map<Integer, List<Long>> flightViewTimes;
         private Consent consent;
         private boolean enableBotFiltering = false;
+        private AdditionalOptions.Builder additionalOptionsBuilder = new AdditionalOptions.Builder();
+
+        private Gson gson;
 
 
         /**
@@ -309,6 +320,114 @@ public class Request {
         }
 
         /**
+         * Add an additional option to the Request with a string value
+         *
+         * @param key name of json attribute
+         * @param value a String value
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, String value) {
+            additionalOptionsBuilder.add(key, value);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request with a numeric value
+         *
+         * @param key name of json attribute
+         * @param value a Number values
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, Number value) {
+            additionalOptionsBuilder.add(key, value);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request with a boolean value
+         *
+         * @param key name of json attribute
+         * @param value a Boolean values
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, Boolean value) {
+            additionalOptionsBuilder.add(key, value);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request with array of string values
+         *
+         * @param key name of json attribute
+         * @param values array of String values
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, String[] values) {
+            additionalOptionsBuilder.add(key, values);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request with array of numeric values
+         *
+         * @param key name of json attribute
+         * @param values array of Number values
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, Number[] values) {
+            additionalOptionsBuilder.add(key, values);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request with array of boolean values
+         *
+         * @param key name of json attribute
+         * @param values array of boolean values
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, Boolean[] values) {
+            additionalOptionsBuilder.add(key, values);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request. Value may be any supported JsonElement type.
+         *
+         * @param key name of json attribute
+         * @param value json element
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, JsonElement value) {
+            additionalOptionsBuilder.add(key, value);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request. Value must be an Object serializable to json.
+         *
+         * @param key name of json attribute
+         * @param value an Object that can be auto-serialized to json
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, Object value) {
+            additionalOptionsBuilder.add(key, value);
+            return this;
+        }
+
+        /**
+         * Add an additional option to the Request. Value must be an Object array serializable to json.
+         *
+         * @param key name of json attribute
+         * @param values an Object array that can be auto-serialized to json
+         * @return request builder
+         */
+        public Builder addAdditionalOption(String key, Object[] values) {
+            additionalOptionsBuilder.add(key, values);
+            return this;
+        }
+
+        /**
          * Create the Request
          *
          * @return ad request
@@ -336,6 +455,9 @@ public class Request {
         setAllFlightViewTimes(builder.flightViewTimes);
         setConsent(builder.consent);
         setBotFilteringEnabled(builder.enableBotFiltering);
+        if (builder.additionalOptionsBuilder != null) {
+            this.additionalOptions = builder.additionalOptionsBuilder.build();
+        }
     }
 
     /**
@@ -484,5 +606,14 @@ public class Request {
 
     private void setBotFilteringEnabled(boolean enableBotFiltering) {
         this.enableBotFiltering = enableBotFiltering;
+    }
+
+    /**
+     * Returns the additional options to be added to the Request
+     *
+     * @return
+     */
+    public AdditionalOptions getAdditionalOptions() {
+        return additionalOptions;
     }
 }

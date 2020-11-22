@@ -1,5 +1,7 @@
 package com.adzerk.android.sdk.rest;
 
+import android.location.Location;
+
 import com.adzerk.android.sdk.AdzerkSdk;
 import com.adzerk.android.sdk.BuildConfig;
 import com.adzerk.android.sdk.MockClient;
@@ -84,6 +86,22 @@ public class DecisionResponseTest {
 
         List<Decision> div1Decisions = response.getDecisions("div1");
         assertThat(div1Decisions).isNotNull().isNotEmpty().hasSize(3);
+    }
+
+    @Test
+    public void itShouldDeserializeMatchedPoints() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_MATCHEDPOINTS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        assertThat(response).isNotNull();
+
+        // Decisions
+        assertThat(response.getDecisions()).containsKey("div1");
+
+        List<Decision> div1Decisions = response.getDecisions("div1");
+        assertThat(div1Decisions).isNotNull().isNotEmpty().hasSize(1);
+        List<Location> matchedPoints = div1Decisions.get(0).getMatchedPoints();
+        assertThat(matchedPoints).isNotNull().isNotEmpty().hasSize(3);
     }
 
     private Request createTestRequest() {
@@ -214,6 +232,55 @@ public class DecisionResponseTest {
             "        \"height\": 1," +
             "        \"width\": 1," +
             "        \"events\": []" +
+            "      }" +
+            "    ]" +
+            "  }" +
+            "}";
+
+    static final String JSON_DECISION_WITH_MATCHEDPOINTS = "{" +
+            "  \"user\": {" +
+            "    \"key\": \"ue1-a58d96713f6a41edb42695d24178e224\"" +
+            "  }," +
+            "  \"decisions\": {" +
+            "    \"div1\": [" +
+            "      {" +
+            "        \"adId\": 20857910," +
+            "        \"creativeId\": 18209784," +
+            "        \"flightId\": 12637354," +
+            "        \"campaignId\": 1772372," +
+            "        \"priorityId\": 208307," +
+            "        \"clickUrl\": \"https://e-9792.adzerk.net/r?e=eyJ2IjoiMS42IiwiYXYiOjkwNDA1MCwiYXQiOjE2MywiYnQiOjAsImNtIjoxNzcyMzcyLCJjaCI6NTE1MDksImNrIjp7fSwiY3IiOjE4MjA5Nzg0LCJkaSI6IjMwZTZhYjRmY2U4NzRkNzJiNWJjMjdhNjZhMDRhYWM2IiwiZGoiOjAsImlpIjoiZjMzY2Q3Y2RmMmY4NDk1MGFiZDM3ODg0NGY3Y2M3YzUiLCJkbSI6MywiZmMiOjIwODU3OTEwLCJmbCI6MTI2MzczNTQsImlwIjoiMTM2LjU2LjI5LjY0IiwibnciOjk3OTIsInBjIjowLCJlYyI6MCwiZXAiOm51bGwsInByIjoyMDgzMDcsInJ0IjowLCJycyI6NTAwLCJzYSI6IjgiLCJzYiI6ImktMDk4YzBmNmY4MDg5ZjY0OTUiLCJzcCI6Mjc1NzIsInN0IjoxMTMzODk4LCJ1ayI6InVlMS1hNThkOTY3MTNmNmE0MWVkYjQyNjk1ZDI0MTc4ZTIyNCIsInRzIjoxNjAzNTc5NjI4ODMzLCJwbiI6ImRpdjEiLCJnYyI6dHJ1ZSwiZ0MiOnRydWUsImdzIjoibm9uZSIsInR6IjoiVVRDIiwidXIiOiJodHRwczovL3d3dy5hZHplcmsuY29tIn0&s=b_aCdGnYWZtVF-nn761OKIlO4Ts\"," +
+            "        \"impressionUrl\": \"https://e-9792.adzerk.net/i.gif?e=eyJ2IjoiMS42IiwiYXYiOjkwNDA1MCwiYXQiOjE2MywiYnQiOjAsImNtIjoxNzcyMzcyLCJjaCI6NTE1MDksImNrIjp7fSwiY3IiOjE4MjA5Nzg0LCJkaSI6IjMwZTZhYjRmY2U4NzRkNzJiNWJjMjdhNjZhMDRhYWM2IiwiZGoiOjAsImlpIjoiZjMzY2Q3Y2RmMmY4NDk1MGFiZDM3ODg0NGY3Y2M3YzUiLCJkbSI6MywiZmMiOjIwODU3OTEwLCJmbCI6MTI2MzczNTQsImlwIjoiMTM2LjU2LjI5LjY0IiwibnciOjk3OTIsInBjIjowLCJlYyI6MCwiZXAiOm51bGwsInByIjoyMDgzMDcsInJ0IjowLCJycyI6NTAwLCJzYSI6IjgiLCJzYiI6ImktMDk4YzBmNmY4MDg5ZjY0OTUiLCJzcCI6Mjc1NzIsInN0IjoxMTMzODk4LCJ1ayI6InVlMS1hNThkOTY3MTNmNmE0MWVkYjQyNjk1ZDI0MTc4ZTIyNCIsInRzIjoxNjAzNTc5NjI4ODM0LCJwbiI6ImRpdjEiLCJnYyI6dHJ1ZSwiZ0MiOnRydWUsImdzIjoibm9uZSIsInR6IjoiVVRDIiwiYmEiOjEsImZxIjowfQ&s=vPH8ubKqTKtyICkRmTpJeuySiiI\"," +
+            "        \"contents\": [" +
+            "          {" +
+            "            \"type\": \"raw\"," +
+            "            \"data\": {" +
+            "              \"height\": 1," +
+            "              \"width\": 1," +
+            "              \"ctTitle\": \"German Sausages\"," +
+            "              \"ctJoke\": \"I hate jokes about German sausages.  They're the wurst!\"" +
+            "            }," +
+            "            \"body\": \"{\\\"joke\\\": \\\"I hate jokes about German sausages.  They're the wurst!\\\",\\\"title\\\": \\\"German Sausages\\\",\\\"thumbnail\\\": \\\"\\\"}\"," +
+            "            \"customTemplate\": \"{\\\"joke\\\": \\\"{{ctJoke}}\\\",\\\"title\\\": \\\"{{ctTitle}}\\\",\\\"thumbnail\\\": \\\"{{ctThumbnailUrl}}\\\"}\"" +
+            "          }" +
+            "        ]," +
+            "        \"height\": 1," +
+            "        \"width\": 1," +
+            "        \"events\": []," +
+            "        \"matchedPoints\": [" +
+            "          {" +
+            "            \"lat\": \"35.995063\"," +
+            "            \"lon\": \"-78.908187\"" +
+            "          }," +
+            "          {" +
+            "            \"lat\": \"40.689188\"," +
+            "            \"lon\": \"-74.044562\"" +
+            "          }," +
+            "          {" +
+            "            \"lat\": \"29.979188\"," +
+            "            \"lon\": \"31.134188\"" +
+            "          }" +
+            "      ]" +
             "      }" +
             "    ]" +
             "  }" +

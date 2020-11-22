@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.adzerk.android.sdk.gson.FlattenTypeAdapterFactory;
 import com.adzerk.android.sdk.rest.AdzerkService;
 import com.adzerk.android.sdk.rest.ContentData;
 import com.adzerk.android.sdk.rest.DecisionResponse;
@@ -414,6 +415,7 @@ public class AdzerkSdk {
     private AdzerkService getAdzerkService() {
         if (service == null ) {
             Gson gson = new GsonBuilder()
+                  .registerTypeAdapterFactory(new FlattenTypeAdapterFactory())
                   .registerTypeAdapter(ContentData.class, new ContentDataDeserializer())
                   .registerTypeAdapter(UserProperties.class, new UserPropertiesDeserializer())
                   .setLenient()

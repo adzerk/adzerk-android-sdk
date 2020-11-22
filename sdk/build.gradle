@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 def versionMajor = 2
-def versionMinor = 0
+def versionMinor = 1
 def versionPatch = 0
 def versionBuild = 0
 
@@ -46,8 +46,17 @@ tasks.withType(Test) {
 version =  "${versionMajor}.${versionMinor}.${versionPatch}"
 
 bintray {
-    user = BINTRAY_USER
-    key = BINTRAY_API_KEY
+
+    Properties properties = new Properties()
+    def propertiesFile = project.rootProject.file("local.properties")
+    if (propertiesFile.exists()) {
+        properties.load(propertiesFile.newDataInputStream())
+    }
+    def bintrayUser = properties.getProperty("bintray.user") ?: System.getenv("BINTRAY_USER")
+    def bintrayApiKey = properties.getProperty("bintray.apikey") ?: System.getenv("BINTRAY_API_KEY")
+
+    user = bintrayUser
+    key = bintrayApiKey
 
     configurations = ['archives']
     pkg {
