@@ -2,8 +2,6 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'com.android.library'
-// apply plugin: 'com.github.dcendents.android-maven'
-// apply plugin: 'com.jfrog.bintray'
 
 def versionMajor = 2
 def versionMinor = 1
