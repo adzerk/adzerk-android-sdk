@@ -1,11 +1,17 @@
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+// apply plugin: 'com.github.dcendents.android-maven'
+// apply plugin: 'com.jfrog.bintray'
 
 def versionMajor = 2
 def versionMinor = 1
 def versionPatch = 0
 def versionBuild = 0
+
+group = 'com.adzerk'
+version =  "${versionMajor}.${versionMinor}.${versionPatch}"
 
 android {
     compileSdkVersion 29
@@ -19,6 +25,7 @@ android {
     }
     buildTypes {
         release {
+            // buildConfigField("String", "VERSION_NAME", version)
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -42,70 +49,76 @@ tasks.withType(Test) {
     }
 }
 
-// Bintray package version
-version =  "${versionMajor}.${versionMinor}.${versionPatch}"
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
 
-bintray {
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.adzerk'
+                artifactId = 'com.adzerk.android.sdk'
+                version = version
+            }
 
-    Properties properties = new Properties()
-    def propertiesFile = project.rootProject.file("local.properties")
-    if (propertiesFile.exists()) {
-        properties.load(propertiesFile.newDataInputStream())
-    }
-    def bintrayUser = properties.getProperty("bintray.user") ?: System.getenv("BINTRAY_USER")
-    def bintrayApiKey = properties.getProperty("bintray.apikey") ?: System.getenv("BINTRAY_API_KEY")
+            // Creates a Maven publication called “debug”.
+            debug(MavenPublication) {
+                // Applies the component for the debug build variant.
+                from components.debug
 
-    user = bintrayUser
-    key = bintrayApiKey
-
-    configurations = ['archives']
-    pkg {
-        userOrg = BINTRAY_USERORG
-        repo = BINTRAY_REPO
-        name = 'com.adzerk.android.sdk'
-        desc = 'Adzerk Android SDK'
-        websiteUrl = GITHUB_URL
-        issueTrackerUrl = GITHUB_URL + '/issues'
-        vcsUrl = GITHUB_GIT
-        licenses = [LICENSE_NAME]
-        labels = ['aar', 'android', 'library', 'adzerk', 'sdk', 'advertising']
-        publicDownloadNumbers = false
-    }
-}
-
-// Maven groupId
-group = 'com.adzerk'
-
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'com.adzerk.android.sdk'
-                url GITHUB_URL
-                licenses {
-                    license {
-                        name LICENSE_NAME
-                        url LICENSE_URL
-                    }
-                }
-                developers {
-                    developer {
-                        id  GITHUB_ID
-                        name GITHUB_NAME
-                        email GITHUB_EMAIL
-                    }
-                }
-                scm {
-                    connection GITHUB_GIT
-                    developerConnection GITHUB_GIT
-                    url GITHUB_URL
-                }
+                groupId = 'com.adzerk'
+                artifactId = 'com.adzerk.android.sdk'
+                version = version
             }
         }
     }
 }
 
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+
+            pom.project {
+                name 'Adzerk Android Decision SDK'
+                packaging 'aar'
+                description 'Adzerk Android Decision SDK'
+                url 'https://github.com/adzerk/adzerk-android-sdk'
+
+                scm {
+                    connection 'scm:git:git://github.com/adzerk/adzerk-android-sdk.git'
+                    developerConnection 'scm:git:ssh://github.com/adzerk/adzerk-android-sdk.git'
+                    url 'https://github.com/adzerk/adzerk-android-sdk'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'CrshOverride'
+                        name 'Justin Niessner'
+                        email = 'engineering@adzerk.com'
+                    }
+                }
+            }
+        }
+    }
+}
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -158,4 +171,8 @@ task findConventions {
     doLast {
         println project.getConvention()
     }
+}
+
+signing {
+    sign configurations.archives
 }
