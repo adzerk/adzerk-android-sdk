@@ -42,7 +42,7 @@ Get content and decisions from the response
         Decision firstDecision = response.getDecisions("div1").get(0);
         ...
     }
-    
+
 ## Additional options
 Additional optional parameters supported by the API may be specified via the Builder on the Request or Placement.
 
@@ -106,8 +106,14 @@ output: `sdk/build/docs/javadoc`
 ## Publishing
 Update the version string properties in `sdk/build.gradle`
 
-Update `gradle.properties` with your Bintray account information
+Either get a copy of the Kevel Engineering signing key or generate a new signing key using the instructions here:
+
+https://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
+
+Update `~/.gradle/gradle.properties` with your signing information.
+
 ```
-./gradlew bintrayUpload
+./gradlew uploadArchive
 ```
-Login in to your Bintray account to publish the uploaded build.
+
+Login in to Sonatype OSS, locate the staging package, close, and release it.
