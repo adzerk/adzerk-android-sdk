@@ -62,7 +62,7 @@ Example: to specify eCPM partitions for a Placement:
 Distance Targeting is not directly supported by the SDK but can be enabled using the Additional Features feature.
 
 ```kotlin
-Request reqeust = new Request.Builder()
+val reqeust = new Request.Builder()
     .addPlacement(Placement("div1", 1133898, (163)))
     .addAdditionalOption("intendedLatitude", 35.91868)
     .addAdditionalOption("intendedLongitude", -78.96001)
