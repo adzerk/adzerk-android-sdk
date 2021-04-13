@@ -57,6 +57,19 @@ Example: to specify eCPM partitions for a Placement:
 
 @since SDK v2.1.0+
 
+## Distance Targeting
+
+Distance Targeting is not directly supported by the SDK but can be enabled using the Additional Features feature.
+
+```kotlin
+Request reqeust = new Request.Builder()
+    .addPlacement(Placement("div1", 1133898, (163)))
+    .addAdditionalOption("intendedLatitude", 35.91868)
+    .addAdditionalOption("intendedLongitude", -78.96001)
+    .addAdditionalOption("radius", 50)
+    .build()
+```
+
 ## Multi-Winner Placements
 A multi-winner placement returns multiple selections inside a single placement object.
 
