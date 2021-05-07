@@ -18,19 +18,19 @@ To target a client application with minimum SDK <26, refer to the [Android Java 
 
 Create an instance of the AdzerkSdk for your `networkId`:
 
-```java
+```kotlin
 AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).build();
 ```
 
 Create an instance of the AdzerkSdk and also provide a hostname:
 
-```java
+```kotlin
 AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname("custom.host.com").build();
 ```
 
 Build a request for placements
 
-```java
+```kotlin
 Request request = new Request.Builder()
       .addPlacement(new Placement("div1", <site_id>, <ad_types...>))
       .addPlacement(new Placement("div2", <site_id>, <ad_types...>))
@@ -40,13 +40,13 @@ Request request = new Request.Builder()
 
 Submit the request and get a callback for the response
 
-```java
+```kotlin
 sdk.requestPlacement(request, listener);
 ```
 
 Get content and decisions from the response
 
-```java
+```kotlin
 @Override
 public void success(Response response) {
     Decision firstDecision = response.getDecisions("div1").get(0);
@@ -59,7 +59,7 @@ Additional optional parameters supported by the API may be specified via the Bui
 
 Example: to specify eCPM partitions for a Placement:
 
-```java
+```kotlin
 String[] ecpmPartitions = new String[]{"main", "detail", "footer"};
 Request request = new Request.Builder()
     .addPlacement(new Placement("div1", 1133898L, 163)
@@ -88,7 +88,7 @@ A multi-winner placement returns multiple selections inside a single placement o
 
 To request multiple winners, specify a count for the Placement object. This requests the maximum number of winners (selections) that can be included in the placement.
 
-```java
+```kotlin
 Request request = new Request.Builder()
    .addPlacement(new Placement("div1", <site_id>, <ad_types...>).setCount(3))
    .build();
@@ -100,7 +100,7 @@ Request request = new Request.Builder()
 
 Consent preferences can be specified when building a request. For example, to set GDPR consent for tracking in the European Union (this defaults to false):
 
-```java
+```kotlin
 Request request = new Request.Builder(placements)
     .setUser(new User(key))
     .setConsent(new Consent(true))
@@ -112,7 +112,7 @@ Request request = new Request.Builder(placements)
 ## Building
 Use gradlew to build library archive
 
-```bash
+```
 ./gradlew assemble
 ```
 output: `sdk/build/outputs/aar`
@@ -120,7 +120,7 @@ output: `sdk/build/outputs/aar`
 ## Testing
 Run unit tests
 
-```bash
+```
 ./gradlew test
 ```
 Specify `--rerun-tasks` to rerun up-to-date tests. To view test reports see:
@@ -130,7 +130,7 @@ output: `sdk/build/reports/tests`
 ## Documentation
 Generate the SDK documentation
 
-```bash
+```
 ./gradlew javadoc
 ```
 
@@ -145,7 +145,7 @@ https://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
 
 Update `~/.gradle/gradle.properties` with your signing information.
 
-```bash
+```
 ./gradlew uploadArchive
 ```
 
