@@ -54,7 +54,7 @@ public void success(Response response) {
 }
 ```
 
-## Additional options
+## Additional Options
 Additional optional parameters supported by the API may be specified via the Builder on the Request or Placement.
 
 Example: to specify eCPM partitions for a Placement:
@@ -72,7 +72,7 @@ Request request = new Request.Builder()
 
 ## Distance Targeting
 
-Distance Targeting is not directly supported by the SDK but can be enabled using the Additional Features feature.
+Distance Targeting is not supported via the Additional Options feature.
 
 ```kotlin
 val request = new Request.Builder()
