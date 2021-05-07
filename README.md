@@ -72,7 +72,7 @@ Request request = new Request.Builder()
 
 ## Distance Targeting
 
-Distance Targeting is not supported via the Additional Options feature.
+Distance Targeting is supported via Additional Options on the request.
 
 ```kotlin
 val request = new Request.Builder()
