@@ -30,7 +30,7 @@ AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname("custom.host.com
 
 Build a request for placements
 
-```
+```java
 Request request = new Request.Builder()
       .addPlacement(new Placement("div1", <site_id>, <ad_types...>))
       .addPlacement(new Placement("div2", <site_id>, <ad_types...>))
@@ -66,7 +66,7 @@ Request request = new Request.Builder()
         .setCount(ecpmPartitions.length)
         .addAdditionalOption("ecpmPartitions", ecpmPartitions))
     .build();
-```java
+```
 
 @since SDK v2.1.0+
 
