@@ -9,6 +9,7 @@ import com.adzerk.android.sdk.gson.FlattenTypeAdapterFactory;
 import com.adzerk.android.sdk.rest.AdzerkService;
 import com.adzerk.android.sdk.rest.ContentData;
 import com.adzerk.android.sdk.rest.DecisionResponse;
+import com.adzerk.android.sdk.rest.FirePixelResponse;
 import com.adzerk.android.sdk.rest.Placement;
 import com.adzerk.android.sdk.rest.Request;
 import com.adzerk.android.sdk.rest.User;
@@ -107,9 +108,25 @@ public class AdzerkSdk {
     }
 
     /**
+     * Listener for the FirePixelResponse to an ad placement Request
+     */
+    public interface FirePixelListener extends AdzerkCallbackListener<FirePixelResponse> {
+    }
+
+    /**
      * Listener for the User response to a userDB request
      */
     public interface UserListener extends AdzerkCallbackListener<User> {
+    }
+
+    /**
+     * Used for modifying revenue when firing click/event urls.
+     *   OVERRIDE -replaces the revenue value of the click/event
+     *   ADDITIONAL - adds the specified value to the original revenue value of the click/event
+     */
+    public enum RevenueModifierType {
+        OVERRIDE,
+        ADDITIONAL
     }
 
     public static class Builder {
@@ -371,6 +388,78 @@ public class AdzerkSdk {
      */
     public void setUserRetargetingSynchronous(long networkId, long brandId, String segment, String userKey) throws IOException {
         getAdzerkService().setUserRetargeting(networkId, brandId, segment, userKey).execute();
+    }
+
+    /**
+     * Fire a pixel url
+     *
+     * @param url
+     */
+    public void firePixel(String url, @Nullable final FirePixelListener listener) {
+        firePixel(url, null, null, listener);
+    }
+
+    /**
+     * Send a synchronous request to fire a pixel url
+     *
+     * @param url       click url
+     */
+    public FirePixelResponse firePixelSynchronous(String url) {
+        return firePixelSynchronous(url, null, null);
+    }
+
+    /**
+     * Fire a pixel url, modifying the click revenue.
+     *
+     * @param url
+     * @param revenue   amount of revenue
+     * @param type      how specified revenue will be modified
+     */
+    public void firePixel(String url, Float revenue, RevenueModifierType type, @Nullable final FirePixelListener listener) {
+        Float revenueOverride = type == RevenueModifierType.OVERRIDE ? revenue : null;
+        Float additionalRevenue = type == RevenueModifierType.ADDITIONAL ? revenue : null;
+        Call<Void> call = getAdzerkService().firePixel(url, revenueOverride, additionalRevenue);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    String location = response.headers().names().contains("location") ? response.headers().get("location") : null;
+                    listener.success(new FirePixelResponse(response.code(), location));
+                } else {
+                    listener.error(new AdzerkError(response.code(), response.message(), new Exception("firePixel failed: ")));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                if (listener != null) {
+                    listener.error(new AdzerkError(t));
+                }
+            }
+        });
+    }
+
+    /**
+     * Send a synchronous request to fire a pixel url, modifying the click revenue.
+     *
+     * @param url       click url
+     * @param revenue   amount of revenue
+     * @param type      how specified revenue will be modified
+     */
+    public FirePixelResponse firePixelSynchronous(String url, Float revenue, RevenueModifierType type) {
+        Float revenueOverride = type == RevenueModifierType.OVERRIDE ? revenue : null;
+        Float additionalRevenue = type == RevenueModifierType.ADDITIONAL ? revenue : null;
+        Call<Void> call = getAdzerkService().firePixel(url, revenueOverride, additionalRevenue);
+
+        try {
+            Response resp = call.execute();
+            String location = resp.headers().names().contains("location") ? resp.headers().get("location") : null;
+            return new FirePixelResponse(resp.code(), location);
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to fire pixel on url: " + url, e);
+            return null;
+        }
     }
 
     /**
