@@ -523,6 +523,7 @@ public class AdzerkSdk {
                 //loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
                 OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+                        .followRedirects(false)
                         .addInterceptor(new SdkVersionRequestInterceptor())
                         .addInterceptor((loggingInterceptor));
 

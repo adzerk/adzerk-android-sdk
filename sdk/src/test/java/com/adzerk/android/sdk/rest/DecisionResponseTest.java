@@ -117,8 +117,8 @@ public class DecisionResponseTest {
         String pixelUrl = firstDecision.getClickUrl();
         FirePixelResponse fpr = sdk.firePixelSynchronous(pixelUrl, 1.25f, AdzerkSdk.RevenueModifierType.ADDITIONAL);
 
-        assertThat(fpr.getStatusCode()).isEqualTo(200);
-        assertThat(fpr.getLocation()).isNull();;
+        assertThat(fpr.getStatusCode()).isEqualTo(302);
+        assertThat(fpr.getLocation()).isEqualTo("http://adzerk.com");;
     }
 
     private Request createTestRequest() {
