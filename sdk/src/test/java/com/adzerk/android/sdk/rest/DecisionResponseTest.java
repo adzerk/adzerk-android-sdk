@@ -104,6 +104,23 @@ public class DecisionResponseTest {
         assertThat(matchedPoints).isNotNull().isNotEmpty().hasSize(3);
     }
 
+    @Test
+    public void itShouldFirePixelSuccessfully() {
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(9792L).build();
+
+        int[] adTypes  = {4,5};
+        Request request = new Request.Builder()
+                .addPlacement(new Placement("div1", 306998L, adTypes).setCount(3))
+                .build();
+        DecisionResponse response  = sdk.requestPlacementSynchronous(request);
+        Decision firstDecision = response.getDecisions("div1").get(0);
+        String pixelUrl = firstDecision.getClickUrl();
+        FirePixelResponse fpr = sdk.firePixelSynchronous(pixelUrl, 1.25f, AdzerkSdk.RevenueModifierType.ADDITIONAL);
+
+        assertThat(fpr.getStatusCode()).isEqualTo(302);
+        assertThat(fpr.getLocation()).isEqualTo("http://adzerk.com");;
+    }
+
     private Request createTestRequest() {
         return new Request.Builder()
                 .addPlacement(new Placement("div1", 9709L, 70464L, 5))

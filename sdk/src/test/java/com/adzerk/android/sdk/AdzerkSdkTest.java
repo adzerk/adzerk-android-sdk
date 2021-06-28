@@ -82,7 +82,7 @@ public class AdzerkSdkTest {
     }
 
     @Test
-    public void itShouldAddSdkVersionHeader() throws Exception {
+    public void itShouldAddSdkVersionHeader_whenRequestingPlacement() throws Exception {
         mockWebServer.enqueue(new MockResponse());
 
         AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
@@ -91,6 +91,46 @@ public class AdzerkSdkTest {
 
         RecordedRequest httpRequest = mockWebServer.takeRequest();
         assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
+    }
+
+    @Test
+    public void itShouldAddSdkVersionHeader_whenPixelFired() throws Exception {
+        mockWebServer.enqueue(new MockResponse());
+        String dummyClickUrl  = mockWebServer.url("clicked").toString();
+
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        sdk.firePixelSynchronous(dummyClickUrl);
+
+        RecordedRequest httpRequest = mockWebServer.takeRequest();
+        assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
+    }
+
+    @Test
+    public void itShouldAddAdditionalRevenueParam_whenPixelFired() throws Exception {
+        mockWebServer.enqueue(new MockResponse());
+        String dummyClickUrl  = mockWebServer.url("clicked").toString();
+
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        sdk.firePixelSynchronous(dummyClickUrl, 1.25f, AdzerkSdk.RevenueModifierType.ADDITIONAL);
+
+        RecordedRequest httpRequest = mockWebServer.takeRequest();
+        assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
+        assertTrue(httpRequest.getRequestUrl().queryParameterNames().contains("additional"));
+        assertTrue(httpRequest.getRequestUrl().queryParameter("additional").equals("1.25"));
+    }
+
+    @Test
+    public void itShouldAddRevenueOverrideParam_whenPixelFired() throws Exception {
+        mockWebServer.enqueue(new MockResponse());
+        String dummyClickUrl  = mockWebServer.url("clicked").toString();
+
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        sdk.firePixelSynchronous(dummyClickUrl, 2.99f, AdzerkSdk.RevenueModifierType.OVERRIDE);
+
+        RecordedRequest httpRequest = mockWebServer.takeRequest();
+        assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
+        assertTrue(httpRequest.getRequestUrl().queryParameterNames().contains("override"));
+        assertTrue(httpRequest.getRequestUrl().queryParameter("override").equals("2.99"));
     }
 
     @Test

@@ -54,6 +54,45 @@ public void success(Response response) {
 }
 ```
 
+@since SDK v2.2.0+
+
+## Recording Impression & Clicks
+
+Use with the fetch ad example above.
+
+```kotlin
+// Impression pixel; fire when user sees the ad
+String impUrl = decision.getImpressionUrl();
+sdk.firePixel(impUrl, listener);
+```
+
+```kotlin
+// Click pixel; fire when user clicks on the ad
+String clickUrl = decision.getClickUrl();
+sdk.firePixel(clickUrl, listener);
+```
+
+Modifying the revenue
+```kotlin
+// Click pixel; fire when user clicks on the ad and modify the click revenue
+//   OVERRIDE: replaces the revenue value of the click/event 
+//   ADDITIONAL: adds the specified value to the original revenue value of the click/event
+String clickUrl = decision.getClickUrl();
+sdk.firePixel(clickUrl, revenue, RevenueModifierType.OVERRIDE, listener);
+```
+
+Handle the fire pixel response
+```kotlin
+// status: HTTP status code
+// location: click target URL
+@Override
+public void success(FirePixelResponse response) {
+   Log.d(TAG, "Fired! " +
+      "status: " + response.getStatusCode() + " " +
+      "location: " + response.getLocation());
+}
+```
+
 ## Additional Options
 Additional optional parameters supported by the API may be specified via the Builder on the Request or Placement.
 

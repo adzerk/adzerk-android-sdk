@@ -4,12 +4,14 @@ import java.util.Map;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Service interface for Native Ads API
@@ -81,4 +83,16 @@ public interface AdzerkService {
                               @Path("brandId") long brandId,
                               @Path("segment") String segement,
                               @Query("userKey") String userKey);
+
+    /**
+     * Fire a click pixel
+     * @param url
+     * @param revenueOverride replaces the revenue value of the click/event
+     * @param additionalRevenue adds the specified value to the original revenue value of the click/event
+     * @return
+     */
+    @GET
+    Call<Void> firePixel(@Url String url,
+                             @Query("override") Float revenueOverride,
+                             @Query("additional") Float additionalRevenue);
 }

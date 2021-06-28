@@ -1,6 +1,10 @@
 package com.adzerk.android.sdk;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -16,6 +20,7 @@ public class MockClient {
     int statusCode = 200;
     String reason = "OK";
     String responseString;
+    Map<String, String> headers = new HashMap();
 
     public MockClient(String responseString) {
         this.responseString = responseString;
@@ -25,6 +30,10 @@ public class MockClient {
     public void setResponseCode(int statusCode, String reason) {
         this.statusCode = statusCode;
         this.reason = reason;
+    }
+
+    public void addResponseHeader(String header, String value) {
+        headers.put(header, value);
     }
 
     public OkHttpClient buildClient() {
@@ -41,13 +50,18 @@ public class MockClient {
         public Response intercept(Chain chain) throws IOException {
             Response mockResponse = null;
 
-            mockResponse = new Response.Builder()
+            Response.Builder builder = new Response.Builder()
                   .body(ResponseBody.create(MEDIA_JSON, responseString))
                   .request(chain.request())
                   .protocol(Protocol.HTTP_2)
                   .code(statusCode)
-                  .message(reason)
-                  .build();
+                  .message(reason);
+
+            for (String header : headers.keySet()) {
+                builder.addHeader(header, headers.get(header));
+            }
+
+            mockResponse = builder.build();
 
             return mockResponse;
         }
