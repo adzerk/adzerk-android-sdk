@@ -28,7 +28,7 @@ public class FirePixelResponseTest {
     }
 
     @Test
-    public void itShouldCreateePixelResponse() {
+    public void itShouldCreatePixelResponse() {
 
         String clickUrl = "http://engine.adzerk.net/clicked";
         FirePixelResponse response = sdk.firePixelSynchronous(clickUrl, null, null);
@@ -36,6 +36,17 @@ public class FirePixelResponseTest {
         assertThat(response).isNotNull();
         assertEquals(response.location, "clickTargetUrl");
         assertEquals(response.statusCode, 200);
+    }
+
+    @Test
+    public void itShouldCreatePixelResponseFor302() {
+        mockClient.setResponseCode(302, "redirect test");
+        String clickUrl = "http://engine.adzerk.net/clicked";
+        FirePixelResponse response = sdk.firePixelSynchronous(clickUrl, null, null);
+
+        assertThat(response).isNotNull();
+        assertEquals(response.location, "clickTargetUrl");
+        assertEquals(response.statusCode, 302);
     }
 
     @Test
