@@ -423,12 +423,8 @@ public class AdzerkSdk {
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    String location = response.headers().names().contains("location") ? response.headers().get("location") : null;
-                    listener.success(new FirePixelResponse(response.code(), location));
-                } else {
-                    listener.error(new AdzerkError(response.code(), response.message(), new Exception("firePixel failed: ")));
-                }
+                String location = response.headers().names().contains("location") ? response.headers().get("location") : null;
+                listener.success(new FirePixelResponse(response.code(), location));
             }
 
             @Override
