@@ -47,6 +47,7 @@ public class DecisionResponseTest {
         assertThat(div1.getCreativeId()).isEqualTo(222);
         assertThat(div1.getFlightId()).isEqualTo(333);
         assertThat(div1.getCampaignId()).isEqualTo(444);
+        assertThat(div1.getAdvertiserId()).isEqualTo(555);
         assertThat(div1.getClickUrl()).contains("click");
         assertThat(div1.getImpressionUrl()).contains("impression");
 
@@ -137,6 +138,7 @@ public class DecisionResponseTest {
         "      \"creativeId\": 222," +
         "      \"flightId\": 333," +
         "      \"campaignId\": 444," +
+        "      \"advertiserId\": 555," +
         "      \"clickUrl\": \"http://engine.adzerk.net/clicked\"," +
         "      \"contents\": [" +
         "       {" +

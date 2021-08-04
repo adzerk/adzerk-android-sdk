@@ -27,6 +27,9 @@ public class Decision {
     // id for the campaign in the selected ad
     int campaignId;
 
+    // id for the advertiser in the selected ad
+    int advertiserId;
+
     // url endpoint that, using a GET, triggers the recording of the click and redirects to the target
     String clickUrl;
 
@@ -72,6 +75,14 @@ public class Decision {
      */
     public int getCampaignId() {
         return campaignId;
+    }
+
+    /**
+     * Returns id for the advertiser in the selected ad
+     * @return advertiser id
+     */
+    public int getAdvertiserId() {
+        return advertiserId;
     }
 
     /**
