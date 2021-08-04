@@ -21,15 +21,19 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import okhttp3.tls.HandshakeCertificates;
+import okhttp3.tls.HeldCertificate;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -52,6 +56,7 @@ public class AdzerkSdkTest {
 
     AdzerkSdk sdk;
     MockWebServer mockWebServer;
+    OkHttpClient.Builder testClient;
 
     @Mock AdzerkService api;
 
@@ -67,11 +72,37 @@ public class AdzerkSdkTest {
 
     static String userKey = "ue1-d720342a233c4631a58dfb6b54f43480";
     static long networkId = 9792L;
+    static int mockWebServerPort = 8181;
 
     @Before
     public void setup() throws IOException {
         mockWebServer = new MockWebServer();
-        mockWebServer.start();
+
+        // create a self-signed certificate for the mock web server
+        //   ref: https://github.com/square/okhttp/tree/master/okhttp-tls
+        String localhost = InetAddress.getByName("localhost").getCanonicalHostName();
+        HeldCertificate localhostCertificate = new HeldCertificate.Builder()
+                .addSubjectAlternativeName(localhost)
+                .build();
+        HandshakeCertificates serverCertificates = new HandshakeCertificates.Builder()
+                .heldCertificate(localhostCertificate)
+                .build();
+        mockWebServer.useHttps(serverCertificates.sslSocketFactory(), false);
+
+        HandshakeCertificates clientCertificates = new HandshakeCertificates.Builder()
+                .addTrustedCertificate(localhostCertificate.certificate())
+                .build();
+
+        // instruct test client to trust self-signed certificate
+        testClient = new OkHttpClient.Builder()
+                .followRedirects(false)
+                .sslSocketFactory(clientCertificates.sslSocketFactory(), clientCertificates.trustManager())
+                .addInterceptor(new AdzerkSdk.SdkVersionRequestInterceptor());
+
+        mockWebServer.start(mockWebServerPort);
+
+        System.out.println("starting MockWebServer: " +  mockWebServer.getHostName() + ":" + mockWebServer.getPort());
+
         MockitoAnnotations.initMocks(this);
         sdk = AdzerkSdk.createInstance(api);
     }
@@ -85,7 +116,7 @@ public class AdzerkSdkTest {
     public void itShouldAddSdkVersionHeader_whenRequestingPlacement() throws Exception {
         mockWebServer.enqueue(new MockResponse());
 
-        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        AdzerkSdk sdk = AdzerkSdk.createInstance(testClient.build());
         Request request = createTestRequest();
         sdk.requestPlacementSynchronous(request);
 
@@ -98,7 +129,7 @@ public class AdzerkSdkTest {
         mockWebServer.enqueue(new MockResponse());
         String dummyClickUrl  = mockWebServer.url("clicked").toString();
 
-        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        AdzerkSdk sdk = AdzerkSdk.createInstance(testClient.build());
         sdk.firePixelSynchronous(dummyClickUrl);
 
         RecordedRequest httpRequest = mockWebServer.takeRequest();
@@ -110,7 +141,7 @@ public class AdzerkSdkTest {
         mockWebServer.enqueue(new MockResponse());
         String dummyClickUrl  = mockWebServer.url("clicked").toString();
 
-        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        AdzerkSdk sdk = AdzerkSdk.createInstance(testClient.build());
         sdk.firePixelSynchronous(dummyClickUrl, 1.25f, AdzerkSdk.RevenueModifierType.ADDITIONAL);
 
         RecordedRequest httpRequest = mockWebServer.takeRequest();
@@ -124,7 +155,7 @@ public class AdzerkSdkTest {
         mockWebServer.enqueue(new MockResponse());
         String dummyClickUrl  = mockWebServer.url("clicked").toString();
 
-        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        AdzerkSdk sdk = AdzerkSdk.createInstance(testClient.build());
         sdk.firePixelSynchronous(dummyClickUrl, 2.99f, AdzerkSdk.RevenueModifierType.OVERRIDE);
 
         RecordedRequest httpRequest = mockWebServer.takeRequest();
@@ -137,7 +168,7 @@ public class AdzerkSdkTest {
     public void itShouldSetDefaultNetworkIdForPlacement() throws Exception {
         mockWebServer.enqueue(new MockResponse());
 
-        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        AdzerkSdk sdk = AdzerkSdk.createInstance(testClient.build());
         List<Placement> placements = Arrays.asList(new Placement("div0", 70464L, 5));
         Request request = new Request.Builder(placements).build();
         sdk.requestPlacementSynchronous(request);

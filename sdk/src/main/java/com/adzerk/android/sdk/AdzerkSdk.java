@@ -132,11 +132,10 @@ public class AdzerkSdk {
     public static class Builder {
 
         static final String E_DASH_HOSTNAME_FORMAT = "e-%d.adzerk.net";
-        static final String BASE_URL_FORMAT = "%s://%s";
+        static final String BASE_URL_FORMAT = "https://%s";
 
         private long networkId;
         private String hostname;
-        private String protocol = "https";
 
         public Builder() {
         }
@@ -151,11 +150,6 @@ public class AdzerkSdk {
             return this;
         }
 
-        public Builder protocol(String protocol) {
-            this.protocol = protocol;
-            return this;
-        }
-
         public AdzerkSdk build() {
             if (this.networkId == 0L) {
                 throw new IllegalStateException("A networkId is required");
@@ -166,10 +160,10 @@ public class AdzerkSdk {
 
         private String createBaseUrl() {
             if (!TextUtils.isEmpty(this.hostname)) {
-                return String.format(BASE_URL_FORMAT, this.protocol, this.hostname);
+                return String.format(BASE_URL_FORMAT, this.hostname);
             }
 
-            return String.format(BASE_URL_FORMAT, this.protocol, String.format(E_DASH_HOSTNAME_FORMAT, this.networkId));
+            return String.format(BASE_URL_FORMAT, String.format(E_DASH_HOSTNAME_FORMAT, this.networkId));
         }
     }
 
@@ -201,7 +195,7 @@ public class AdzerkSdk {
 
     // Internal use - support for unit tests
     private AdzerkSdk(AdzerkService service, OkHttpClient client) {
-        this.baseUrl = "https://engine.adzerk.net";
+        this.baseUrl = "https://localhost:8181";
         this.defaultNetworkId = 9792L;
         this.service = service;
         this.client = client;
@@ -532,7 +526,7 @@ public class AdzerkSdk {
         return service;
     }
 
-    private static class SdkVersionRequestInterceptor implements Interceptor {
+    protected static class SdkVersionRequestInterceptor implements Interceptor {
 
         static String SDK_VERSION_HEADER = "X-Adzerk-Sdk-Version";
         static String SDK_VERSION = "adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME;
