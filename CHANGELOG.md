@@ -1,7 +1,8 @@
 # CHANGELOG
 
-## 2.2.0 (TBD)
+## 2.2.0 (08/05/2021)
 - new: add general pixel firing support #91
+- new: support advertiserId in response #93
 
 ## 2.1.0 (11/22/2020)
 - new: add support to specify additional optional parameters at the Request and Placement levels #75
