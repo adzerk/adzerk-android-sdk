@@ -394,9 +394,21 @@ public class AdzerkSdk {
      * Fire a pixel url
      *
      * @param url
+     * @param listener      callback listener
      */
     public void firePixel(String url, @Nullable final FirePixelListener listener) {
-        firePixel(url, null, null, listener);
+        firePixel(url, null, null, null, listener);
+    }
+
+    /**
+     * Fire a pixel url
+     *
+     * @param url                     click url
+     * @param grossMerchandiseValue   how much the purchased item cost
+     * @param listener                callback listener
+     */
+    public void firePixel(String url, Float grossMerchandiseValue, @Nullable final FirePixelListener listener) {
+        firePixel(url, null, null, grossMerchandiseValue, listener);
     }
 
     /**
@@ -405,20 +417,32 @@ public class AdzerkSdk {
      * @param url       click url
      */
     public FirePixelResponse firePixelSynchronous(String url) {
-        return firePixelSynchronous(url, null, null);
+        return firePixelSynchronous(url, null, null, null);
+    }
+
+    /**
+     * Send a synchronous request to fire a pixel url
+     *
+     * @param url                     click url
+     * @param grossMerchandiseValue   how much the purchased item cost
+     */
+    public FirePixelResponse firePixelSynchronous(String url, Float grossMerchandiseValue) {
+        return firePixelSynchronous(url, null, null, grossMerchandiseValue);
     }
 
     /**
      * Fire a pixel url, modifying the click revenue.
      *
-     * @param url
-     * @param revenue   amount of revenue
-     * @param type      how specified revenue will be modified
+     * @param url                     click url
+     * @param revenue                 amount of revenue
+     * @param type                    how specified revenue will be modified
+     * @param grossMerchandiseValue   how much the purchased item cost
+     * @param listener                callback listener
      */
-    public void firePixel(String url, Float revenue, RevenueModifierType type, @Nullable final FirePixelListener listener) {
+    public void firePixel(String url, Float revenue, RevenueModifierType type, Float grossMerchandiseValue, @Nullable final FirePixelListener listener) {
         Float revenueOverride = type == RevenueModifierType.OVERRIDE ? revenue : null;
         Float additionalRevenue = type == RevenueModifierType.ADDITIONAL ? revenue : null;
-        Call<Void> call = getAdzerkService().firePixel(url, revenueOverride, additionalRevenue);
+        Call<Void> call = getAdzerkService().firePixel(url, revenueOverride, additionalRevenue, grossMerchandiseValue);
 
         call.enqueue(new Callback<Void>() {
             @Override
@@ -439,14 +463,15 @@ public class AdzerkSdk {
     /**
      * Send a synchronous request to fire a pixel url, modifying the click revenue.
      *
-     * @param url       click url
-     * @param revenue   amount of revenue
-     * @param type      how specified revenue will be modified
+     * @param url                     click url
+     * @param revenue                 amount of revenue
+     * @param type                    how specified revenue will be modified
+     * @param grossMerchandiseValue   how much the purchased item cost
      */
-    public FirePixelResponse firePixelSynchronous(String url, Float revenue, RevenueModifierType type) {
+    public FirePixelResponse firePixelSynchronous(String url, Float revenue, RevenueModifierType type, Float grossMerchandiseValue) {
         Float revenueOverride = type == RevenueModifierType.OVERRIDE ? revenue : null;
         Float additionalRevenue = type == RevenueModifierType.ADDITIONAL ? revenue : null;
-        Call<Void> call = getAdzerkService().firePixel(url, revenueOverride, additionalRevenue);
+        Call<Void> call = getAdzerkService().firePixel(url, revenueOverride, additionalRevenue, grossMerchandiseValue);
 
         try {
             Response resp = call.execute();

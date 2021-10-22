@@ -89,10 +89,12 @@ public interface AdzerkService {
      * @param url
      * @param revenueOverride replaces the revenue value of the click/event
      * @param additionalRevenue adds the specified value to the original revenue value of the click/event
+     * @param grossMerchandiseValue how much the purchased item cost
      * @return
      */
     @GET
     Call<Void> firePixel(@Url String url,
                              @Query("override") Float revenueOverride,
-                             @Query("additional") Float additionalRevenue);
+                             @Query("additional") Float additionalRevenue,
+                             @Query("gvm") Float grossMerchandiseValue);
 }

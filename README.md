@@ -78,7 +78,17 @@ Modifying the revenue
 //   OVERRIDE: replaces the revenue value of the click/event 
 //   ADDITIONAL: adds the specified value to the original revenue value of the click/event
 String clickUrl = decision.getClickUrl();
-sdk.firePixel(clickUrl, revenue, RevenueModifierType.OVERRIDE, listener);
+sdk.firePixel(clickUrl, revenue, RevenueModifierType.OVERRIDE, null, listener);
+```
+
+Setting the gross merchandise value for the event. 
+```kotlin
+// Click pixel; fire when user clicks on the ad and modify the click revenue
+//   OVERRIDE: replaces the revenue value of the click/event 
+//   ADDITIONAL: adds the specified value to the original revenue value of the click/event
+String clickUrl = decision.getClickUrl();
+Float grossMerchandiseValue = 1.5f;
+sdk.firePixel(clickUrl, revenue, RevenueModifierType.ADDITIONAL, grossMerchandiseValue, listener);
 ```
 
 Handle the fire pixel response
