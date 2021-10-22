@@ -35,6 +35,7 @@ import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -111,12 +112,13 @@ public class AdzerkSdkTest {
         String dummyClickUrl  = mockWebServer.url("clicked").toString();
 
         AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
-        sdk.firePixelSynchronous(dummyClickUrl, 1.25f, AdzerkSdk.RevenueModifierType.ADDITIONAL);
+        sdk.firePixelSynchronous(dummyClickUrl, 1.25f, AdzerkSdk.RevenueModifierType.ADDITIONAL, null);
 
         RecordedRequest httpRequest = mockWebServer.takeRequest();
         assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
         assertTrue(httpRequest.getRequestUrl().queryParameterNames().contains("additional"));
         assertTrue(httpRequest.getRequestUrl().queryParameter("additional").equals("1.25"));
+        assertNull(httpRequest.getRequestUrl().queryParameter("gvm"));
     }
 
     @Test
@@ -125,12 +127,26 @@ public class AdzerkSdkTest {
         String dummyClickUrl  = mockWebServer.url("clicked").toString();
 
         AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
-        sdk.firePixelSynchronous(dummyClickUrl, 2.99f, AdzerkSdk.RevenueModifierType.OVERRIDE);
+        sdk.firePixelSynchronous(dummyClickUrl, 2.99f, AdzerkSdk.RevenueModifierType.OVERRIDE, null);
 
         RecordedRequest httpRequest = mockWebServer.takeRequest();
         assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
         assertTrue(httpRequest.getRequestUrl().queryParameterNames().contains("override"));
         assertTrue(httpRequest.getRequestUrl().queryParameter("override").equals("2.99"));
+        assertNull(httpRequest.getRequestUrl().queryParameter("gvm"));
+    }
+
+    @Test
+    public void itShouldAddGvmParam_whenPixelFired() throws Exception {
+        mockWebServer.enqueue(new MockResponse());
+        String dummyClickUrl  = mockWebServer.url("clicked").toString();
+
+        AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(23L).hostname(mockWebServer.getHostName() + ":" + mockWebServer.getPort()).protocol("http").build();
+        sdk.firePixelSynchronous(dummyClickUrl, 1.5f);
+
+        RecordedRequest httpRequest = mockWebServer.takeRequest();
+        assertEquals("adzerk-decision-sdk-android:" + BuildConfig.VERSION_NAME, httpRequest.getHeader("X-Adzerk-Sdk-Version"));
+        assertTrue(httpRequest.getRequestUrl().queryParameter("gvm").equals("1.5"));
     }
 
     @Test
