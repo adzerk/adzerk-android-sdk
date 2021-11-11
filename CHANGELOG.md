@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.2.1 (11/10/2021)
+- new: add support for gross merchandise value in pixel fire events
+
 ## 2.2.0 (08/05/2021)
 - new: add general pixel firing support #91
 - new: support advertiserId in response #93
@@ -9,8 +12,8 @@
 - new: adds `matchedPoints` to DecisionResponse to support GeoDistance Targeting  #78
 
 ## 2.0.0 (10/28/2020)
-- new: add support for requesting multi-winner Placements by specifying a count on Placement for ad request #74 
-   - breaking: `DecisionResponse getDecision(name)` has been replaced by `getDecisions(name)` which returns `List<Decision>` 
+- new: add support for requesting multi-winner Placements by specifying a count on Placement for ad request #74
+   - breaking: `DecisionResponse getDecision(name)` has been replaced by `getDecisions(name)` which returns `List<Decision>`
    - breaking: `DecisionResponse getDecisions()` now returns a map from Placement name to decision list `Map<String, List<Decision>>`
 - new: add support for `botFiltering` option #76
 - fix: remote outdated `time` field from ad Request #77
