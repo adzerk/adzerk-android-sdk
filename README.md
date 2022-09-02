@@ -7,7 +7,7 @@ An Android SDK for the Adzerk Native and UserDB APIs
 Grab via gradle
 
 ```gradle
-implementation 'com.adzerk:sdk:2.1.+'
+implementation 'com.adzerk:sdk:2.3.+'
 ```
 
 The SDK uses Java 8 and supports a minimum Android 5.1 (API level 22).

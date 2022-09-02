@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.3.0 (09/02/2022)
+- update: Android SDK update for API 32 (resolves: #98)
+
 ## 2.2.1 (11/10/2021)
 - new: add support for gross merchandise value in pixel fire events
 

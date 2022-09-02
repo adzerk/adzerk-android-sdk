@@ -4,20 +4,19 @@ apply plugin: 'signing'
 apply plugin: 'com.android.library'
 
 def versionMajor = 2
-def versionMinor = 2
-def versionPatch = 1
+def versionMinor = 3
+def versionPatch = 0
 def versionBuild = 0
 
 group = 'com.adzerk'
 version =  "${versionMajor}.${versionMinor}.${versionPatch}"
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 32
 
     defaultConfig {
         minSdkVersion 22
-        targetSdkVersion 29
+        targetSdkVersion 32
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
@@ -120,7 +119,7 @@ uploadArchives {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
@@ -131,6 +130,7 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:3.3.1'
     testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
     testImplementation 'com.squareup.okhttp3:mockwebserver:3.14.9'
+    testImplementation project(path: ':sdk')
 }
 
 task sourcesJar(type: Jar) {
@@ -156,7 +156,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 afterEvaluate {
     javadoc.classpath += files(android.libraryVariants.collect { variant ->
-        variant.javaCompiler.classpath.files
+        variant.javaCompileProvider.get().classpath.files
     })
 }
 
