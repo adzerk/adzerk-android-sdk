@@ -22,6 +22,9 @@ public class User  {
 
     boolean isNew;
 
+    // The assigned cohort for the User. Nullable; omitted if not set.
+    Integer group;
+
     List<String> interests;
 
     @SerializedName("custom")
@@ -76,6 +79,22 @@ public class User  {
      */
     public boolean isNew() {
         return isNew;
+    }
+
+    /**
+     * Returns the assigned cohort for the User, if any.
+     * @return the group id, or null if unset
+     */
+    public Integer getGroup() {
+        return group;
+    }
+
+    /**
+     * Sets the assigned cohort for the User.
+     * @param group group id to set; null to clear
+     */
+    public void setGroup(Integer group) {
+        this.group = group;
     }
 
     /**
