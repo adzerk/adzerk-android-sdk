@@ -170,7 +170,7 @@ output: `sdk/build/outputs/aar`
 Run unit tests
 
 ```
-./gradlew test
+./gradlew test --rerun-tasks
 ```
 Specify `--rerun-tasks` to rerun up-to-date tests. To view test reports see:
 
