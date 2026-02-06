@@ -194,8 +194,14 @@ https://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
 
 Update `~/.gradle/gradle.properties` with your signing information.
 
+To publish to Sonatype OSS:
 ```
-./gradlew uploadArchive
+./gradlew publish
 ```
 
-Login in to Sonatype OSS, locate the staging package, close, and release it.
+To publish to local Maven repository for testing:
+```
+./gradlew publishToMavenLocal
+```
+
+Login to Sonatype OSS, locate the staging package, close, and release it.
