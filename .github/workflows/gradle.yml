@@ -16,12 +16,12 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
-    - name: Upload Build
+      run: ./gradlew build --scan
+    - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build
-        path: build
+        path: sdk/build/
 
   test:
     needs: build
