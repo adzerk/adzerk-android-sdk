@@ -1,0 +1,88 @@
+name: Android CI with Gradle
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+    - name: Upload Build
+      uses: actions/upload-artifact@v4
+      with:
+        name: build
+        path: build
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    - name: Download Build
+      uses: actions/download-artifact@v4
+      with:
+        name: build
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Test with Gradle
+      run: ./gradlew test --rerun-tasks
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    - name: Import Signing Key
+      run: |
+        cat << EOF > ./key.gpg
+        ${{ secrets.GPG_KEY }}
+        EOF
+        gpg --import --batch ./key.gpg
+        gpg --pinentry-mode loopback --passphrase ${{ secrets.GPG_PASSWORD}} --export-secret-keys A47EDDB49D1CC789 > /home/runner/.gnupg/secring.gpg
+    - name: Generate Gradle Properties
+      run: |
+        cat << EOF > ./gradle.properties
+        _nexusUsername=test
+        _nexusPassword=placeholder
+        signing.keyId=9D1CC789
+        signing.password=${{ secrets.GPG_PASSWORD }}
+        signing.secretKeyRingFile=/home/runner/.gnupg/secring.gpg
+        EOF
+    - name: Download Build
+      uses: actions/download-artifact@v4
+      with:
+        name: build
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Update Version
+      run: sed -i -r "s/version = '[0-9a-z.-]+'\$/version = '${GITHUB_REF##*/}-${GITHUB_SHA:0:8}'/g" build.gradle
+      if: github.event_name == 'push' && github.ref_type == 'branch'
+    - name: Publish package
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+        NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
