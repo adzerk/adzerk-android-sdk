@@ -1,7 +1,6 @@
 package com.adzerk.android.sdk.rest;
 
 import com.adzerk.android.sdk.AdzerkSdk;
-import com.adzerk.android.sdk.BuildConfig;
 import com.adzerk.android.sdk.MockClient;
 import com.adzerk.android.sdk.rest.Request.Builder;
 
@@ -16,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk=25, constants=BuildConfig.class)
+@Config(sdk=35)
 public class ContentTest {
 
     AdzerkSdk sdk;
