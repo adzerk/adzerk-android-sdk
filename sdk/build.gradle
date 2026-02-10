@@ -10,7 +10,7 @@ def versionPatch = 2
 def versionBuild = 0
 
 group = 'com.adzerk'
-version =  "${versionMajor}.${versionMinor}.${versionPatch}"
+version = findProperty('version') ?: "${versionMajor}.${versionMinor}.${versionPatch}"
 
 android {
     namespace 'com.adzerk.android.sdk'

@@ -1,0 +1,60 @@
+name: Publish to Maven Central
+
+on:
+  release:
+    types: ["created"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: 17
+    - name: Build and Test with Gradle
+      run: ./gradlew build
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build
+        path: sdk/build/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: 17
+    - name: Download Build
+      uses: actions/download-artifact@v4
+      with:
+        name: build
+        path: sdk/build/
+    - name: Import Signing Key
+      run: echo "${{ secrets.GPG_KEY_BASE64 }}" | base64 -d | gpg --batch --import
+    - name: Export Secret Key Ring
+      run: gpg --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --export-secret-keys A47EDDB49D1CC789 > /home/runner/.gnupg/secring.gpg
+    - name: Generate Gradle Properties
+      run: |
+        cat << EOF > ./gradle.properties
+        android.useAndroidX=true
+        nexusUsername=${{ secrets.NEXUS_USERNAME }}
+        nexusPassword=${{ secrets.NEXUS_PASSWORD }}
+        signing.keyId=9D1CC789
+        signing.password=${{ secrets.GPG_PASSWORD }}
+        signing.secretKeyRingFile=/home/runner/.gnupg/secring.gpg
+        EOF
+    - name: Publish package
+      run: ./gradlew publish -Pversion=${{ github.event.release.tag_name }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
