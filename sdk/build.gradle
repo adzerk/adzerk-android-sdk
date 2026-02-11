@@ -67,7 +67,7 @@ publishing {
     publications {
         release(MavenPublication) {
             groupId = 'com.adzerk'
-            artifactId = 'com.adzerk.android.sdk'
+            artifactId = 'sdk'
             version = version
 
             afterEvaluate {
