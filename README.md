@@ -71,6 +71,7 @@ sdk.firePixel(clickUrl, listener);
 ```
 
 Modifying the revenue
+
 ```kotlin
 // Click pixel; fire when user clicks on the ad and modify the click revenue
 //   OVERRIDE: replaces the revenue value of the click/event
@@ -80,6 +81,7 @@ sdk.firePixel(clickUrl, revenue, RevenueModifierType.OVERRIDE, null, listener);
 ```
 
 Setting the gross merchandise value for the event.
+
 ```kotlin
 // Click pixel; fire when user clicks on the ad and modify the click revenue
 //   OVERRIDE: replaces the revenue value of the click/event
@@ -90,6 +92,7 @@ sdk.firePixel(clickUrl, revenue, RevenueModifierType.ADDITIONAL, grossMerchandis
 ```
 
 Handle the fire pixel response
+
 ```kotlin
 // status: HTTP status code
 // location: click target URL
@@ -102,6 +105,7 @@ public void success(FirePixelResponse response) {
 ```
 
 ## Additional Options
+
 Additional optional parameters supported by the API may be specified via the Builder on the Request or Placement.
 
 Example: to specify eCPM partitions for a Placement:
@@ -131,6 +135,7 @@ val request = new Request.Builder()
 ```
 
 ## Multi-Winner Placements
+
 A multi-winner placement returns multiple selections inside a single placement object.
 
 To request multiple winners, specify a count for the Placement object. This requests the maximum number of winners (selections) that can be included in the placement.
@@ -157,24 +162,29 @@ Request request = new Request.Builder(placements)
 @since SDK v0.4.0+
 
 ## Building
+
 Use gradlew to build library archive
 
 ```
 ./gradlew assemble
 ```
+
 output: `sdk/build/outputs/aar`
 
 ## Testing
+
 Run unit tests
 
 ```
 ./gradlew test --rerun-tasks
 ```
+
 Specify `--rerun-tasks` to rerun up-to-date tests. To view test reports see:
 
 output: `sdk/build/reports/tests`
 
 ## Documentation
+
 Generate the SDK documentation
 
 ```
@@ -184,16 +194,19 @@ Generate the SDK documentation
 output: `sdk/build/docs/javadoc`
 
 ## Publishing
+
 Publishing to Maven Central is automated via GitHub Actions. When a new GitHub release is created, the [publish workflow](.github/workflows/publish.yml) will build, sign, and publish the package to Sonatype OSSRH. The version is derived from the release tag name.
 
 The workflow requires the following repository secrets:
+
 - `GPG_KEY_BASE64` - base64-encoded GPG signing key
 - `GPG_PASSWORD` - passphrase for the GPG key
 - `NEXUS_USERNAME` / `NEXUS_PASSWORD` - Sonatype OSSRH credentials
 
+Check on https://central.sonatype.com/artifact/com.adzerk/sdk that current version matches the released one when the publish GHA has finished.
+
 To publish to local Maven repository for testing:
+
 ```
 ./gradlew publishToMavenLocal
 ```
-
-Login to Sonatype OSSRH, locate the staging package, and release it.
