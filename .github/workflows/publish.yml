@@ -43,14 +43,14 @@ jobs:
     - name: Import Signing Key
       run: echo "${{ secrets.GPG_KEY_BASE64 }}" | base64 -d | gpg --batch --import
     - name: Export Secret Key Ring
-      run: gpg --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --export-secret-keys A47EDDB49D1CC789 > /home/runner/.gnupg/secring.gpg
+      run: gpg --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSWORD }}" --export-secret-keys 0F95489EF8E0C0DA > /home/runner/.gnupg/secring.gpg
     - name: Generate Gradle Properties
       run: |
         cat << EOF > ./gradle.properties
         android.useAndroidX=true
         nexusUsername=${{ secrets.NEXUS_USERNAME }}
         nexusPassword=${{ secrets.NEXUS_PASSWORD }}
-        signing.keyId=9D1CC789
+        signing.keyId=F8E0C0DA
         signing.password=${{ secrets.GPG_PASSWORD }}
         signing.secretKeyRingFile=/home/runner/.gnupg/secring.gpg
         EOF
