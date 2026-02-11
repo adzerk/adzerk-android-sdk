@@ -7,12 +7,10 @@ An Android SDK for the Adzerk Native and UserDB APIs
 Grab via gradle
 
 ```gradle
-implementation 'com.adzerk:sdk:2.3.+'
+implementation 'com.adzerk:sdk:3.0.+'
 ```
 
-The SDK uses Java 8 and supports a minimum Android 5.1 (API level 22).
-
-To target a client application with minimum SDK <26, refer to the [Android Java 8 support documentation](https://developer.android.com/studio/write/java8-support).
+The SDK uses Java 17 and supports a minimum Android 5.1 (API level 22).
 
 ## Usage
 
@@ -75,16 +73,16 @@ sdk.firePixel(clickUrl, listener);
 Modifying the revenue
 ```kotlin
 // Click pixel; fire when user clicks on the ad and modify the click revenue
-//   OVERRIDE: replaces the revenue value of the click/event 
+//   OVERRIDE: replaces the revenue value of the click/event
 //   ADDITIONAL: adds the specified value to the original revenue value of the click/event
 String clickUrl = decision.getClickUrl();
 sdk.firePixel(clickUrl, revenue, RevenueModifierType.OVERRIDE, null, listener);
 ```
 
-Setting the gross merchandise value for the event. 
+Setting the gross merchandise value for the event.
 ```kotlin
 // Click pixel; fire when user clicks on the ad and modify the click revenue
-//   OVERRIDE: replaces the revenue value of the click/event 
+//   OVERRIDE: replaces the revenue value of the click/event
 //   ADDITIONAL: adds the specified value to the original revenue value of the click/event
 String clickUrl = decision.getClickUrl();
 Float grossMerchandiseValue = 1.5f;
@@ -186,22 +184,16 @@ Generate the SDK documentation
 output: `sdk/build/docs/javadoc`
 
 ## Publishing
-Update the version string properties in `sdk/build.gradle`
+Publishing to Maven Central is automated via GitHub Actions. When a new GitHub release is created, the [publish workflow](.github/workflows/publish.yml) will build, sign, and publish the package to Sonatype OSSRH. The version is derived from the release tag name.
 
-Either get a copy of the Kevel Engineering signing key or generate a new signing key using the instructions here:
-
-https://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
-
-Update `~/.gradle/gradle.properties` with your signing information.
-
-To publish to Sonatype OSS:
-```
-./gradlew publish
-```
+The workflow requires the following repository secrets:
+- `GPG_KEY_BASE64` - base64-encoded GPG signing key
+- `GPG_PASSWORD` - passphrase for the GPG key
+- `NEXUS_USERNAME` / `NEXUS_PASSWORD` - Sonatype OSSRH credentials
 
 To publish to local Maven repository for testing:
 ```
 ./gradlew publishToMavenLocal
 ```
 
-Login to Sonatype OSS, locate the staging package, close, and release it.
+Login to Sonatype OSSRH, locate the staging package, and release it.
