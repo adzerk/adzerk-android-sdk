@@ -1,6 +1,5 @@
 package com.adzerk.android.sdk.rest;
 
-import com.adzerk.android.sdk.BuildConfig;
 import com.adzerk.android.sdk.TestData.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -20,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk=25, constants= BuildConfig.class)
+@Config(sdk=35)
 public class AdditionalOptionsTest {
 
     String[] strings = new String[] {"value1","value2","value3" };

@@ -3,7 +3,6 @@ package com.adzerk.android.sdk.gson;
 
 import android.location.Location;
 
-import com.adzerk.android.sdk.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
@@ -20,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk=25, constants= BuildConfig.class)
+@Config(sdk=35)
 public class MatchedPointsDeserializerTest {
 
     public class MatchedPointsContainer {

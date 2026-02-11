@@ -1,7 +1,6 @@
 package com.adzerk.android.sdk.rest;
 
 import com.adzerk.android.sdk.AdzerkSdk;
-import com.adzerk.android.sdk.BuildConfig;
 import com.adzerk.android.sdk.MockClient;
 
 import org.junit.Before;
@@ -14,7 +13,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk=25, constants=BuildConfig.class)
+@Config(sdk=35)
 public class FirePixelResponseTest {
 
     AdzerkSdk sdk;

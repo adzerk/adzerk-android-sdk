@@ -1,6 +1,5 @@
 package com.adzerk.android.sdk.gson;
 
-import com.adzerk.android.sdk.BuildConfig;
 import com.adzerk.android.sdk.rest.AdditionalOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk=25, constants= BuildConfig.class)
+@Config(sdk=35)
 public class FlattenTypeAdapterFactoryTest {
 
     @FlattenAdditionalOptions(fieldName = "additionalOptions")
