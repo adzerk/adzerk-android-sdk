@@ -25,6 +25,8 @@ public class User  {
     // The assigned cohort for the User. Nullable; omitted if not set.
     Integer group;
 
+    List<Integer> segments;
+
     List<String> interests;
 
     @SerializedName("custom")
@@ -95,6 +97,22 @@ public class User  {
      */
     public void setGroup(Integer group) {
         this.group = group;
+    }
+
+    /**
+     * Returns the assigned cohort for the User, if any.
+     * @return the segments, or null if unset
+     */
+    public List<Integer> getSegments() {
+        return segments;
+    }
+
+    /**
+     * Sets the assigned cohort for the User.
+     * @param segments segments array to set; null to clear
+     */
+    public void setSegments(List<Integer> segments) {
+        this.segments = segments;
     }
 
     /**
