@@ -97,6 +97,42 @@ public class RequestTest {
     }
 
     @Test
+    public void itShouldBuildUserWithGroup() {
+        try {
+            String key = "testUserKey";
+            User user = new User(key);
+            user.setGroup(42);
+
+            Request request = new Builder(placements)
+                  .setUser(user)
+                  .build();
+
+            assertThat(request.getUser().getKey()).isEqualTo(key);
+            assertThat(request.getUser().getGroup()).isEqualTo(42);
+        } catch (IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void itShouldBuildUserWithSegments() {
+        try {
+            String key = "testUserKey";
+            User user = new User(key);
+            user.setSegments(Arrays.asList(1, 2, 3));
+
+            Request request = new Builder(placements)
+                  .setUser(user)
+                  .build();
+
+            assertThat(request.getUser().getKey()).isEqualTo(key);
+            assertThat(request.getUser().getSegments()).containsExactly(1, 2, 3);
+        } catch (IllegalArgumentException e) {
+            fail("Should not throw exception: " + e.getMessage());
+        }
+    }
+
+    @Test
     public void itShouldSetUserConsent() {
 
         try {
