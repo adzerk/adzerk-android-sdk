@@ -61,6 +61,9 @@ public class Decision {
     @JsonAdapter(MatchedPointsDeserializer.class)
     List<Location> matchedPoints;
 
+    // pricing details; only present when the Request sets includePricingData to true
+    PricingData pricing;
+
     /**
      * Returns id for the ad that was selected
      * @return ad id
@@ -176,5 +179,14 @@ public class Decision {
 
     public List<Location> getMatchedPoints() {
         return matchedPoints;
+    }
+
+    /**
+     * Returns the {@link PricingData} for the selected ad, or null if the {@link Request} did not
+     * set the includePricingData option
+     * @return pricing details
+     */
+    public PricingData getPricing() {
+        return pricing;
     }
 }

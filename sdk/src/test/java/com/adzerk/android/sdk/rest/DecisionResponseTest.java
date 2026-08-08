@@ -164,6 +164,24 @@ public class DecisionResponseTest {
     }
 
     @Test
+    public void itShouldDeserializePricingData() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_NEW_FIELDS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        PricingData pricing = response.getDecisions("div1").get(0).getPricing();
+
+        assertThat(pricing).isNotNull();
+        assertThat(pricing.getPrice()).isEqualTo(3.0f);
+        assertThat(pricing.getClearPrice()).isEqualTo(2.0f);
+        assertThat(pricing.getModifiedPrice()).isEqualTo(1.5f);
+        assertThat(pricing.getOptimizedPrice()).isEqualTo(2.25f);
+        assertThat(pricing.getEventMultiplier()).isEqualTo(1.1f);
+        assertThat(pricing.getRevenue()).isEqualTo(0.003f);
+        assertThat(pricing.getRateType()).isEqualTo(2);
+        assertThat(pricing.getECPM()).isEqualTo(3.0f);
+    }
+
+    @Test
     public void itShouldLeaveNewFieldsNullWhenAbsent() {
         DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
         Decision div1 = response.getDecisions("div1").get(0);
@@ -173,6 +191,7 @@ public class DecisionResponseTest {
         assertThat(div1.getExternalMetadata()).isNull();
         assertThat(div1.getEcpmPartition()).isNull();
         assertThat(div1.getAdChain()).isNull();
+        assertThat(div1.getPricing()).isNull();
     }
 
     @Test
@@ -273,7 +292,10 @@ public class DecisionResponseTest {
             "        \"clearPrice\": 2.0," +
             "        \"modifiedPrice\": 1.5," +
             "        \"optimizedPrice\": 2.25," +
-            "        \"eventMultiplier\": 1.1" +
+            "        \"eventMultiplier\": 1.1," +
+            "        \"revenue\": 0.003," +
+            "        \"rateType\": 2," +
+            "        \"eCPM\": 3.0" +
             "      }" +
             "    }" +
             "  }" +
