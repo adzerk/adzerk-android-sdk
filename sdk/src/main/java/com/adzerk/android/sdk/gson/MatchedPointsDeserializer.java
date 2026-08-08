@@ -40,11 +40,11 @@ public class MatchedPointsDeserializer implements JsonDeserializer<List<Location
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             Set<String> attributes = jsonObject.keySet();
             if (!attributes.contains(LAT_ATTRIBUTE) || !attributes.contains(LON_ATTRIBUTE)) {
-                throw new JsonParseException("Unable to parse matchedPoint - 'lat' and 'lon' string values are expected");
+                throw new JsonParseException("Unable to parse matchedPoint - 'lat' and 'lon' values are expected");
             }
 
-            String lat = jsonObject.get(LAT_ATTRIBUTE).getAsString();
-            String lon = jsonObject.get(LON_ATTRIBUTE).getAsString();
+            double lat = getCoordinate(jsonObject, LAT_ATTRIBUTE);
+            double lon = getCoordinate(jsonObject, LON_ATTRIBUTE);
             Location matchPoint = getLocation(lat, lon);
             locations.add(matchPoint);
         }
@@ -52,14 +52,30 @@ public class MatchedPointsDeserializer implements JsonDeserializer<List<Location
         return locations;
     }
 
-    public Location getLocation(String lat, String lon) {
-        Location location = new Location(BuildConfig.LIBRARY_PACKAGE_NAME);
+    /**
+     * Reads a coordinate. The API sends these as numbers, but they used to be sent as strings,
+     * so both are accepted.
+     */
+    private double getCoordinate(JsonObject jsonObject, String attribute) {
         try {
-            location.setLatitude(Double.parseDouble(lat));
-            location.setLongitude(Double.parseDouble(lon));
+            return jsonObject.get(attribute).getAsDouble();
         } catch (Exception e) {
+            throw new JsonParseException("Unable to parse matchedPoint - '" + attribute + "' is expected to be a number");
+        }
+    }
+
+    public Location getLocation(String lat, String lon) {
+        try {
+            return getLocation(Double.parseDouble(lat), Double.parseDouble(lon));
+        } catch (NumberFormatException e) {
             throw new JsonParseException("Unable to parse matchedPoint - 'lat' and 'lon' string values expected to be parsable as doubles");
         }
+    }
+
+    public Location getLocation(double lat, double lon) {
+        Location location = new Location(BuildConfig.LIBRARY_PACKAGE_NAME);
+        location.setLatitude(lat);
+        location.setLongitude(lon);
         return location;
     }
 }

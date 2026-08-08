@@ -35,6 +35,20 @@ public class MatchedPointsDeserializerTest {
     }
 
     @Test
+    public void ShouldSucceed_WhenLatLonAreNumbers() {
+        MatchedPointsContainer result = gson.fromJson(JSON_VALID_NUMERIC_MATCHEDPOINTS, MatchedPointsContainer.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.matchedPoints).isNotNull().isNotEmpty().hasSize(3);
+        assertThat(result.matchedPoints.get(0).getLatitude()).isEqualTo(35.995063);
+        assertThat(result.matchedPoints.get(0).getLongitude()).isEqualTo(-78.908187);
+        assertThat(result.matchedPoints.get(1).getLatitude()).isEqualTo(40.689188);
+        assertThat(result.matchedPoints.get(1).getLongitude()).isEqualTo(-74.044562);
+        assertThat(result.matchedPoints.get(2).getLatitude()).isEqualTo(29.979188);
+        assertThat(result.matchedPoints.get(2).getLongitude()).isEqualTo(31.134188);
+    }
+
+    @Test
     public void ShouldSucceed_WhenJsonIsValidMatchedPoints() {
         MatchedPointsContainer result = gson.fromJson(JSON_VALID_MATCHEDPOINTS, MatchedPointsContainer.class);
 
@@ -55,7 +69,7 @@ public class MatchedPointsDeserializerTest {
     }
 
     @Test(expected = JsonParseException.class)
-    public void ShouldThrow_WhenLatLonAreNotStrings() {
+    public void ShouldThrow_WhenLatLonAreNotNumeric() {
         gson.fromJson(JSON_INVALID_2, MatchedPointsContainer.class);
     }
 
@@ -94,12 +108,29 @@ public class MatchedPointsDeserializerTest {
             "     };";
 
 
-    static String JSON_INVALID_2 =
+    static String JSON_VALID_NUMERIC_MATCHEDPOINTS =
             " {\"matchedPoints\": [" +
             "    {" +
             "       \"lat\": 35.995063," +
             "       \"lon\": -78.908187" +
             "     }," +
+            "     {" +
+            "       \"lat\": 40.689188," +
+            "       \"lon\": -74.044562" +
+            "     }," +
+            "     {" +
+            "        \"lat\": 29.979188," +
+            "        \"lon\": 31.134188" +
+            "     }" +
+            "   ]" +
+            " }";
+
+    static String JSON_INVALID_2 =
+            " {\"matchedPoints\": [" +
+            "    {" +
+            "       \"lat\": { \"degrees\": 35 }," +
+            "       \"lon\": -78.908187" +
+            "     }" +
             "   ]" +
             " }";
 
