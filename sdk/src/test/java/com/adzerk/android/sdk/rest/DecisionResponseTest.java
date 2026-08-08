@@ -105,6 +105,96 @@ public class DecisionResponseTest {
     }
 
     @Test
+    public void itShouldDeserializeNumericMatchedPoints() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_NEW_FIELDS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        assertThat(response).isNotNull();
+
+        List<Location> matchedPoints = response.getDecisions("div1").get(0).getMatchedPoints();
+        assertThat(matchedPoints).isNotNull().isNotEmpty().hasSize(2);
+        assertThat(matchedPoints.get(0).getLatitude()).isEqualTo(35.995063);
+        assertThat(matchedPoints.get(0).getLongitude()).isEqualTo(-78.908187);
+        assertThat(matchedPoints.get(1).getLatitude()).isEqualTo(40.689188);
+        assertThat(matchedPoints.get(1).getLongitude()).isEqualTo(-74.044562);
+    }
+
+    @Test
+    public void itShouldDeserializeDimensions() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_NEW_FIELDS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        Decision div1 = response.getDecisions("div1").get(0);
+
+        assertThat(div1.getHeight()).isEqualTo(250);
+        assertThat(div1.getWidth()).isEqualTo(300);
+    }
+
+    @Test
+    public void itShouldDeserializeExternalMetadata() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_NEW_FIELDS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        Decision div1 = response.getDecisions("div1").get(0);
+
+        assertThat(div1.getExternalMetadata()).isNotNull().hasSize(2);
+        assertThat(div1.getExternalMetadata().get("campaignTag")).isEqualTo("summer-sale");
+        assertThat(div1.getExternalMetadata().get("priority")).isEqualTo(3.0);
+    }
+
+    @Test
+    public void itShouldDeserializeEcpmPartition() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_NEW_FIELDS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+
+        assertThat(response.getDecisions("div1").get(0).getEcpmPartition()).isEqualTo("partition-a");
+    }
+
+    @Test
+    public void itShouldDeserializeAdChain() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_NEW_FIELDS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        List<Decision> adChain = response.getDecisions("div1").get(0).getAdChain();
+
+        assertThat(adChain).isNotNull().isNotEmpty().hasSize(1);
+        assertThat(adChain.get(0).getAdId()).isEqualTo(999);
+        assertThat(adChain.get(0).getCreativeId()).isEqualTo(888);
+    }
+
+    @Test
+    public void itShouldDeserializePricingData() {
+        AdzerkSdk sdk = AdzerkSdk.createInstance(new MockClient(JSON_DECISION_WITH_NEW_FIELDS).buildClient());
+
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        PricingData pricing = response.getDecisions("div1").get(0).getPricing();
+
+        assertThat(pricing).isNotNull();
+        assertThat(pricing.getPrice()).isEqualTo(3.0f);
+        assertThat(pricing.getClearPrice()).isEqualTo(2.0f);
+        assertThat(pricing.getModifiedPrice()).isEqualTo(1.5f);
+        assertThat(pricing.getOptimizedPrice()).isEqualTo(2.25f);
+        assertThat(pricing.getEventMultiplier()).isEqualTo(1.1f);
+        assertThat(pricing.getRevenue()).isEqualTo(0.003f);
+        assertThat(pricing.getRateType()).isEqualTo(2);
+        assertThat(pricing.getECPM()).isEqualTo(3.0f);
+    }
+
+    @Test
+    public void itShouldLeaveNewFieldsNullWhenAbsent() {
+        DecisionResponse response = sdk.requestPlacementSynchronous(createTestRequest());
+        Decision div1 = response.getDecisions("div1").get(0);
+
+        assertThat(div1.getHeight()).isNull();
+        assertThat(div1.getWidth()).isNull();
+        assertThat(div1.getExternalMetadata()).isNull();
+        assertThat(div1.getEcpmPartition()).isNull();
+        assertThat(div1.getAdChain()).isNull();
+        assertThat(div1.getPricing()).isNull();
+    }
+
+    @Test
     public void itShouldFirePixelSuccessfully() {
         AdzerkSdk sdk = new AdzerkSdk.Builder().networkId(9792L).build();
 
@@ -169,6 +259,47 @@ public class DecisionResponseTest {
         "    \"div2\": null" +
         "  }" +
         "}";
+
+    static final String JSON_DECISION_WITH_NEW_FIELDS = "{" +
+            "  \"user\": { \"key\": \"ad39231daeb043f2a9610414f08394b5\" }," +
+            "  \"decisions\": {" +
+            "    \"div1\": {" +
+            "      \"adId\": 111," +
+            "      \"creativeId\": 222," +
+            "      \"height\": 250," +
+            "      \"width\": 300," +
+            "      \"ecpmPartition\": \"partition-a\"," +
+            "      \"externalMetadata\": {" +
+            "        \"campaignTag\": \"summer-sale\"," +
+            "        \"priority\": 3" +
+            "      }," +
+            "      \"contents\": []," +
+            "      \"events\": []," +
+            "      \"adChain\": [" +
+            "        {" +
+            "          \"adId\": 999," +
+            "          \"creativeId\": 888," +
+            "          \"contents\": []," +
+            "          \"events\": []" +
+            "        }" +
+            "      ]," +
+            "      \"matchedPoints\": [" +
+            "        { \"lat\": 35.995063, \"lon\": -78.908187 }," +
+            "        { \"lat\": 40.689188, \"lon\": -74.044562 }" +
+            "      ]," +
+            "      \"pricing\": {" +
+            "        \"price\": 3.0," +
+            "        \"clearPrice\": 2.0," +
+            "        \"modifiedPrice\": 1.5," +
+            "        \"optimizedPrice\": 2.25," +
+            "        \"eventMultiplier\": 1.1," +
+            "        \"revenue\": 0.003," +
+            "        \"rateType\": 2," +
+            "        \"eCPM\": 3.0" +
+            "      }" +
+            "    }" +
+            "  }" +
+            "}";
 
     static final String JSON_MULTI_WINNERS = "{" +
             "  \"user\": {" +

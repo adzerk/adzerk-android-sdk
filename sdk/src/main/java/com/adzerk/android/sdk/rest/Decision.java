@@ -6,6 +6,7 @@ import com.adzerk.android.sdk.gson.MatchedPointsDeserializer;
 import com.google.gson.annotations.JsonAdapter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A Decision represents the ad that was selected to be served for a given {@link Placement}.
@@ -42,8 +43,26 @@ public class Decision {
     // url endpoint that, using a GET, triggers the recording of the impression
     String impressionUrl;
 
+    // height of the selected ad, if the creative supplies it
+    Integer height;
+
+    // width of the selected ad, if the creative supplies it
+    Integer width;
+
+    // custom metadata configured on the ad; only present if set
+    Map<String, Object> externalMetadata;
+
+    // ecpm partition of the matched impression; only present if set
+    String ecpmPartition;
+
+    // when multiple ads are selected for a non-multi-winner placement, the ads beyond the first
+    List<Decision> adChain;
+
     @JsonAdapter(MatchedPointsDeserializer.class)
     List<Location> matchedPoints;
+
+    // pricing details; only present when the Request sets includePricingData to true
+    PricingData pricing;
 
     /**
      * Returns id for the ad that was selected
@@ -117,7 +136,57 @@ public class Decision {
         return events;
     }
 
+    /**
+     * Returns the height of the selected ad, or null if the creative does not supply one
+     * @return ad height
+     */
+    public Integer getHeight() {
+        return height;
+    }
+
+    /**
+     * Returns the width of the selected ad, or null if the creative does not supply one
+     * @return ad width
+     */
+    public Integer getWidth() {
+        return width;
+    }
+
+    /**
+     * Returns the custom metadata configured on the ad, or null if none is set
+     * @return map of custom metadata
+     */
+    public Map<String, Object> getExternalMetadata() {
+        return externalMetadata;
+    }
+
+    /**
+     * Returns the ecpm partition of the matched impression, or null if none is set
+     * @return ecpm partition
+     */
+    public String getEcpmPartition() {
+        return ecpmPartition;
+    }
+
+    /**
+     * Returns the additional ads beyond the first when multiple ads were selected for a
+     * non-multi-winner {@link Placement}, or null if there are none
+     * @return list of additional decisions
+     */
+    public List<Decision> getAdChain() {
+        return adChain;
+    }
+
     public List<Location> getMatchedPoints() {
         return matchedPoints;
+    }
+
+    /**
+     * Returns the {@link PricingData} for the selected ad, or null if the {@link Request} did not
+     * set the includePricingData option
+     * @return pricing details
+     */
+    public PricingData getPricing() {
+        return pricing;
     }
 }
